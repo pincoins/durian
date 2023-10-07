@@ -38,6 +38,6 @@ out/
 
 # Project
 application-*.yaml
+.DS_Store
 logs
 src/main/generated
-.DS_Store
