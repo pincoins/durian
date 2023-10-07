@@ -1,0 +1,14 @@
+spring:
+  application.name: durian
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: "jdbc:mariadb://localhost/database"
+    username: username
+    password: password
+    hikari:
+      connectionInitSql: "SET NAMES utf8mb4"
+  jpa:
+    hibernate.ddl-auto: validate # validate, create, create-drop., update, none
+    # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
+    # generate-ddl: true
+    show-sql: true
