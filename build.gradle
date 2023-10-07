@@ -1,0 +1,103 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.4'
+    id 'io.spring.dependency-management' version '1.1.3'
+}
+
+group = 'kr.pincoin'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring initializr packages
+    // - DEVELOPER TOOLS
+    //  - Spring Boot DevTools
+    //  - Spring Configuration Processor
+    //  - Lombok
+    // - WEB
+    //  - Spring Web
+    //  - Spring Reactive Web
+    // - SQL
+    //  - Spring Data JPA
+    //  - MariaDB Driver
+    // - NOSQL
+    //  - Spring Data Redis (Access+Driver)
+    // - IO
+    //  - Validation
+    // - SECURITY
+    //  - Spring Security
+    //  - OAuth2 Client
+
+    // Developer tools
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web' // REST Controller
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient, Mono, Flux reactive
+
+    // SQL & NOSQL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA, Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
+
+    // IO
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // DTO bean validation
+
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security' // Spring security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // SNS login
+
+    // test framework
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // WebFlux WebClient Apple-Silicon support
+    boolean isMacOS = System.getProperty("os.name").startsWith("Mac OS X") // os.name=Mac OS X
+    String architecture = System.getProperty("os.arch").toLowerCase() // os.arch=aarch64
+
+    if (isMacOS && architecture == "aarch64") {
+        implementation("io.netty:netty-resolver-dns-native-macos:4.1.86.Final:osx-aarch_64")
+    }
+
+    // JJWT-API - 2023-10-07 (version specified): https://mvnrepository.com/artifact/io.jsonwebtoken
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.1'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.1'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.1'
+
+    // QueryDSL - 2023-10-07 (version/tag specified): https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// build jar file without version tag
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
+}
+
+// no plain jar
+jar {
+    enabled = false
+}
