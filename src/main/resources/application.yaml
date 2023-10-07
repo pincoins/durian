@@ -12,3 +12,25 @@ spring:
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true
     show-sql: true
+
+security-config:
+  content-security-policy: default-src 'none'
+  cors:
+    origins: "*"
+    headers: "*"
+    methods: "*"
+    allow-credentials: true
+
+logging:
+  #  file:
+  #    name: logs/spring.log
+  level:
+    kr.pincoin.durian: DEBUG
+    # org.hibernate.SQL: DEBUG
+    # org.hibernate.type: DEBUG
+    # org.hibernate.type.descriptor.sql: DEBUG
+    # org.hibernate.type.descriptor.sql.BasicBinder: DEBUG
+    # reactor.netty.http.client.HttpClient: DEBUG
+
+auth:
+  jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
