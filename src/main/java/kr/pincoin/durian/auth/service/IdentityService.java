@@ -13,7 +13,7 @@ public class IdentityService {
         User user = getUser();
 
         if (!user.getId().equals(userId)) {
-            log.warn("requested resource user id mismatch: {} {}", user.getId(), userId);
+            log.warn("Requested resource user id mismatch: {} {}", user.getId(), userId);
             return false;
         }
 
