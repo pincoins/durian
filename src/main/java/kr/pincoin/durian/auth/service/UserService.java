@@ -2,18 +2,18 @@ package kr.pincoin.durian.auth.service;
 
 import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.dto.AccessTokenResponse;
-import kr.pincoin.durian.auth.dto.PasswordGrantRequest;
-import kr.pincoin.durian.auth.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.dto.UserResponse;
+import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
 import kr.pincoin.durian.auth.repository.RefreshTokenRepository;
 import kr.pincoin.durian.auth.repository.UserRepository;
+import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static kr.pincoin.durian.auth.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
@@ -52,17 +52,34 @@ public class UserService {
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
-        return userRepository.findUser(request.getEmail(), true)
-                .map(user -> {
-                    AccessTokenResponse response = null;
+        User user = userRepository.findUser(request.getEmail(), true)
+                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                                                    "User not found",
+                                                    List.of("Your email or password is not correct.")));
 
-                    if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                        response = getAccessTokenResponse(user);
-                    }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new ApiException(HttpStatus.FORBIDDEN,
+                                   "User not found",
+                                   List.of("Your email or password is not correct."));
+        }
 
-                    return Optional.ofNullable(response);
-                })
-                .orElseGet(Optional::empty);
+        return Optional.of(getAccessTokenResponse(user));
+    }
+
+    @Transactional
+    public Optional<AccessTokenResponse>
+    refresh(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(request.getRefreshToken())
+                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                                                    "Refresh token not found",
+                                                    List.of("Refresh token is invalid or expired.")));
+
+        User user = userRepository.findUser(refreshToken.getUserId(), true)
+                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                                                    "User not found",
+                                                    List.of("User does not exist.")));
+
+        return Optional.of(getAccessTokenResponse(user));
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
