@@ -17,7 +17,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Optional<User> findUser(String username, Boolean active) {
+    public Optional<User> findUser(String email, Boolean active) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .leftJoin(user.role, role)
                 .fetchJoin()
-                .where(usernameEq(username),
+                .where(emailEq(email),
                        activeEq(active));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -52,6 +52,12 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         QUser user = QUser.user;
 
         return username != null ? user.username.eq(username) : null;
+    }
+
+    BooleanExpression emailEq(String email) {
+        QUser user = QUser.user;
+
+        return email != null ? user.email.eq(email) : null;
     }
 
     BooleanExpression idEq(Long id) {

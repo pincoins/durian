@@ -8,10 +8,15 @@ spring:
     hikari:
       connectionInitSql: "SET NAMES utf8mb4"
   jpa:
+    open-in-view: false # database queries may be performed during view rendering if true
     hibernate.ddl-auto: validate # validate, create, create-drop., update, none
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true
     show-sql: true
+    properties:
+      hibernate.format_sql: true
+  web.resources.add-mappings: false # resolves NoHandlerFoundException
+  mvc.throw-exception-if-no-handler-found: true # resolves NoHandlerFoundException
 
 security-config:
   content-security-policy: default-src 'none'
