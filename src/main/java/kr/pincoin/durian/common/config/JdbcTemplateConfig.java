@@ -1,4 +1,4 @@
-package kr.pincoin.durian.config;
+package kr.pincoin.durian.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

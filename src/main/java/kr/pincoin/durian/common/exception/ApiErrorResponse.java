@@ -1,4 +1,4 @@
-package kr.pincoin.durian.home.exception;
+package kr.pincoin.durian.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

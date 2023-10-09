@@ -1,7 +1,7 @@
 package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
-import kr.pincoin.durian.home.domain.BaseDateTime;
+import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

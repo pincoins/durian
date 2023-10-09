@@ -1,4 +1,4 @@
-package kr.pincoin.durian.home.exception;
+package kr.pincoin.durian.common.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.NonNull;
@@ -48,7 +48,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         //  spring.web.resources.add-mappings=false
         //  spring.mvc.throw-exception-if-no-handler-found=true
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.NOT_FOUND,
-                                                         "resource not found",
+                                                         "Resource not found",
                                                          new ArrayList<>());
 
         return handleExceptionInternal(ex, response, headers, status, request);
@@ -72,7 +72,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(ex.getLocalizedMessage());
 
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
-                                                         "invalid parameters",
+                                                         "Invalid parameters",
                                                          errors);
 
         return handleExceptionInternal(ex, response, headers, status, request);

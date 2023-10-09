@@ -1,4 +1,4 @@
-package kr.pincoin.durian.config;
+package kr.pincoin.durian.common.config;
 
 
 import kr.pincoin.durian.auth.jwt.JwtAccessDeniedHandler;

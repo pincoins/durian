@@ -1,4 +1,4 @@
-package kr.pincoin.durian.home.domain;
+package kr.pincoin.durian.common.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

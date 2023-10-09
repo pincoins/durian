@@ -1,4 +1,4 @@
-package kr.pincoin.durian.home.exception;
+package kr.pincoin.durian.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
