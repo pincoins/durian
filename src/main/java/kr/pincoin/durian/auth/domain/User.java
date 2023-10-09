@@ -1,6 +1,7 @@
 package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.home.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+public class User extends BaseDateTime implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,24 +34,20 @@ public class User implements UserDetails {
     private String name;
 
     @Column(name = "is_active")
-    private Boolean active;
+    private boolean active;
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
-    public User(String username, String password) {
+    public User(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
+        this.name = name;
+        this.email = email;
 
         this.active = false;
-    }
-
-    public User(String username, String password, String name) {
-        this(username, password);
-
-        this.name = name;
     }
 
     public User activate() {
@@ -63,6 +60,16 @@ public class User implements UserDetails {
         return this;
     }
 
+    public void grant(Role role) {
+        if (role != null) {
+            this.role = role;
+        }
+    }
+
+    public void revoke() {
+        this.role = null;
+    }
+
     // UserDetails method implementations
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -72,33 +79,25 @@ public class User implements UserDetails {
         return List.of();
     }
 
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
+    // getUsername(), getPassword() methods are overridden by lombok.
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return isActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return isActive();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return isActive();
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return isActive();
     }
 }
