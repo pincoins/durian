@@ -1,13 +1,11 @@
 package kr.pincoin.durian.auth.service;
 
-import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
 import kr.pincoin.durian.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +29,7 @@ public class UserService {
 
     @Transactional
     public UserResponse
-    createUser(UserCreateRequest request) throws DataIntegrityViolationException,
-                                                 ConstraintViolationException {
+    createUser(UserCreateRequest request) {
         User user = userRepository.save(new User(request.getUsername(),
                                                  passwordEncoder.encode(request.getPassword()),
                                                  request.getName(),
