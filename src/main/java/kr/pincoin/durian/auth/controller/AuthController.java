@@ -1,10 +1,7 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
-import kr.pincoin.durian.auth.dto.AccessTokenResponse;
-import kr.pincoin.durian.auth.dto.PasswordGrantRequest;
-import kr.pincoin.durian.auth.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.dto.UserResponse;
+import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.service.UserService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -47,4 +44,17 @@ public class AuthController {
                                                     List.of("Username, email or password is not correct.")));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<AccessTokenResponse>
+    refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        return userService.refresh(request)
+                .map(response -> {
+                    HttpHeaders responseHeaders = new HttpHeaders();
+                    responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+                    return ResponseEntity.ok().headers(responseHeaders).body(response);
+                })
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
+                                                    "Invalid refresh token",
+                                                    List.of("Your refresh token is invalid or expired.")));
+    }
 }

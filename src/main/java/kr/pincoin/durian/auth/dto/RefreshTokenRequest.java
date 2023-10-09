@@ -23,6 +23,7 @@ public class RefreshTokenRequest {
     @NotBlank
     private String refreshToken;
 
+    @JsonProperty("scope")
     private String scope;
 
     @JsonProperty("clientId")
