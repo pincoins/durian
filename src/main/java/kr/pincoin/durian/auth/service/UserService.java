@@ -9,6 +9,7 @@ import kr.pincoin.durian.auth.repository.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,6 +81,12 @@ public class UserService {
                                                     List.of("User does not exist.")));
 
         return Optional.of(getAccessTokenResponse(user));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public List<User> listUsers() {
+        return userRepository.findAll();
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
