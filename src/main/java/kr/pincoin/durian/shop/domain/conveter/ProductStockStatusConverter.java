@@ -6,9 +6,9 @@ import jakarta.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter
-public class StockStatusConverter implements AttributeConverter<StockStatus, Integer> {
+public class ProductStockStatusConverter implements AttributeConverter<ProductStockStatus, Integer> {
     @Override
-    public Integer convertToDatabaseColumn(StockStatus status) {
+    public Integer convertToDatabaseColumn(ProductStockStatus status) {
         if (status == null) {
             return null;
         }
@@ -17,12 +17,12 @@ public class StockStatusConverter implements AttributeConverter<StockStatus, Int
     }
 
     @Override
-    public StockStatus convertToEntityAttribute(Integer code) {
+    public ProductStockStatus convertToEntityAttribute(Integer code) {
         if (code == null) {
             return null;
         }
 
-        return Stream.of(StockStatus.values())
+        return Stream.of(ProductStockStatus.values())
                 .filter(c -> c.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

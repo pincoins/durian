@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatusConverter;
-import kr.pincoin.durian.shop.domain.conveter.StockStatus;
-import kr.pincoin.durian.shop.domain.conveter.StockStatusConverter;
+import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
+import kr.pincoin.durian.shop.domain.conveter.ProductStockStatusConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,8 +62,8 @@ public class Product extends BaseDateTime {
 
     @Column(name = "stock")
     @NotNull
-    @Convert(converter = StockStatusConverter.class)
-    private StockStatus stock;
+    @Convert(converter = ProductStockStatusConverter.class)
+    private ProductStockStatus stock;
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
