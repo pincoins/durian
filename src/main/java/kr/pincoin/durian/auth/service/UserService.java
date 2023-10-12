@@ -4,7 +4,7 @@ import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
-import kr.pincoin.durian.auth.repository.RefreshTokenRepository;
+import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.auth.repository.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
