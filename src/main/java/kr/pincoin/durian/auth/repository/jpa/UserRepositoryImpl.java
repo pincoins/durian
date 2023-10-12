@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.repository;
+package kr.pincoin.durian.auth.repository.jpa;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;

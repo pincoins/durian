@@ -1,8 +1,6 @@
 package kr.pincoin.durian.common.config;
 
-import kr.pincoin.durian.shop.domain.conveter.ProductStatusRequestConverter;
-import kr.pincoin.durian.shop.domain.conveter.ProductStockStatusRequestConverter;
-import kr.pincoin.durian.shop.domain.conveter.VoucherStatusRequestConverter;
+import kr.pincoin.durian.shop.domain.conveter.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,5 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new ProductStatusRequestConverter());
         registry.addConverter(new ProductStockStatusRequestConverter());
         registry.addConverter(new VoucherStatusRequestConverter());
+        registry.addConverter(new PaymentMethodRequestConverter());
+        registry.addConverter(new OrderStatusRequestConverter());
+        registry.addConverter(new PaymentAccountRequestConverter());
     }
 }

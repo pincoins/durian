@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.repository;
+package kr.pincoin.durian.auth.repository.redis;
 
 import kr.pincoin.durian.auth.domain.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
