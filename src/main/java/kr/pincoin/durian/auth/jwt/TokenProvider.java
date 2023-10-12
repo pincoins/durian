@@ -104,7 +104,7 @@ public class TokenProvider {
                 .and()
                 .claims(claims)
                 .expiration(Date.from(LocalDateTime.now()
-                                              .plus(Duration.of(60 * 60, ChronoUnit.SECONDS))
+                                              .plus(Duration.of(60 * 60, ChronoUnit.SECONDS)) // 60 minutes
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .subject(String.valueOf(sub)) // sub
                 .signWith(key)

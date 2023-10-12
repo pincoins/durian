@@ -133,6 +133,7 @@ public class SecurityConfig {
                                            .requestMatchers("/orders/**").permitAll()
                                            .requestMatchers("/aligo/**").permitAll()
                                            .requestMatchers("/line-notify/**").permitAll()
+                                           .requestMatchers("/mailgun/**").permitAll()
                                            // anyRequest().authenticated() - rememberMe login enabled (form login)
                                            .anyRequest().fullyAuthenticated() //rememberMe disabled
                                   );
