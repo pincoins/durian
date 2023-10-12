@@ -4,8 +4,8 @@ import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
-import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
+import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -80,13 +80,22 @@ public class UserService {
                                                     "User not found",
                                                     List.of("User does not exist.")));
 
+        refreshTokenRepository.delete(refreshToken); // Prevent from reusing refresh token
+
         return Optional.of(getAccessTokenResponse(user));
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    public List<User> listUsers(Boolean active) {
+        return userRepository.findUsers(active);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
+    public Optional<User> getUser(Long userId, Boolean active) {
+        return userRepository.findUser(userId, active);
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
