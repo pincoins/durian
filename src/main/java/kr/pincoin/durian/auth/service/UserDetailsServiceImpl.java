@@ -2,7 +2,7 @@ package kr.pincoin.durian.auth.service;
 
 
 import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.repository.UserRepository;
+import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

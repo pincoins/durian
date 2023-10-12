@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.repository;
+package kr.pincoin.durian.auth.repository.jpa;
 
 import kr.pincoin.durian.auth.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
