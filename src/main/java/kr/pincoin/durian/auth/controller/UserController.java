@@ -2,7 +2,9 @@ package kr.pincoin.durian.auth.controller;
 
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.UserService;
+import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +31,16 @@ public class UserController {
                               .toList());
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse>
+    userDetail(@PathVariable Long userId,
+               @RequestParam(name = "active", required = false) Boolean active) {
+        return userService.getUser(userId, active)
+                .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("User does not exist.")));
+    }
 
-    // user detail
-
-
-    // user
+    // changePassword
 }

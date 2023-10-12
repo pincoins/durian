@@ -80,6 +80,8 @@ public class UserService {
                                                     "User not found",
                                                     List.of("User does not exist.")));
 
+        refreshTokenRepository.delete(refreshToken); // Prevent from reusing refresh token
+
         return Optional.of(getAccessTokenResponse(user));
     }
 
@@ -87,6 +89,13 @@ public class UserService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<User> listUsers(Boolean active) {
         return userRepository.findUsers(active);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
+    public Optional<User> getUser(Long userId, Boolean active) {
+        return userRepository.findUser(userId, active);
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
