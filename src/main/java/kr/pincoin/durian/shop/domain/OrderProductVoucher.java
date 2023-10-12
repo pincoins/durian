@@ -14,4 +14,22 @@ public class OrderProductVoucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "revoked")
+    private boolean revoked;
+
+    @Column(name = "remarks")
+    private String remarks;
+
+    @ManyToOne(optional = false,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_product_id")
+    private OrderProduct orderProduct;
+
+    @ManyToOne(optional = false,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_id")
+    private Voucher voucher;
 }

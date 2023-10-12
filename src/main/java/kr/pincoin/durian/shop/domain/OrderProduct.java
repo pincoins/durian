@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_product")
 @Getter
@@ -14,5 +16,29 @@ public class OrderProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-}
+    @Column(name = "is_removed")
+    private boolean removed;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "subtitle")
+    private String subtitle;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "list_price")
+    private BigDecimal listPrice;
+
+    @Column(name = "selling_price")
+    private BigDecimal sellingPrice;
+
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    @ManyToOne(optional = false,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+}
