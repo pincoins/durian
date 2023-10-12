@@ -1,5 +1,6 @@
 package kr.pincoin.durian.auth.repository.jpa;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -7,6 +8,7 @@ import kr.pincoin.durian.auth.domain.QRole;
 import kr.pincoin.durian.auth.domain.QUser;
 import kr.pincoin.durian.auth.domain.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepositoryQuery {
@@ -46,6 +48,21 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                        activeEq(active));
 
         return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public List<User> findUsers(Boolean active) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(activeEq(active));
+
+        return contentQuery.fetch();
     }
 
     BooleanExpression usernameEq(String username) {

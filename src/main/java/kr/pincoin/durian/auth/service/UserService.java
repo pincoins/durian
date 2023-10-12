@@ -4,8 +4,8 @@ import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
-import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
+import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -85,8 +85,8 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    public List<User> listUsers(Boolean active) {
+        return userRepository.findUsers(active);
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
