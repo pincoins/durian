@@ -1,7 +1,6 @@
 package kr.pincoin.durian.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -18,8 +17,4 @@ public class UserResetPasswordRequest {
     @Size(min = 8, max = 32)
     @Pattern(regexp = PASSWORD_PATTERN)
     private String newPassword;
-
-    public UserResetPasswordRequest(@NotNull String newPassword) {
-        this.newPassword = newPassword;
-    }
 }

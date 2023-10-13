@@ -31,8 +31,4 @@ public class RefreshTokenRequest {
 
     @JsonProperty("clientSecret")
     private String clientSecret;
-
-    public RefreshTokenRequest(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

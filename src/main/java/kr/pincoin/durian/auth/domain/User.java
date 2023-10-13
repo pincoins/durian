@@ -64,14 +64,16 @@ public class User extends BaseDateTime implements UserDetails {
         return this;
     }
 
-    public void grant(Role role) {
+    public User grant(Role role) {
         if (role != null) {
             this.role = role;
         }
+        return this;
     }
 
-    public void revoke() {
+    public User revoke() {
         this.role = null;
+        return this;
     }
 
     // UserDetails method implementations

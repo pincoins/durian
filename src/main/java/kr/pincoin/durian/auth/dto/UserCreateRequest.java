@@ -41,14 +41,4 @@ public class UserCreateRequest {
     @JsonProperty("email")
     @Email
     private String email;
-
-    public UserCreateRequest(String username,
-                             String name,
-                             String password,
-                             String email) {
-        this.username = username;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
 }

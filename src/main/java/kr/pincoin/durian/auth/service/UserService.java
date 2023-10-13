@@ -4,6 +4,7 @@ import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
+import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.common.exception.ApiException;
@@ -24,6 +25,8 @@ import static kr.pincoin.durian.auth.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
 public class UserService {
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final TokenProvider tokenProvider;
@@ -31,10 +34,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
                        RefreshTokenRepository refreshTokenRepository,
                        TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
@@ -43,11 +48,17 @@ public class UserService {
     @Transactional
     public UserResponse
     createUser(UserCreateRequest request) {
-        User user = userRepository.save(new User(request.getUsername(),
-                                                 passwordEncoder.encode(request.getPassword()),
-                                                 request.getName(),
-                                                 request.getEmail()).activate());
-        return new UserResponse(user);
+        return roleRepository.findRole("ROLE_USER")
+                .map(role -> new UserResponse(userRepository
+                                                      .save(new User(request.getUsername(),
+                                                                     passwordEncoder.encode(request.getPassword()),
+                                                                     request.getName(),
+                                                                     request.getEmail())
+                                                                    .activate()
+                                                                    .grant(role))))
+                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                                                    "Role not found",
+                                                    List.of("Role has to exists in order to create user.")));
     }
 
     @Transactional
