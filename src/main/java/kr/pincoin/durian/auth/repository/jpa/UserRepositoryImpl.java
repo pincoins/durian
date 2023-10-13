@@ -1,6 +1,5 @@
 package kr.pincoin.durian.auth.repository.jpa;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +18,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Optional<User> findUser(String email, Boolean active) {
+    public Optional<User> findUser(String email, String roleCode, Boolean active) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -29,13 +28,14 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(emailEq(email),
-                       activeEq(active));
+                       activeEq(active),
+                       roleCodeEq(roleCode));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
-    public Optional<User> findUser(Long id, Boolean active) {
+    public Optional<User> findUser(Long id, String roleCode, Boolean active) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -45,7 +45,8 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(idEq(id),
-                       activeEq(active));
+                       activeEq(active),
+                       roleCodeEq(roleCode));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
@@ -87,5 +88,11 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         QUser user = QUser.user;
 
         return active != null ? user.active.eq(active) : user.active.eq(true);
+    }
+
+    BooleanExpression roleCodeEq(String roleCode) {
+        QRole role = QRole.role;
+
+        return roleCode != null ? role.code.eq(roleCode) : null;
     }
 }

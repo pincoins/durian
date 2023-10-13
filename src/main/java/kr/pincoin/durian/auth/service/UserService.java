@@ -53,7 +53,7 @@ public class UserService {
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
-        User user = userRepository.findUser(request.getEmail(), true)
+        User user = userRepository.findUser(request.getEmail(), null, true)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("Your email or password is not correct.")));
@@ -75,7 +75,7 @@ public class UserService {
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        User user = userRepository.findUser(refreshToken.getUserId(), true)
+        User user = userRepository.findUser(refreshToken.getUserId(), null, true)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("User does not exist.")));
@@ -95,17 +95,16 @@ public class UserService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<User> getUser(Long userId, Boolean active) {
-        return userRepository.findUser(userId, active);
+        return userRepository.findUser(userId, null, active);
     }
 
     @Transactional
-    @PreAuthorize("hasRole('SYSADMIN')" +
-            " or hasAnyRole('STAFF', 'USER') and @identity.isOwner(#userId)")
+    @PreAuthorize("isAuthenticated() and @identity.isOwner(#userId)")
     public Optional<User>
     changeUserPassword(Long userId,
                        UserChangePasswordRequest request) {
         User user = userRepository
-                .findUser(userId, true)
+                .findUser(userId, null, true)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User not found to change password.")));
@@ -121,6 +120,21 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<User>
+    resetUserPassword(Long userId,
+                      UserResetPasswordRequest request) {
+        User user = userRepository
+                .findUser(userId, "ROLE_USER", true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("User does not exist to reset password.")));
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+
+        return Optional.of(userRepository.save(user));
+    }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
         // 1. Access token (not saved)

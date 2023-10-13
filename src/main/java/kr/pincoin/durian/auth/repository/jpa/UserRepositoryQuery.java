@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryQuery {
-    Optional<User> findUser(String email, Boolean active);
+    Optional<User> findUser(String email, String roleCode, Boolean active);
 
-    Optional<User> findUser(Long id, Boolean active);
+    Optional<User> findUser(Long id, String roleCode, Boolean active);
 
     List<User> findUsers(Boolean active);
 }
