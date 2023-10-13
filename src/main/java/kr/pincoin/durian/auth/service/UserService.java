@@ -98,6 +98,30 @@ public class UserService {
         return userRepository.findUser(userId, active);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN')" +
+            " or hasAnyRole('STAFF', 'USER') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeUserPassword(Long userId,
+                       UserChangePasswordRequest request) {
+        User user = userRepository
+                .findUser(userId, true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("User not found to change password.")));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new ApiException(HttpStatus.FORBIDDEN,
+                                   "Password mismatch",
+                                   List.of("Your old password is not correct."));
+        }
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+
+        return Optional.of(userRepository.save(user));
+    }
+
+
     private AccessTokenResponse getAccessTokenResponse(User user) {
         // 1. Access token (not saved)
         String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
