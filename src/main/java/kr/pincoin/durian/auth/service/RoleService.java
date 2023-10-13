@@ -43,6 +43,7 @@ public class RoleService {
     deleteRole(Long roleId) {
         return roleRepository.findById(roleId)
                 .map(role -> {
+                    roleRepository.revokeUsers(role.getId());
                     roleRepository.delete(role);
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
