@@ -136,7 +136,8 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
-    private AccessTokenResponse getAccessTokenResponse(User user) {
+    private AccessTokenResponse
+    getAccessTokenResponse(User user) {
         // 1. Access token (not saved)
         String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
 
