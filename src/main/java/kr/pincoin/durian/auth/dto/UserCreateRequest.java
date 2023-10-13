@@ -1,10 +1,7 @@
 package kr.pincoin.durian.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +26,6 @@ public class UserCreateRequest {
     public static final String PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
 
     @JsonProperty("username")
-    @NotNull
-    @NotBlank
     @Pattern(regexp = USERNAME_PATTERN)
     private String username;
 
@@ -39,15 +34,12 @@ public class UserCreateRequest {
     private String name;
 
     @JsonProperty("password")
-    @NotNull
-    @NotBlank
-    @Size(min = 4, max = 32)
+    @Size(min = 8, max = 32)
     @Pattern(regexp = PASSWORD_PATTERN)
     private String password;
 
     @JsonProperty("email")
-    @NotNull
-    @NotBlank
+    @Email
     private String email;
 
     public UserCreateRequest(String username,

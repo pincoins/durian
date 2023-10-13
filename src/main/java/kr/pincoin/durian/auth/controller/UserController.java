@@ -1,5 +1,7 @@
 package kr.pincoin.durian.auth.controller;
 
+import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.dto.UserChangePasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.UserService;
 import kr.pincoin.durian.common.exception.ApiException;
@@ -39,8 +41,18 @@ public class UserController {
                 .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
-                                                    List.of("User does not exist.")));
+                                                    List.of("User does not exist to retrieve.")));
     }
 
-    // changePassword
+    @PutMapping("/{userId}/change-password")
+    public ResponseEntity<UserResponse>
+    userPasswordChange(@PathVariable Long userId,
+                       @Valid @RequestBody UserChangePasswordRequest request) {
+        return userService.changeUserPassword(userId, request)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to change user password.")));
+    }
 }

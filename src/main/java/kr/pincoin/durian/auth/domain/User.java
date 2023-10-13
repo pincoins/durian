@@ -50,6 +50,10 @@ public class User extends BaseDateTime implements UserDetails {
         this.active = false;
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
     public User activate() {
         this.active = true;
         return this;
