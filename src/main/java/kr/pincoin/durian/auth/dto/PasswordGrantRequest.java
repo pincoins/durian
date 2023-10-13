@@ -36,9 +36,4 @@ public class PasswordGrantRequest {
 
     @JsonProperty("clientSecret")
     private String clientSecret;
-
-    public PasswordGrantRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 }

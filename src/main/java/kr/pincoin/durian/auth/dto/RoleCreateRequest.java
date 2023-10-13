@@ -20,10 +20,4 @@ public class RoleCreateRequest {
     @JsonProperty("name")
     @Pattern(regexp = ROLE_NAME_PATTERN)
     private String name;
-
-    public RoleCreateRequest(String code,
-                             String name) {
-        this.code = code;
-        this.name = name;
-    }
 }
