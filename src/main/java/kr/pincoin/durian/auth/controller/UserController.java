@@ -2,6 +2,7 @@ package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.dto.UserChangePasswordRequest;
+import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.UserService;
 import kr.pincoin.durian.common.exception.ApiException;
@@ -54,5 +55,17 @@ public class UserController {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("Failed to change user password.")));
+    }
+
+    @PutMapping("/{userId}/reset-password")
+    public ResponseEntity<UserResponse>
+    userPasswordReset(@PathVariable Long userId,
+                      @Valid @RequestBody UserResetPasswordRequest request) {
+        return userService.resetUserPassword(userId, request)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to reset user password.")));
     }
 }
