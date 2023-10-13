@@ -1,13 +1,14 @@
 package kr.pincoin.durian.auth.controller;
 
+import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.dto.RoleCreateRequest;
 import kr.pincoin.durian.auth.dto.RoleResponse;
 import kr.pincoin.durian.auth.service.RoleService;
+import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +34,24 @@ public class RoleController {
                                       role.getCode(),
                                       role.getName()))
                               .toList());
+    }
+
+    @PostMapping("")
+    public ResponseEntity<RoleResponse>
+    roleCreate(@Valid @RequestBody RoleCreateRequest request) {
+        return roleService.createRole(request)
+                .map(role -> ResponseEntity.ok().body(new RoleResponse(role)))
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
+                                                    "Role creation failure",
+                                                    List.of("Failed to create role")));
+    }
+
+    @DeleteMapping("{roleId}")
+    public ResponseEntity<Object>
+    roleDelete(@PathVariable Long roleId) {
+        if (roleService.deleteRole(roleId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
