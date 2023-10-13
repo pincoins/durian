@@ -7,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "role")
 @Getter
@@ -19,12 +22,12 @@ public class Role {
     @Column(name = "code")
     @NotNull
     @NotBlank
-    String code;
+    private String code;
 
     @Column(name = "name")
     @NotNull
     @NotBlank
-    String name;
+    private String name;
 
     public Role(String code,
                 String name) {
