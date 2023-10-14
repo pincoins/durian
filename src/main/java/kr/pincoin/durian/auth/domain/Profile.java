@@ -94,8 +94,51 @@ public class Profile extends BaseDateTime {
     @Column(name = "telecom")
     private String telecom;
 
-    @ManyToOne(optional = false,
+    @OneToOne(optional = false,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
+
+    public Profile(User user,
+                   boolean phoneVerified,
+                   PhoneVerifiedStatus phoneVerifiedStatus,
+                   boolean documentVerified,
+                   boolean allowOrder,
+                   boolean notPurchasedMonths,
+                   Integer totalOrderCount,
+                   BigDecimal maxPrice,
+                   BigDecimal totalListPrice,
+                   BigDecimal totalSellingPrice,
+                   BigDecimal averagePrice,
+                   BigDecimal mileage) {
+        this.user = user;
+
+        this.phoneVerified = phoneVerified;
+        this.phoneVerifiedStatus = phoneVerifiedStatus;
+        this.documentVerified = documentVerified;
+        this.allowOrder = allowOrder;
+        this.notPurchasedMonths = notPurchasedMonths;
+        this.totalOrderCount = totalOrderCount;
+        this.maxPrice = maxPrice;
+        this.totalListPrice = totalListPrice;
+        this.totalSellingPrice = totalSellingPrice;
+        this.averagePrice = averagePrice;
+        this.mileage = mileage;
+    }
+
+    public Profile(User user) {
+        this(user,
+             false,
+             PhoneVerifiedStatus.UNVERIFIED,
+             false,
+             false,
+             false,
+             0,
+             BigDecimal.ZERO,
+             BigDecimal.ZERO,
+             BigDecimal.ZERO,
+             BigDecimal.ZERO,
+             BigDecimal.ZERO);
+    }
 }
