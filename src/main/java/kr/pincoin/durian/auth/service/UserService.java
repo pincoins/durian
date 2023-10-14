@@ -1,9 +1,11 @@
 package kr.pincoin.durian.auth.service;
 
+import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
+import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
@@ -27,6 +29,8 @@ public class UserService {
 
     private final RoleRepository roleRepository;
 
+    private final ProfileRepository profileRepository;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final TokenProvider tokenProvider;
@@ -35,11 +39,13 @@ public class UserService {
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
+                       ProfileRepository profileRepository,
                        RefreshTokenRepository refreshTokenRepository,
                        TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.profileRepository = profileRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
@@ -49,13 +55,20 @@ public class UserService {
     public UserResponse
     createUser(UserCreateRequest request) {
         return roleRepository.findRole("ROLE_USER")
-                .map(role -> new UserResponse(userRepository
-                                                      .save(new User(request.getUsername(),
-                                                                     passwordEncoder.encode(request.getPassword()),
-                                                                     request.getName(),
-                                                                     request.getEmail())
-                                                                    .activate()
-                                                                    .grant(role))))
+                .map(role -> {
+                    User user = userRepository
+                            .save(new User(request.getUsername(),
+                                           passwordEncoder.encode(
+                                                   request.getPassword()),
+                                           request.getName(),
+                                           request.getEmail())
+                                          .activate()
+                                          .grant(role));
+
+                    profileRepository.save(new Profile(user));
+
+                    return new UserResponse(user);
+                })
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Role not found",
                                                     List.of("Role has to exists in order to create user.")));
