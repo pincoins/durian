@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -61,6 +62,19 @@ public class User extends BaseDateTime implements UserDetails {
 
     public User inactivate() {
         this.active = false;
+        return this;
+    }
+
+    public User unregister() {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+
+        this.username = uuid;
+        this.password = uuid;
+        this.name = uuid;
+        this.email = uuid;
+
+        this.active = false;
+
         return this;
     }
 

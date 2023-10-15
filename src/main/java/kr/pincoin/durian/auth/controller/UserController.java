@@ -45,6 +45,37 @@ public class UserController {
                                                     List.of("User does not exist to retrieve.")));
     }
 
+    @PutMapping("{userId}/inactivate")
+    public ResponseEntity<UserResponse>
+    userInactivate(@PathVariable Long userId) {
+        return userService.inactivateUser(userId)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to inactivate user.")));
+    }
+
+    @PutMapping("{userId}/unregister")
+    public ResponseEntity<UserResponse>
+    userUnregister(@PathVariable Long userId) {
+        return userService.unregisterUser(userId)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to inactivate user.")));
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Object>
+    userDelete(@PathVariable Long userId) {
+        if (userService.deleteUser(userId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
     @PutMapping("/{userId}/change-password")
     public ResponseEntity<UserResponse>
     userPasswordChange(@PathVariable Long userId,

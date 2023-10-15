@@ -111,15 +111,64 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public List<User> listUsers(Boolean active) {
+    public List<User>
+    listUsers(Boolean active) {
         return userRepository.findUsers(active);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<User> getUser(Long userId, Boolean active) {
+    public Optional<User>
+    getUser(Long userId, Boolean active) {
         return userRepository.findUser(userId, null, active);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN')" +
+            " or hasAnyRole('STAFF', 'USER') and @identity.isOwner(#userId)")
+    public boolean
+    deleteUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    profileRepository.deleteByUserId(user.getId());
+                    userRepository.delete(user);
+                    return true;
+                }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                      "Role not found",
+                                                      List.of("Role does not exist to delete.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN')" +
+            " or hasAnyRole('STAFF', 'USER') and @identity.isOwner(#userId)")
+    public Optional<User>
+    inactivateUser(Long userId) {
+        User user = userRepository
+                .findUser(userId, null, true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("User does not exist to inactivate.")));
+
+        user.inactivate();
+
+        return Optional.of(userRepository.save(user));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN')" +
+            " or hasAnyRole('STAFF', 'USER') and @identity.isOwner(#userId)")
+    public Optional<User>
+    unregisterUser(Long userId) {
+        User user = userRepository
+                .findUser(userId, null, true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("User does not exist to unregister.")));
+
+        user.unregister();
+
+        return Optional.of(userRepository.save(user));
     }
 
     @Transactional
