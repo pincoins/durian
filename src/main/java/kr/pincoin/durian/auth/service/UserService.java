@@ -151,9 +151,7 @@ public class UserService {
                                                     "User not found",
                                                     List.of("User does not exist to inactivate.")));
 
-        user.inactivate();
-
-        return Optional.of(userRepository.save(user));
+        return Optional.of(userRepository.save(user.inactivate()));
     }
 
     @Transactional
@@ -167,9 +165,7 @@ public class UserService {
                                                     "User not found",
                                                     List.of("User does not exist to unregister.")));
 
-        user.unregister();
-
-        return Optional.of(userRepository.save(user));
+        return Optional.of(userRepository.save(user.unregister()));
     }
 
     @Transactional
