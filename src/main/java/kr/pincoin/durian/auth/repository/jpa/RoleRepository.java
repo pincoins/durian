@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface RoleRepository extends JpaRepository<Role, Long>, RoleRepositoryQuery {
     @Transactional
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "UPDATE User SET role = null, active = false WHERE role.id = :roleId")
+    @Query(value = "UPDATE User" +
+            " SET role = null, status = kr.pincoin.durian.auth.domain.converter.UserStatus.INACTIVE" +
+            " WHERE role.id = :roleId")
     void revokeUsers(@Param("roleId") Long roleId);
 }

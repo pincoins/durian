@@ -3,6 +3,7 @@ package kr.pincoin.durian.auth.service;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.RefreshToken;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.jwt.TokenProvider;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
@@ -61,8 +62,8 @@ public class UserService {
                                            passwordEncoder.encode(
                                                    request.getPassword()),
                                            request.getName(),
-                                           request.getEmail())
-                                          .activate()
+                                           request.getEmail(),
+                                           UserStatus.PENDING)
                                           .grant(role));
 
                     profileRepository.save(new Profile(user));
@@ -77,7 +78,7 @@ public class UserService {
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
-        User user = userRepository.findUser(request.getEmail(), null, true)
+        User user = userRepository.findUser(request.getEmail(), null, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("Your email or password is not correct.")));
@@ -99,7 +100,7 @@ public class UserService {
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        User user = userRepository.findUser(refreshToken.getUserId(), null, true)
+        User user = userRepository.findUser(refreshToken.getUserId(), null, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("User does not exist.")));
@@ -112,16 +113,16 @@ public class UserService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<User>
-    listUsers(Boolean active) {
-        return userRepository.findUsers(active);
+    listUsers(UserStatus status) {
+        return userRepository.findUsers(status);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<User>
-    getUser(Long userId, Boolean active) {
-        return userRepository.findUser(userId, null, active);
+    getUser(Long userId, UserStatus status) {
+        return userRepository.findUser(userId, null, status);
     }
 
     @Transactional
@@ -145,7 +146,7 @@ public class UserService {
     public Optional<User>
     inactivateUser(Long userId) {
         User user = userRepository
-                .findUser(userId, null, true)
+                .findUser(userId, null, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User does not exist to inactivate.")));
@@ -161,7 +162,7 @@ public class UserService {
     public Optional<User>
     unregisterUser(Long userId) {
         User user = userRepository
-                .findUser(userId, null, true)
+                .findUser(userId, null, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User does not exist to unregister.")));
@@ -177,7 +178,7 @@ public class UserService {
     changeUserPassword(Long userId,
                        UserChangePasswordRequest request) {
         User user = userRepository
-                .findUser(userId, null, true)
+                .findUser(userId, null, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User not found to change password.")));
@@ -199,7 +200,7 @@ public class UserService {
     resetUserPassword(Long userId,
                       UserResetPasswordRequest request) {
         User user = userRepository
-                .findUser(userId, "ROLE_USER", true)
+                .findUser(userId, "ROLE_USER", UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User does not exist to reset password.")));
