@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.pincoin.durian.auth.domain.Role;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,8 @@ public class UserResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
-    @JsonProperty("isActive")
-    private boolean active;
+    @JsonProperty("status")
+    private UserStatus status;
 
     @JsonProperty("created")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -44,7 +45,7 @@ public class UserResponse {
                         String username,
                         String name,
                         Role role,
-                        boolean active,
+                        UserStatus status,
                         LocalDateTime created) {
         this.id = id;
         this.username = username;
@@ -56,7 +57,7 @@ public class UserResponse {
             this.roleName = role.getName();
         }
 
-        this.active = active;
+        this.status = status;
         this.created = created;
     }
 
@@ -65,7 +66,7 @@ public class UserResponse {
              user.getUsername(),
              user.getName(),
              user.getRole(),
-             user.isActive(),
+             user.getStatus(),
              user.getCreated());
     }
 }

@@ -2,6 +2,7 @@ package kr.pincoin.durian.auth.service;
 
 
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public User
     loadUserByUsername(String id) throws UsernameNotFoundException {
         return userRepository
-                .findUser(Long.valueOf(id), null, true)
+                .findUser(Long.valueOf(id), null, UserStatus.NORMAL)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

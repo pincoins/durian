@@ -1,6 +1,8 @@
 package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.domain.converter.UserStatusConverter;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -33,34 +36,49 @@ public class User extends BaseDateTime implements UserDetails {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "is_active")
-    private boolean active;
+    @Column(name = "status")
+    @Convert(converter = UserStatusConverter.class)
+    private UserStatus status;
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
-    public User(String username, String password, String name, String email) {
+    public User(String username, String password, String name, String email, UserStatus status) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
-
-        this.active = false;
+        this.status = status;
     }
 
     public void changePassword(String password) {
         this.password = password;
     }
 
+    public User approve() {
+        this.status = UserStatus.NORMAL;
+        return this;
+    }
+
     public User activate() {
-        this.active = true;
+        this.status = UserStatus.NORMAL;
         return this;
     }
 
     public User inactivate() {
-        this.active = false;
+        this.status = UserStatus.INACTIVE;
+        return this;
+    }
+
+    public User unregister() {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        this.username = uuid;
+        this.password = "";
+        this.name = uuid;
+        this.email = uuid;
+        this.status = UserStatus.UNREGISTERED;
         return this;
     }
 
@@ -89,21 +107,21 @@ public class User extends BaseDateTime implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive();
+        return getStatus() == UserStatus.NORMAL;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive();
+        return getStatus() == UserStatus.NORMAL;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive();
+        return getStatus() == UserStatus.NORMAL;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive();
+        return getStatus() == UserStatus.NORMAL;
     }
 }

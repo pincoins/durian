@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.pincoin.durian.auth.domain.QRole;
 import kr.pincoin.durian.auth.domain.QUser;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Optional<User> findUser(String email, String roleCode, Boolean active) {
+    public Optional<User> findUser(String email, String roleCode, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -28,14 +29,14 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(emailEq(email),
-                       activeEq(active),
+                       statusEq(status),
                        roleCodeEq(roleCode));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
-    public Optional<User> findUser(Long id, String roleCode, Boolean active) {
+    public Optional<User> findUser(Long id, String roleCode, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -45,14 +46,14 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(idEq(id),
-                       activeEq(active),
+                       statusEq(status),
                        roleCodeEq(roleCode));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
-    public List<User> findUsers(Boolean active) {
+    public List<User> findUsers(UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -61,7 +62,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .leftJoin(user.role, role)
                 .fetchJoin()
-                .where(activeEq(active));
+                .where(statusEq(status));
 
         return contentQuery.fetch();
     }
@@ -84,10 +85,10 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return id != null ? user.id.eq(id) : null;
     }
 
-    BooleanExpression activeEq(Boolean active) {
+    BooleanExpression statusEq(UserStatus status) {
         QUser user = QUser.user;
 
-        return active != null ? user.active.eq(active) : user.active.eq(true);
+        return status != null ? user.status.eq(status) : user.status.eq(UserStatus.NORMAL);
     }
 
     BooleanExpression roleCodeEq(String roleCode) {

@@ -1,6 +1,7 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserChangePasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
@@ -26,9 +27,9 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>
-    userList(@RequestParam(name = "active", required = false) Boolean active) {
+    userList(@RequestParam(name = "status", required = false) UserStatus status) {
         return ResponseEntity.ok()
-                .body(userService.listUsers(active)
+                .body(userService.listUsers(status)
                               .stream()
                               .map(UserResponse::new)
                               .toList());
@@ -37,12 +38,43 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse>
     userDetail(@PathVariable Long userId,
-               @RequestParam(name = "active", required = false) Boolean active) {
-        return userService.getUser(userId, active)
+               @RequestParam(name = "status", required = false) UserStatus status) {
+        return userService.getUser(userId, status)
                 .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User does not exist to retrieve.")));
+    }
+
+    @PutMapping("{userId}/inactivate")
+    public ResponseEntity<UserResponse>
+    userInactivate(@PathVariable Long userId) {
+        return userService.inactivateUser(userId)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to inactivate user.")));
+    }
+
+    @PutMapping("{userId}/unregister")
+    public ResponseEntity<UserResponse>
+    userUnregister(@PathVariable Long userId) {
+        return userService.unregisterUser(userId)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to inactivate user.")));
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Object>
+    userDelete(@PathVariable Long userId) {
+        if (userService.deleteUser(userId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping("/{userId}/change-password")
