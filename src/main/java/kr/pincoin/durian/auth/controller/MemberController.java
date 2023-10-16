@@ -27,7 +27,7 @@ public class MemberController {
 
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>
-    userList(@RequestParam(name = "status", required = false) UserStatus status) {
+    memberList(@RequestParam(name = "status", required = false) UserStatus status) {
         return ResponseEntity.ok()
                 .body(memberService.listMembers(status)
                               .stream()
@@ -37,47 +37,58 @@ public class MemberController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse>
-    userDetail(@PathVariable Long userId,
-               @RequestParam(name = "status", required = false) UserStatus status) {
+    memberDetail(@PathVariable Long userId,
+                 @RequestParam(name = "status", required = false) UserStatus status) {
         return memberService.getMember(userId, status)
                 .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "User not found",
-                                                    List.of("User does not exist to retrieve.")));
+                                                    "Member not found",
+                                                    List.of("Member does not exist to retrieve.")));
     }
 
     @PostMapping("")
     public ResponseEntity<UserResponse>
-    userCreate(@Valid @RequestBody UserCreateRequest request) {
+    memberCreate(@Valid @RequestBody UserCreateRequest request) {
         UserResponse response = memberService.createUser(request);
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("{userId}/inactivate")
     public ResponseEntity<UserResponse>
-    userInactivate(@PathVariable Long userId) {
+    memberInactivate(@PathVariable Long userId) {
         return memberService.inactivateMember(userId)
                 .map(user -> ResponseEntity.ok().body(
                         new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "User not found",
-                                                    List.of("Failed to inactivate user.")));
+                                                    "Member not found",
+                                                    List.of("Failed to inactivate member.")));
+    }
+
+    @PutMapping("{userId}/activate")
+    public ResponseEntity<UserResponse>
+    memberActivate(@PathVariable Long userId) {
+        return memberService.activateMember(userId)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to activate member.")));
     }
 
     @PutMapping("{userId}/unregister")
     public ResponseEntity<UserResponse>
-    userUnregister(@PathVariable Long userId) {
+    memberUnregister(@PathVariable Long userId) {
         return memberService.unregisterMember(userId)
                 .map(user -> ResponseEntity.ok().body(
                         new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "User not found",
-                                                    List.of("Failed to inactivate user.")));
+                                                    "Member not found",
+                                                    List.of("Failed to inactivate member.")));
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object>
-    userDelete(@PathVariable Long userId) {
+    memberDelete(@PathVariable Long userId) {
         if (memberService.deleteMember(userId)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
@@ -86,13 +97,13 @@ public class MemberController {
 
     @PutMapping("/{userId}/reset-password")
     public ResponseEntity<UserResponse>
-    userPasswordReset(@PathVariable Long userId,
-                      @Valid @RequestBody UserResetPasswordRequest request) {
+    memberPasswordReset(@PathVariable Long userId,
+                        @Valid @RequestBody UserResetPasswordRequest request) {
         return memberService.resetMemberPassword(userId, request)
                 .map(user -> ResponseEntity.ok().body(
                         new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "User not found",
-                                                    List.of("Failed to reset user password.")));
+                                                    "Member not found",
+                                                    List.of("Failed to reset member password.")));
     }
 }
