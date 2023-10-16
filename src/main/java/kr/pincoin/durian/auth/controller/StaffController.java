@@ -10,4 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @Slf4j
 public class StaffController {
+    public void StaffList() {
+    }
+
+    public void StaffDetail() {
+    }
+
+    public void StaffCreate() {
+    }
+
+    public void StaffDelete() {
+    }
 }

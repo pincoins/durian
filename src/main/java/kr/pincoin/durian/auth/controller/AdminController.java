@@ -10,4 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @Slf4j
 public class AdminController {
+    public void AdminList() {
+    }
+
+    public void AdminDetail() {
+    }
+
+    public void AdminCreate() {
+    }
+
+    public void AdminDelete() {
+    }
 }
