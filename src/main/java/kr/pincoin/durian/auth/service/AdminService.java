@@ -55,14 +55,12 @@ public class AdminService {
         log.warn("create admin service");
         return roleRepository.findRole("ROLE_SYSADMIN")
                 .map(role -> {
-                    User user = userRepository
-                            .save(new User(request.getUsername(),
-                                           passwordEncoder.encode(
-                                                   request.getPassword()),
-                                           request.getName(),
-                                           request.getEmail(),
-                                           UserStatus.NORMAL)
-                                          .grant(role));
+                    User user = userRepository.save(new User(request.getUsername(),
+                                                             passwordEncoder.encode(request.getPassword()),
+                                                             request.getName(),
+                                                             request.getEmail(),
+                                                             UserStatus.NORMAL)
+                                                            .grant(role));
 
                     return new UserResponse(user);
                 })

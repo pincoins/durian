@@ -39,16 +39,15 @@ public class AdminController {
     adminDetail(@PathVariable Long userId,
                 @RequestParam(name = "status", required = false) UserStatus status) {
         return adminService.getAdmin(userId, status)
-                .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
+                .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Member does not exist to retrieve.")));
+                                                    "Admin not found",
+                                                    List.of("Admin does not exist to retrieve.")));
     }
 
     @PostMapping("")
     public ResponseEntity<UserResponse>
     adminCreate(@Valid @RequestBody UserCreateRequest request) {
-        log.warn("create admin controller");
         UserResponse response = adminService.createAdmin(request);
         return ResponseEntity.ok().body(response);
     }

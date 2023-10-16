@@ -1,0 +1,26 @@
+### Staff List
+GET http://localhost:8080/staffs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Staff Detail
+GET http://localhost:8080/staffs/4
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Staff Create
+POST http://localhost:8080/staffs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "staff@example.com",
+  "username": "staff",
+  "password": "Test12!@",
+  "name": "staff"
+}
+
+### Admin Delete
+DELETE http://localhost:8080/staffs/4
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
