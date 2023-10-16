@@ -113,16 +113,16 @@ public class UserService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<User>
-    listUsers(UserStatus status) {
-        return userRepository.findUsers(status);
+    listUsers(String roleCode, UserStatus status) {
+        return userRepository.findUsers(roleCode, status);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<User>
-    getUser(Long userId, UserStatus status) {
-        return userRepository.findUser(userId, null, status);
+    getUser(Long userId, String roleCode, UserStatus status) {
+        return userRepository.findUser(userId, roleCode, status);
     }
 
     @Transactional

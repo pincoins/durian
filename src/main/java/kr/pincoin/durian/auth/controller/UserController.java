@@ -27,9 +27,10 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>
-    userList(@RequestParam(name = "status", required = false) UserStatus status) {
+    userList(@RequestParam(name = "roleCode", required = false) String roleCode,
+             @RequestParam(name = "status", required = false) UserStatus status) {
         return ResponseEntity.ok()
-                .body(userService.listUsers(status)
+                .body(userService.listUsers(roleCode, status)
                               .stream()
                               .map(UserResponse::new)
                               .toList());
@@ -38,8 +39,9 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse>
     userDetail(@PathVariable Long userId,
+               @RequestParam(name = "roleCode", required = false) String roleCode,
                @RequestParam(name = "status", required = false) UserStatus status) {
-        return userService.getUser(userId, status)
+        return userService.getUser(userId, roleCode, status)
                 .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
