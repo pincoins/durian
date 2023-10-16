@@ -1,0 +1,28 @@
+### Authenticate
+POST http://localhost:8080/auth/authenticate
+Content-Type: application/json
+
+{
+  "grantType": "password",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+> {%
+    client.global.set("accessToken", response.body.accessToken);
+    client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### Refresh
+POST http://localhost:8080/auth/refresh
+Content-Type: application/json
+
+{
+  "grantType": "refresh_token",
+  "refreshToken": "{{refreshToken}}"
+}
+
+> {%
+    client.global.set("accessToken", response.body.accessToken);
+    client.global.set("refreshToken", response.body.refreshToken);
+%}

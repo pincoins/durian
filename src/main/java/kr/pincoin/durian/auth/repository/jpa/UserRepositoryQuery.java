@@ -11,5 +11,5 @@ public interface UserRepositoryQuery {
 
     Optional<User> findUser(Long id, String roleCode, UserStatus status);
 
-    List<User> findUsers(UserStatus status);
+    List<User> findUsers(String roleCode, UserStatus status);
 }

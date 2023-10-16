@@ -2,7 +2,7 @@ package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.dto.*;
-import kr.pincoin.durian.auth.service.UserService;
+import kr.pincoin.durian.auth.service.AuthService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,23 +17,16 @@ import java.util.List;
 @CrossOrigin("*")
 @Slf4j
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<UserResponse>
-    createUser(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = userService.createUser(request);
-        return ResponseEntity.ok().body(response);
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
     authenticate(@Valid @RequestBody PasswordGrantRequest request) {
-        return userService.authenticate(request)
+        return authService.authenticate(request)
                 .map(response -> {
                     HttpHeaders responseHeaders = new HttpHeaders();
                     responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
@@ -47,7 +40,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
     refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        return userService.refresh(request)
+        return authService.refresh(request)
                 .map(response -> {
                     HttpHeaders responseHeaders = new HttpHeaders();
                     responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
@@ -56,5 +49,16 @@ public class AuthController {
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
                                                     "Invalid refresh token",
                                                     List.of("Your refresh token is invalid or expired.")));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<UserResponse>
+    userPasswordChange(@Valid @RequestBody UserChangePasswordRequest request) {
+        return authService.changePassword(request.getUserId(), request)
+                .map(user -> ResponseEntity.ok().body(
+                        new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "User not found",
+                                                    List.of("Failed to change user password.")));
     }
 }

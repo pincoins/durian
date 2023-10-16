@@ -41,3 +41,4 @@ application-*.yaml
 .DS_Store
 logs
 src/main/generated
+http-client.private.env.json

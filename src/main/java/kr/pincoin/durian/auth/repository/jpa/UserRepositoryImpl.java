@@ -29,8 +29,8 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(emailEq(email),
-                       statusEq(status),
-                       roleCodeEq(roleCode));
+                       roleCodeEq(roleCode),
+                       statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
@@ -46,14 +46,14 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(idEq(id),
-                       statusEq(status),
-                       roleCodeEq(roleCode));
+                       roleCodeEq(roleCode),
+                       statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
-    public List<User> findUsers(UserStatus status) {
+    public List<User> findUsers(String roleCode, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -62,7 +62,8 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .leftJoin(user.role, role)
                 .fetchJoin()
-                .where(statusEq(status));
+                .where(roleCodeEq(roleCode),
+                       statusEq(status));
 
         return contentQuery.fetch();
     }
