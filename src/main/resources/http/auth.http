@@ -26,14 +26,3 @@ Content-Type: application/json
     client.global.set("accessToken", response.body.accessToken);
     client.global.set("refreshToken", response.body.refreshToken);
 %}
-
-### Sign up
-POST http://localhost:8080/auth/sign-up
-Content-Type: application/json
-
-{
-  "email": "test@example.com",
-  "username": "test",
-  "password": "Test12!@",
-  "name": "test"
-}
