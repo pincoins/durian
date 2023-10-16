@@ -1,0 +1,25 @@
+### Admin List
+GET http://localhost:8080/admins
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Admin Detail
+GET http://localhost:8080/admins/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Admin Create
+POST http://localhost:8080/admins
+Content-Type: application/json
+
+{
+  "email": "admin1@example.com",
+  "username": "admin1",
+  "password": "Test12!@",
+  "name": "admin1"
+}
+
+### Admin Delete
+DELETE http://localhost:8080/admins/3
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

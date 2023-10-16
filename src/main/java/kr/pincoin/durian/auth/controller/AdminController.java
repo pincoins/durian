@@ -1,24 +1,64 @@
 package kr.pincoin.durian.auth.controller;
 
+import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.dto.UserCreateRequest;
+import kr.pincoin.durian.auth.dto.UserResponse;
+import kr.pincoin.durian.auth.service.AdminService;
+import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admins")
 @CrossOrigin("*")
 @Slf4j
 public class AdminController {
-    public void AdminList() {
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
     }
 
-    public void AdminDetail() {
+    @GetMapping("")
+    public ResponseEntity<List<UserResponse>>
+    adminList(@RequestParam(name = "status", required = false) UserStatus status) {
+        return ResponseEntity.ok()
+                .body(adminService.listAdmins(status)
+                              .stream()
+                              .map(UserResponse::new)
+                              .toList());
     }
 
-    public void AdminCreate() {
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse>
+    adminDetail(@PathVariable Long userId,
+                @RequestParam(name = "status", required = false) UserStatus status) {
+        return adminService.getAdmin(userId, status)
+                .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to retrieve.")));
     }
 
-    public void AdminDelete() {
+    @PostMapping("")
+    public ResponseEntity<UserResponse>
+    adminCreate(@Valid @RequestBody UserCreateRequest request) {
+        log.warn("create admin controller");
+        UserResponse response = adminService.createAdmin(request);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Object>
+    adminDelete(@PathVariable Long userId) {
+        if (adminService.deleteAdmin(userId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
