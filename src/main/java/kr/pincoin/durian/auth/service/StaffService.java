@@ -38,7 +38,7 @@ public class StaffService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<User>
     listStaffs(UserStatus status) {
-        return userRepository.findUsers("ROLE_STAFF", status);
+        return userRepository.findStaffs(status);
     }
 
     @Transactional
@@ -46,7 +46,7 @@ public class StaffService {
             " or hasRole('STAFF') and @identity.isOwner(#userId)")
     public Optional<User>
     getStaff(Long userId, UserStatus status) {
-        return userRepository.findUser(userId, "ROLE_STAFF", status);
+        return userRepository.findStaff(userId, status);
     }
 
     @Transactional
@@ -74,7 +74,7 @@ public class StaffService {
             " or hasRole('STAFF') and @identity.isOwner(#userId)")
     public boolean
     deleteStaff(Long userId) {
-        return userRepository.findUser(userId, "ROLE_STAFF", UserStatus.NORMAL)
+        return userRepository.findStaff(userId, UserStatus.NORMAL)
                 .map(user -> {
                     userRepository.delete(user);
                     return true;

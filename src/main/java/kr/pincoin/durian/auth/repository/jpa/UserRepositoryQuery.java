@@ -9,7 +9,17 @@ import java.util.Optional;
 public interface UserRepositoryQuery {
     Optional<User> findUser(String email, String roleCode, UserStatus status);
 
-    Optional<User> findUser(Long id, String roleCode, UserStatus status);
+    Optional<User> findUser(Long id, UserStatus status);
 
-    List<User> findUsers(String roleCode, UserStatus status);
+    Optional<User> findAdmin(Long id, UserStatus status);
+
+    Optional<User> findStaff(Long id, UserStatus status);
+
+    Optional<User> findMember(Long id, UserStatus status);
+
+    List<User> findAdmins(UserStatus status);
+
+    List<User> findStaffs(UserStatus status);
+
+    List<User> findMembers(UserStatus status);
 }

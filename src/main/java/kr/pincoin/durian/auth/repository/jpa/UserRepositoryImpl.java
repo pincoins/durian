@@ -35,8 +35,9 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
+
     @Override
-    public Optional<User> findUser(Long id, String roleCode, UserStatus status) {
+    public Optional<User> findUser(Long id, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -46,14 +47,13 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(idEq(id),
-                       roleCodeEq(roleCode),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
-    public List<User> findUsers(String roleCode, UserStatus status) {
+    public Optional<User> findAdmin(Long id, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -62,7 +62,90 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .leftJoin(user.role, role)
                 .fetchJoin()
-                .where(roleCodeEq(roleCode),
+                .where(idEq(id),
+                       roleCodeEq("ROLE_SYSADMIN"),
+                       statusEq(status));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public Optional<User> findStaff(Long id, UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(idEq(id),
+                       roleCodeEq("ROLE_STAFF"),
+                       statusEq(status));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public Optional<User> findMember(Long id, UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(idEq(id),
+                       roleCodeEq("ROLE_MEMBER"),
+                       statusEq(status));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public List<User> findAdmins(UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(roleCodeEq("ROLE_SYSADMIN"),
+                       statusEq(status));
+
+        return contentQuery.fetch();
+    }
+
+    @Override
+    public List<User> findStaffs(UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(roleCodeEq("ROLE_STAFF"),
+                       statusEq(status));
+
+        return contentQuery.fetch();
+    }
+
+    @Override
+    public List<User> findMembers(UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<User> contentQuery = queryFactory
+                .select(user)
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .where(roleCodeEq("ROLE_MEMBER"),
                        statusEq(status));
 
         return contentQuery.fetch();

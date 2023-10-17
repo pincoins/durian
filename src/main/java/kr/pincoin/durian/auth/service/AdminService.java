@@ -38,14 +38,14 @@ public class AdminService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<User>
     listAdmins(UserStatus status) {
-        return userRepository.findUsers("ROLE_SYSADMIN", status);
+        return userRepository.findAdmins(status);
     }
 
     @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
     public Optional<User>
     getAdmin(Long userId, UserStatus status) {
-        return userRepository.findUser(userId, "ROLE_SYSADMIN", status);
+        return userRepository.findAdmin(userId, status);
     }
 
     @Transactional
@@ -73,7 +73,7 @@ public class AdminService {
     @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
     public boolean
     deleteAdmin(Long userId) {
-        return userRepository.findUser(userId, "ROLE_SYSADMIN", UserStatus.NORMAL)
+        return userRepository.findAdmin(userId, UserStatus.NORMAL)
                 .map(user -> {
                     userRepository.delete(user);
                     return true;

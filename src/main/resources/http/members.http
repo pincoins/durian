@@ -13,10 +13,10 @@ POST http://localhost:8080/members
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
-  "username": "test",
+  "email": "member@example.com",
+  "username": "member",
   "password": "Test12!@",
-  "name": "test"
+  "name": "member"
 }
 
 ### User Delete

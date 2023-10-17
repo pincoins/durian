@@ -69,7 +69,7 @@ public class AuthService {
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        User user = userRepository.findUser(refreshToken.getUserId(), null, UserStatus.NORMAL)
+        User user = userRepository.findUser(refreshToken.getUserId(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("User does not exist.")));
@@ -85,7 +85,7 @@ public class AuthService {
     changePassword(Long userId,
                    UserChangePasswordRequest request) {
         User user = userRepository
-                .findUser(userId, null, UserStatus.NORMAL)
+                .findUser(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "User not found",
                                                     List.of("User not found to change password.")));

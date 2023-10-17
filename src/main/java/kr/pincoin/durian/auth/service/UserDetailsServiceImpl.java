@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public User
     loadUserByUsername(String id) throws UsernameNotFoundException {
         return userRepository
-                .findUser(Long.valueOf(id), null, UserStatus.NORMAL)
+                .findUser(Long.valueOf(id), UserStatus.NORMAL)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

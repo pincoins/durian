@@ -42,8 +42,23 @@ public class MemberService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public List<User>
+    listMembers(UserStatus status) {
+        return userRepository.findMembers(status);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
+    public Optional<User>
+    getMember(Long userId, UserStatus status) {
+        return userRepository.findMember(userId, status);
+    }
+
+    @Transactional
     public UserResponse
-    createUser(UserCreateRequest request) {
+    createMember(UserCreateRequest request) {
         return roleRepository.findRole("ROLE_MEMBER")
                 .map(role -> {
                     User user = userRepository
@@ -65,29 +80,14 @@ public class MemberService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public List<User>
-    listMembers(UserStatus status) {
-        return userRepository.findUsers("ROLE_MEMBER", status);
-    }
-
-    @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<User>
-    getMember(Long userId, UserStatus status) {
-        return userRepository.findUser(userId, "ROLE_MEMBER", status);
-    }
-
-    @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public boolean
     deleteMember(Long userId) {
-        return userRepository.findUser(userId, "ROLE_MEMBER", UserStatus.INACTIVE)
-                .map(user -> {
-                    profileRepository.deleteByUserId(user.getId());
-                    userRepository.delete(user);
+        return userRepository.findMember(userId, UserStatus.INACTIVE)
+                .map(member -> {
+                    profileRepository.deleteByUserId(member.getId());
+                    userRepository.delete(member);
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Role not found",
@@ -99,7 +99,7 @@ public class MemberService {
     public Optional<User>
     approveMember(Long userId) {
         User user = userRepository
-                .findUser(userId, "ROLE_MEMBER", UserStatus.NORMAL)
+                .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to inactivate.")));
@@ -112,7 +112,7 @@ public class MemberService {
     public Optional<User>
     inactivateMember(Long userId) {
         User user = userRepository
-                .findUser(userId, "ROLE_MEMBER", UserStatus.NORMAL)
+                .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to inactivate.")));
@@ -126,7 +126,7 @@ public class MemberService {
     public Optional<User>
     activateMember(Long userId) {
         User user = userRepository
-                .findUser(userId, "ROLE_MEMBER", UserStatus.INACTIVE)
+                .findMember(userId, UserStatus.INACTIVE)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to activate.")));
@@ -140,7 +140,7 @@ public class MemberService {
     public Optional<User>
     unregisterMember(Long userId) {
         User user = userRepository
-                .findUser(userId, "ROLE_MEMBER", UserStatus.NORMAL)
+                .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to unregister.")));
@@ -154,7 +154,7 @@ public class MemberService {
     resetMemberPassword(Long userId,
                         UserResetPasswordRequest request) {
         User user = userRepository
-                .findUser(userId, "ROLE_MEMBER", UserStatus.NORMAL)
+                .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to reset password.")));

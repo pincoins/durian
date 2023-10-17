@@ -40,7 +40,7 @@ public class MemberController {
     memberDetail(@PathVariable Long userId,
                  @RequestParam(name = "status", required = false) UserStatus status) {
         return memberService.getMember(userId, status)
-                .map(user -> ResponseEntity.ok().body(new UserResponse(user)))
+                .map(member -> ResponseEntity.ok().body(new UserResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to retrieve.")));
@@ -49,7 +49,7 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<UserResponse>
     memberCreate(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = memberService.createUser(request);
+        UserResponse response = memberService.createMember(request);
         return ResponseEntity.ok().body(response);
     }
 
@@ -57,8 +57,8 @@ public class MemberController {
     public ResponseEntity<UserResponse>
     memberInactivate(@PathVariable Long userId) {
         return memberService.inactivateMember(userId)
-                .map(user -> ResponseEntity.ok().body(
-                        new UserResponse(user)))
+                .map(member -> ResponseEntity.ok().body(
+                        new UserResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to inactivate member.")));
@@ -68,8 +68,8 @@ public class MemberController {
     public ResponseEntity<UserResponse>
     memberActivate(@PathVariable Long userId) {
         return memberService.activateMember(userId)
-                .map(user -> ResponseEntity.ok().body(
-                        new UserResponse(user)))
+                .map(member -> ResponseEntity.ok().body(
+                        new UserResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to activate member.")));
@@ -79,8 +79,8 @@ public class MemberController {
     public ResponseEntity<UserResponse>
     memberUnregister(@PathVariable Long userId) {
         return memberService.unregisterMember(userId)
-                .map(user -> ResponseEntity.ok().body(
-                        new UserResponse(user)))
+                .map(member -> ResponseEntity.ok().body(
+                        new UserResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to inactivate member.")));
@@ -100,8 +100,8 @@ public class MemberController {
     memberPasswordReset(@PathVariable Long userId,
                         @Valid @RequestBody UserResetPasswordRequest request) {
         return memberService.resetMemberPassword(userId, request)
-                .map(user -> ResponseEntity.ok().body(
-                        new UserResponse(user)))
+                .map(member -> ResponseEntity.ok().body(
+                        new UserResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to reset member password.")));
