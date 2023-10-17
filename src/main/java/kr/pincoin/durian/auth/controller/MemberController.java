@@ -2,7 +2,7 @@ package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.dto.MemberResponse;
+import kr.pincoin.durian.auth.dto.UserProfileResponse;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
@@ -27,72 +27,72 @@ public class MemberController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<MemberResponse>>
+    public ResponseEntity<List<UserProfileResponse>>
     memberList(@RequestParam(name = "status", required = false) UserStatus status) {
         return ResponseEntity.ok()
                 .body(memberService.listMembers(status)
                               .stream()
-                              .map(MemberResponse::new)
+                              .map(UserProfileResponse::new)
                               .toList());
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberDetail(@PathVariable Long userId,
                  @RequestParam(name = "status", required = false) UserStatus status) {
         return memberService.getMember(userId, status)
-                .map(result -> ResponseEntity.ok().body(new MemberResponse(result)))
+                .map(result -> ResponseEntity.ok().body(new UserProfileResponse(result)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to retrieve.")));
     }
 
     @PostMapping("")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberCreate(@Valid @RequestBody UserCreateRequest request) {
         UserProfileResult result = memberService.createMember(request);
-        return ResponseEntity.ok().body(new MemberResponse(result));
+        return ResponseEntity.ok().body(new UserProfileResponse(result));
     }
 
     @PutMapping("{userId}/approve")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberApprove(@PathVariable Long userId) {
         return memberService.approveMember(userId)
                 .map(member -> ResponseEntity.ok().body(
-                        new MemberResponse(member)))
+                        new UserProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to approve member.")));
     }
 
     @PutMapping("{userId}/inactivate")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberInactivate(@PathVariable Long userId) {
         return memberService.inactivateMember(userId)
                 .map(member -> ResponseEntity.ok().body(
-                        new MemberResponse(member)))
+                        new UserProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to inactivate member.")));
     }
 
     @PutMapping("{userId}/activate")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberActivate(@PathVariable Long userId) {
         return memberService.activateMember(userId)
                 .map(member -> ResponseEntity.ok().body(
-                        new MemberResponse(member)))
+                        new UserProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to activate member.")));
     }
 
     @PutMapping("{userId}/unregister")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberUnregister(@PathVariable Long userId) {
         return memberService.unregisterMember(userId)
                 .map(member -> ResponseEntity.ok().body(
-                        new MemberResponse(member)))
+                        new UserProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to inactivate member.")));
@@ -108,12 +108,12 @@ public class MemberController {
     }
 
     @PutMapping("/{userId}/reset-password")
-    public ResponseEntity<MemberResponse>
+    public ResponseEntity<UserProfileResponse>
     memberPasswordReset(@PathVariable Long userId,
                         @Valid @RequestBody UserResetPasswordRequest request) {
         return memberService.resetMemberPassword(userId, request)
                 .map(member -> ResponseEntity.ok().body(
-                        new MemberResponse(member)))
+                        new UserProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to reset member password.")));
