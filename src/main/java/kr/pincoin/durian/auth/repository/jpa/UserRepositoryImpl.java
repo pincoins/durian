@@ -35,7 +35,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
-
     @Override
     public Optional<User> findUser(Long id, UserStatus status) {
         QUser user = QUser.user;
@@ -54,40 +53,36 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     @Override
     public Optional<User> findAdmin(Long id, UserStatus status) {
-        QUser user = QUser.user;
-        QRole role = QRole.role;
-
-        JPAQuery<User> contentQuery = queryFactory
-                .select(user)
-                .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
-                .where(idEq(id),
-                       roleCodeEq("ROLE_SYSADMIN"),
-                       statusEq(status));
-
-        return Optional.ofNullable(contentQuery.fetchOne());
+        return getUser(id, "ROLE_SYSADMIN", status);
     }
 
     @Override
     public Optional<User> findStaff(Long id, UserStatus status) {
-        QUser user = QUser.user;
-        QRole role = QRole.role;
-
-        JPAQuery<User> contentQuery = queryFactory
-                .select(user)
-                .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
-                .where(idEq(id),
-                       roleCodeEq("ROLE_STAFF"),
-                       statusEq(status));
-
-        return Optional.ofNullable(contentQuery.fetchOne());
+        return getUser(id, "ROLE_STAFF", status);
     }
 
     @Override
     public Optional<User> findMember(Long id, UserStatus status) {
+        return getUser(id, "ROLE_MEMBER", status);
+    }
+
+
+    @Override
+    public List<User> findAdmins(UserStatus status) {
+        return getUsers("ROLE_SYSADMIN", status);
+    }
+
+    @Override
+    public List<User> findStaffs(UserStatus status) {
+        return getUsers("ROLE_STAFF", status);
+    }
+
+    @Override
+    public List<User> findMembers(UserStatus status) {
+        return getUsers("ROLE_MEMBER", status);
+    }
+
+    private Optional<User> getUser(Long id, String roleCode, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -97,14 +92,13 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(idEq(id),
-                       roleCodeEq("ROLE_MEMBER"),
+                       roleCodeEq(roleCode),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
-    @Override
-    public List<User> findAdmins(UserStatus status) {
+    private List<User> getUsers(String roleCode, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -113,39 +107,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .leftJoin(user.role, role)
                 .fetchJoin()
-                .where(roleCodeEq("ROLE_SYSADMIN"),
-                       statusEq(status));
-
-        return contentQuery.fetch();
-    }
-
-    @Override
-    public List<User> findStaffs(UserStatus status) {
-        QUser user = QUser.user;
-        QRole role = QRole.role;
-
-        JPAQuery<User> contentQuery = queryFactory
-                .select(user)
-                .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
-                .where(roleCodeEq("ROLE_STAFF"),
-                       statusEq(status));
-
-        return contentQuery.fetch();
-    }
-
-    @Override
-    public List<User> findMembers(UserStatus status) {
-        QUser user = QUser.user;
-        QRole role = QRole.role;
-
-        JPAQuery<User> contentQuery = queryFactory
-                .select(user)
-                .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
-                .where(roleCodeEq("ROLE_MEMBER"),
+                .where(roleCodeEq(roleCode),
                        statusEq(status));
 
         return contentQuery.fetch();
@@ -178,6 +140,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     BooleanExpression roleCodeEq(String roleCode) {
         QRole role = QRole.role;
 
-        return roleCode != null ? role.code.eq(roleCode) : null;
+        return roleCode != null ? role.code.eq(roleCode) : role.code.eq("ROLE_USER");
     }
 }
