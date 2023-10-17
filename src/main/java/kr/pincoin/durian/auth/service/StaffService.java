@@ -3,6 +3,7 @@ package kr.pincoin.durian.auth.service;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
+import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
@@ -81,5 +82,21 @@ public class StaffService {
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Role not found",
                                                       List.of("Role does not exist to delete.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN')")
+    public Optional<User>
+    resetStaffPassword(Long userId,
+                       UserResetPasswordRequest request) {
+        User staff = userRepository
+                .findStaff(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to reset password.")));
+
+        staff.changePassword(passwordEncoder.encode(request.getNewPassword()));
+
+        return Optional.of(userRepository.save(staff));
     }
 }

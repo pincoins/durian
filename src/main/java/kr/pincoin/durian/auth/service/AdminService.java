@@ -55,14 +55,14 @@ public class AdminService {
         log.warn("create admin service");
         return roleRepository.findRole("ROLE_SYSADMIN")
                 .map(role -> {
-                    User user = userRepository.save(new User(request.getUsername(),
+                    User admin = userRepository.save(new User(request.getUsername(),
                                                              passwordEncoder.encode(request.getPassword()),
                                                              request.getName(),
                                                              request.getEmail(),
                                                              UserStatus.NORMAL)
                                                             .grant(role));
 
-                    return new UserResponse(user);
+                    return new UserResponse(admin);
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Role not found",
@@ -74,8 +74,8 @@ public class AdminService {
     public boolean
     deleteAdmin(Long userId) {
         return userRepository.findAdmin(userId, UserStatus.NORMAL)
-                .map(user -> {
-                    userRepository.delete(user);
+                .map(admin -> {
+                    userRepository.delete(admin);
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Role not found",

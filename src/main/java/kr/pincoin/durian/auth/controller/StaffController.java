@@ -3,6 +3,7 @@ package kr.pincoin.durian.auth.controller;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
+import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.StaffService;
 import kr.pincoin.durian.common.exception.ApiException;
@@ -24,10 +25,9 @@ public class StaffController {
         this.staffService = staffService;
     }
 
-
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>
-    adminList(@RequestParam(name = "status", required = false) UserStatus status) {
+    staffList(@RequestParam(name = "status", required = false) UserStatus status) {
         return ResponseEntity.ok()
                 .body(staffService.listStaffs(status)
                               .stream()
@@ -37,7 +37,7 @@ public class StaffController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse>
-    adminDetail(@PathVariable Long userId,
+    staffDetail(@PathVariable Long userId,
                 @RequestParam(name = "status", required = false) UserStatus status) {
         return staffService.getStaff(userId, status)
                 .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
@@ -48,17 +48,29 @@ public class StaffController {
 
     @PostMapping("")
     public ResponseEntity<UserResponse>
-    adminCreate(@Valid @RequestBody UserCreateRequest request) {
+    staffCreate(@Valid @RequestBody UserCreateRequest request) {
         UserResponse response = staffService.createStaff(request);
         return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object>
-    adminDelete(@PathVariable Long userId) {
+    staffDelete(@PathVariable Long userId) {
         if (staffService.deleteStaff(userId)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PutMapping("/{userId}/reset-password")
+    public ResponseEntity<UserResponse>
+    staffPasswordReset(@PathVariable Long userId,
+                       @Valid @RequestBody UserResetPasswordRequest request) {
+        return staffService.resetStaffPassword(userId, request)
+                .map(staff -> ResponseEntity.ok().body(
+                        new UserResponse(staff)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Failed to reset staff password.")));
     }
 }

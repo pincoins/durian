@@ -66,7 +66,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return getUser(id, "ROLE_MEMBER", status);
     }
 
-
     @Override
     public List<User> findAdmins(UserStatus status) {
         return getUsers("ROLE_SYSADMIN", status);
