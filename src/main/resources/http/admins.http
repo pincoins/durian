@@ -13,10 +13,10 @@ POST http://localhost:8080/admins
 Content-Type: application/json
 
 {
-  "email": "admin1@example.com",
-  "username": "admin1",
+  "email": "admin@example.com",
+  "username": "admin",
   "password": "Test12!@",
-  "name": "admin1"
+  "name": "admin"
 }
 
 ### Admin Delete

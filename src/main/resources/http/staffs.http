@@ -20,7 +20,7 @@ Authorization: Bearer {{accessToken}}
   "name": "staff"
 }
 
-### Admin Delete
+### Staff Delete
 DELETE http://localhost:8080/staffs/4
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
