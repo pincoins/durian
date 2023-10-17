@@ -49,7 +49,7 @@ public class AdminService {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('SYSADMIN')")
+    // @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createAdmin(UserCreateRequest request) {
         log.warn("create admin service");

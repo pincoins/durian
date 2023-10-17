@@ -1,16 +1,21 @@
 package kr.pincoin.durian.auth.repository.jpa;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.pincoin.durian.auth.domain.QProfile;
 import kr.pincoin.durian.auth.domain.QRole;
 import kr.pincoin.durian.auth.domain.QUser;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.dto.UserProfileResult;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class UserRepositoryImpl implements UserRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
@@ -19,7 +24,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Optional<User> findUser(String email, String roleCode, UserStatus status) {
+    public Optional<User> findUser(String email, UserStatus status) {
         QUser user = QUser.user;
         QRole role = QRole.role;
 
@@ -29,7 +34,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .leftJoin(user.role, role)
                 .fetchJoin()
                 .where(emailEq(email),
-                       roleCodeEq(roleCode),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -62,8 +66,47 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Optional<User> findMember(Long id, UserStatus status) {
-        return getUser(id, "ROLE_MEMBER", status);
+    public Optional<UserProfileResult> findMember(Long id, UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+        QProfile profile = QProfile.profile;
+
+        JPAQuery<UserProfileResult> contentQuery = queryFactory
+                .select(Projections.fields(UserProfileResult.class,
+                                           user.as("user"),
+                                           profile.as("profile")))
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .innerJoin(profile)
+                .on(profile.user.id.eq(user.id))
+                .where(idEq(id),
+                       roleCodeEq("ROLE_MEMBER"),
+                       statusEq(status));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public Optional<UserProfileResult> findMember(Long id, List<UserStatus> statuses) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+        QProfile profile = QProfile.profile;
+
+        JPAQuery<UserProfileResult> contentQuery = queryFactory
+                .select(Projections.fields(UserProfileResult.class,
+                                           user.as("user"),
+                                           profile.as("profile")))
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .innerJoin(profile)
+                .on(profile.user.id.eq(user.id))
+                .where(idEq(id),
+                       roleCodeEq("ROLE_MEMBER"),
+                       statusIn(statuses));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override
@@ -77,8 +120,24 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public List<User> findMembers(UserStatus status) {
-        return getUsers("ROLE_MEMBER", status);
+    public List<UserProfileResult> findMembers(UserStatus status) {
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+        QProfile profile = QProfile.profile;
+
+        JPAQuery<UserProfileResult> contentQuery = queryFactory
+                .select(Projections.fields(UserProfileResult.class,
+                                           user.as("user"),
+                                           profile.as("profile")))
+                .from(user)
+                .leftJoin(user.role, role)
+                .fetchJoin()
+                .innerJoin(profile)
+                .on(profile.user.id.eq(user.id))
+                .where(roleCodeEq("ROLE_MEMBER"),
+                       statusEq(status));
+
+        return contentQuery.fetch();
     }
 
     private Optional<User> getUser(Long id, String roleCode, UserStatus status) {
@@ -134,6 +193,12 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         QUser user = QUser.user;
 
         return status != null ? user.status.eq(status) : user.status.eq(UserStatus.NORMAL);
+    }
+
+    BooleanExpression statusIn(List<UserStatus> statuses) {
+        QUser user = QUser.user;
+
+        return statuses != null ? user.status.in(statuses) : user.status.eq(UserStatus.NORMAL);
     }
 
     BooleanExpression roleCodeEq(String roleCode) {
