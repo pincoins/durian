@@ -4,8 +4,8 @@ import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
+import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
-import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public List<User>
+    public List<UserProfileResult>
     listMembers(UserStatus status) {
         return userRepository.findMembers(status);
     }
@@ -51,17 +52,17 @@ public class MemberService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<User>
+    public Optional<UserProfileResult>
     getMember(Long userId, UserStatus status) {
         return userRepository.findMember(userId, status);
     }
 
     @Transactional
-    public UserResponse
+    public UserProfileResult
     createMember(UserCreateRequest request) {
         return roleRepository.findRole("ROLE_MEMBER")
                 .map(role -> {
-                    User user = userRepository
+                    User member = userRepository
                             .save(new User(request.getUsername(),
                                            passwordEncoder.encode(
                                                    request.getPassword()),
@@ -70,9 +71,9 @@ public class MemberService {
                                            UserStatus.PENDING)
                                           .grant(role));
 
-                    profileRepository.save(new Profile(user));
+                    Profile profile = profileRepository.save(new Profile(member));
 
-                    return new UserResponse(user);
+                    return new UserProfileResult(member, profile);
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Role not found",
@@ -84,83 +85,103 @@ public class MemberService {
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public boolean
     deleteMember(Long userId) {
-        return userRepository.findMember(userId, UserStatus.INACTIVE)
-                .map(member -> {
-                    profileRepository.deleteByUserId(member.getId());
-                    userRepository.delete(member);
+        log.warn("delete {}", userId);
+        return userRepository.findMember(userId, Arrays.asList(UserStatus.PENDING,
+                                                               UserStatus.INACTIVE,
+                                                               UserStatus.UNREGISTERED))
+                .map(result -> {
+                    profileRepository.deleteByUserId(userId);
+                    userRepository.deleteById(userId);
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                      "Role not found",
-                                                      List.of("Role does not exist to delete.")));
+                                                      "Member not found",
+                                                      List.of("Member does not exist to delete.")));
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public Optional<User>
+    public Optional<UserProfileResult>
     approveMember(Long userId) {
-        User user = userRepository
-                .findMember(userId, UserStatus.NORMAL)
+        UserProfileResult result = userRepository
+                .findMember(userId, UserStatus.PENDING)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
-                                                    List.of("Member does not exist to inactivate.")));
+                                                    List.of("Member does not exist to approve.")));
+        User user = result.getUser();
+        user.approve();
+        userRepository.save(user);
 
-        return Optional.of(userRepository.save(user.inactivate()));
+        return Optional.of(result);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public Optional<User>
+    public Optional<UserProfileResult>
     inactivateMember(Long userId) {
-        User user = userRepository
+        UserProfileResult result = userRepository
                 .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to inactivate.")));
 
-        return Optional.of(userRepository.save(user.inactivate()));
+        User user = result.getUser();
+        user.inactivate();
+        userRepository.save(user);
+
+        return Optional.of(result);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<User>
+    public Optional<UserProfileResult>
     activateMember(Long userId) {
-        User user = userRepository
+        UserProfileResult result = userRepository
                 .findMember(userId, UserStatus.INACTIVE)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to activate.")));
 
-        return Optional.of(userRepository.save(user.activate()));
+        User user = result.getUser();
+        user.activate();
+        userRepository.save(user);
+
+        return Optional.of(result);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<User>
+    public Optional<UserProfileResult>
     unregisterMember(Long userId) {
-        User user = userRepository
+        UserProfileResult result = userRepository
                 .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to unregister.")));
 
-        return Optional.of(userRepository.save(user.unregister()));
+        User user = result.getUser();
+        user.unregister();
+        userRepository.save(user);
+
+        return Optional.of(result);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public Optional<User>
+    public Optional<UserProfileResult>
     resetMemberPassword(Long userId,
                         UserResetPasswordRequest request) {
-        User user = userRepository
+        UserProfileResult result = userRepository
                 .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to reset password.")));
 
+        User user = result.getUser();
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
 
-        return Optional.of(userRepository.save(user));
+        return Optional.of(result);
     }
 }
