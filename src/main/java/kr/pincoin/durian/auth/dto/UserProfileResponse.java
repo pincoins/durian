@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberResponse extends UserResponse {
+public class UserProfileResponse extends UserResponse {
     @JsonProperty("phone")
     private String phone;
 
@@ -90,7 +90,7 @@ public class MemberResponse extends UserResponse {
     @JsonProperty("telecom")
     private String telecom;
 
-    public MemberResponse(UserProfileResult result) {
+    public UserProfileResponse(UserProfileResult result) {
         super(result.getUser());
 
         Profile profile = result.getProfile();
