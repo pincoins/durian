@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order_product_voucher")
+@Table(name = "order_item_voucher")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderProductVoucher {
+public class OrderItemVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,8 +25,8 @@ public class OrderProductVoucher {
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_product_id")
-    private OrderProduct orderProduct;
+    @JoinColumn(name = "order_item_id")
+    private OrderItem orderItem;
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
