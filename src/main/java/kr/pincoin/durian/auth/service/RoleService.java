@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @Slf4j
 public class RoleService {
     private final RoleRepository roleRepository;
@@ -22,7 +23,6 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<Role>
     listRoles() {

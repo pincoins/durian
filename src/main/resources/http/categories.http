@@ -1,0 +1,36 @@
+### Category List
+GET http://localhost:8080/categories
+Content-Type: application/json
+
+### Category Detail
+GET http://localhost:8080/categories/1
+Content-Type: application/json
+
+### Category Create
+POST http://localhost:8080/categories
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "category title",
+  "slug": "category-title",
+  "description": "This is a category example.",
+  "subDescription": "yet another category",
+  "discountRate": 3.345
+}
+
+### Category Hide
+PUT http://localhost:8080/categories/1/hide
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Category Show
+PUT http://localhost:8080/categories/1/show
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Category Delete
+DELETE http://localhost:8080/categories/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
