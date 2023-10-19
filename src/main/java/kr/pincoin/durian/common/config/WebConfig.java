@@ -26,5 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new PaymentMethodRequestConverter());
         registry.addConverter(new OrderStatusRequestConverter());
         registry.addConverter(new PaymentAccountRequestConverter());
+        registry.addConverter(new CategoryStatusRequestConverter());
     }
 }

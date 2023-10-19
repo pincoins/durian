@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @Slf4j
 public class AdminService {
     private final UserRepository userRepository;
@@ -34,14 +35,12 @@ public class AdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<User>
     listAdmins(UserStatus status) {
         return userRepository.findAdmins(status);
     }
 
-    @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
     public Optional<User>
     getAdmin(Long userId, UserStatus status) {
@@ -49,10 +48,9 @@ public class AdminService {
     }
 
     @Transactional
-    // @PreAuthorize("hasRole('SYSADMIN')")
+    @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createAdmin(UserCreateRequest request) {
-        log.warn("create admin service");
         return roleRepository.findRole("ROLE_SYSADMIN")
                 .map(role -> {
                     User admin = userRepository.save(new User(request.getUsername(),
@@ -78,7 +76,7 @@ public class AdminService {
                     userRepository.delete(admin);
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                      "Role not found",
-                                                      List.of("Role does not exist to delete.")));
+                                                      "Admin not found",
+                                                      List.of("Admin does not exist to delete.")));
     }
 }

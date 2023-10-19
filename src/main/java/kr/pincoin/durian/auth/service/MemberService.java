@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
     private final UserRepository userRepository;
@@ -42,14 +43,12 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<UserProfileResult>
     listMembers(UserStatus status) {
         return userRepository.findMembers(status);
     }
 
-    @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<UserProfileResult>

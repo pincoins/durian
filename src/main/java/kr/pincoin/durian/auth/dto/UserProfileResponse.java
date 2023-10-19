@@ -23,52 +23,52 @@ public class UserProfileResponse extends UserResponse {
     @JsonProperty("address")
     private String address;
 
-    @JsonProperty("phone_verified")
+    @JsonProperty("phoneVerified")
     private boolean phoneVerified;
 
-    @JsonProperty("phone_verified_status")
+    @JsonProperty("phoneVerifiedStatus")
     private PhoneVerifiedStatus phoneVerifiedStatus;
 
-    @JsonProperty("document_verified")
+    @JsonProperty("documentVerified")
     private boolean documentVerified;
 
-    @JsonProperty("allow_order")
+    @JsonProperty("allowOrder")
     private boolean allowOrder;
 
-    @JsonProperty("photo_id")
+    @JsonProperty("photoId")
     private String photoId;
 
     @JsonProperty("card")
     private String card;
 
-    @JsonProperty("total_order_count")
+    @JsonProperty("totalOrderCount")
     private Integer totalOrderCount;
 
-    @JsonProperty("first_purchased")
+    @JsonProperty("firstPurchased")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime firstPurchased;
 
-    @JsonProperty("last_purchased")
+    @JsonProperty("lastPurchased")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastPurchased;
 
-    @JsonProperty("not_purchased_months")
+    @JsonProperty("notPurchasedMonths")
     private boolean notPurchasedMonths;
 
     @JsonProperty("repurchased")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime repurchased;
 
-    @JsonProperty("max_price")
+    @JsonProperty("maxPrice")
     private BigDecimal maxPrice;
 
-    @JsonProperty("total_list_price")
+    @JsonProperty("totalListPrice")
     private BigDecimal totalListPrice;
 
-    @JsonProperty("total_selling_price")
+    @JsonProperty("totalSellingPrice")
     private BigDecimal totalSellingPrice;
 
-    @JsonProperty("average_price")
+    @JsonProperty("averagePrice")
     private BigDecimal averagePrice;
 
     @JsonProperty("mileage")
@@ -77,7 +77,7 @@ public class UserProfileResponse extends UserResponse {
     @JsonProperty("memo")
     private String memo;
 
-    @JsonProperty("date_of_birth")
+    @JsonProperty("dateOfBirth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 

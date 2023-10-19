@@ -24,6 +24,7 @@ import java.util.Optional;
 import static kr.pincoin.durian.auth.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
 
 @Service
+@Transactional(readOnly = true)
 @Slf4j
 public class AuthService {
     private final UserRepository userRepository;
