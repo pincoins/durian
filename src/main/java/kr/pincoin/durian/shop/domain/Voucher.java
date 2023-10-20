@@ -1,10 +1,8 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
-import kr.pincoin.durian.shop.domain.conveter.VoucherStatusConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +29,7 @@ public class Voucher extends BaseDateTime {
     private Product product;
 
     @Column(name = "status")
-    @NotNull
-    @Convert(converter = VoucherStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private VoucherStatus status;
 
 }

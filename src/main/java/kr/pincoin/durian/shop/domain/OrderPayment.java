@@ -1,9 +1,7 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
-import kr.pincoin.durian.shop.domain.conveter.PaymentAccountConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +19,7 @@ public class OrderPayment {
     private Long id;
 
     @Column(name = "account")
-    @NotNull
-    @Convert(converter = PaymentAccountConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private PaymentAccount account;
 
     @Column(name = "amount")

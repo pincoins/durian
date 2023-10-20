@@ -2,7 +2,9 @@ package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import kr.pincoin.durian.auth.domain.converter.*;
+import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
+import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
+import kr.pincoin.durian.auth.domain.converter.ProfileGender;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,8 +33,7 @@ public class Profile extends BaseDateTime {
     private boolean phoneVerified;
 
     @Column(name = "phone_verified_status")
-    @NotNull
-    @Convert(converter = PhoneVerifiedStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private PhoneVerifiedStatus phoneVerifiedStatus;
 
     @Column(name = "document_verified")
@@ -84,11 +85,11 @@ public class Profile extends BaseDateTime {
     private LocalDate dateOfBirth;
 
     @Column(name = "gender")
-    @Convert(converter = ProfileGenderConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private ProfileGender gender;
 
     @Column(name = "domestic")
-    @Convert(converter = ProfileDomesticConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private ProfileDomestic domestic;
 
     @Column(name = "telecom")

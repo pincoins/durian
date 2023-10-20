@@ -1,10 +1,11 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.common.domain.BaseDateTime;
-import kr.pincoin.durian.shop.domain.conveter.*;
+import kr.pincoin.durian.shop.domain.conveter.OrderStatus;
+import kr.pincoin.durian.shop.domain.conveter.OrderVisibility;
+import kr.pincoin.durian.shop.domain.conveter.PaymentMethod;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,18 +43,15 @@ public class Order extends BaseDateTime {
     private String transactionId;
 
     @Column(name = "payment_method")
-    @NotNull
-    @Convert(converter = PaymentMethodConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private PaymentMethod paymentMethod;
 
     @Column(name = "status")
-    @NotNull
-    @Convert(converter = OrderStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
 
     @Column(name = "visible")
-    @NotNull
-    @Convert(converter = OrderVisibilityConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private OrderVisibility visible;
 
     @Column(name = "total_list_price")
