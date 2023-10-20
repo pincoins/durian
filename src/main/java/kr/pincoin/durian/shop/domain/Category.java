@@ -3,7 +3,6 @@ package kr.pincoin.durian.shop.domain;
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.domain.conveter.CategoryStatusConverter;
 import kr.pincoin.durian.shop.dto.CategoryCreateRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,7 +35,7 @@ public class Category extends BaseDateTime {
     private BigDecimal discountRate;
 
     @Column(name = "status")
-    @Convert(converter = CategoryStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private CategoryStatus status;
 
     public Category(String title,
