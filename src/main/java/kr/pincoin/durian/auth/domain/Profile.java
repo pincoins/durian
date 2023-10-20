@@ -33,7 +33,7 @@ public class Profile extends BaseDateTime {
     private boolean phoneVerified;
 
     @Column(name = "phone_verified_status")
-    @NotNull
+    @Enumerated(value = EnumType.STRING)
     private PhoneVerifiedStatus phoneVerifiedStatus;
 
     @Column(name = "document_verified")
@@ -85,9 +85,11 @@ public class Profile extends BaseDateTime {
     private LocalDate dateOfBirth;
 
     @Column(name = "gender")
+    @Enumerated(value = EnumType.STRING)
     private ProfileGender gender;
 
     @Column(name = "domestic")
+    @Enumerated(value = EnumType.STRING)
     private ProfileDomestic domestic;
 
     @Column(name = "telecom")

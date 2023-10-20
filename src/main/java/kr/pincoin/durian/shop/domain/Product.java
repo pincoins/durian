@@ -1,12 +1,9 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
-import kr.pincoin.durian.shop.domain.conveter.ProductStatusConverter;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
-import kr.pincoin.durian.shop.domain.conveter.ProductStockStatusConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,13 +53,11 @@ public class Product extends BaseDateTime {
     private String slug;
 
     @Column(name = "status")
-    @NotNull
-    @Convert(converter = ProductStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private ProductStatus status;
 
     @Column(name = "stock")
-    @NotNull
-    @Convert(converter = ProductStockStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private ProductStockStatus stock;
 
     @ManyToOne(optional = false,
