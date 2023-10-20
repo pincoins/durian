@@ -2,7 +2,6 @@ package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.domain.converter.UserStatusConverter;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +36,7 @@ public class User extends BaseDateTime implements UserDetails {
     private String name;
 
     @Column(name = "status")
-    @Convert(converter = UserStatusConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private UserStatus status;
 
     @ManyToOne(optional = false,
