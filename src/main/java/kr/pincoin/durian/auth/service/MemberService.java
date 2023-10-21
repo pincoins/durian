@@ -2,12 +2,12 @@ package kr.pincoin.durian.auth.service;
 
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
-import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,18 +27,14 @@ import java.util.Optional;
 public class MemberService {
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
     private final ProfileRepository profileRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     public MemberService(UserRepository userRepository,
-                         RoleRepository roleRepository,
                          ProfileRepository profileRepository,
                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -59,24 +55,16 @@ public class MemberService {
     @Transactional
     public UserProfileResult
     createMember(UserCreateRequest request) {
-        return roleRepository.findRole("ROLE_MEMBER")
-                .map(role -> {
-                    User member = userRepository
-                            .save(new User(request.getUsername(),
-                                           passwordEncoder.encode(
-                                                   request.getPassword()),
-                                           request.getName(),
-                                           request.getEmail(),
-                                           UserStatus.PENDING)
-                                          .grant(role));
+        User member = userRepository.save(new User(request.getUsername(),
+                                                   passwordEncoder.encode(request.getPassword()),
+                                                   request.getName(),
+                                                   request.getEmail(),
+                                                   UserStatus.NORMAL)
+                                                  .grant(Role.ROLE_MEMBER));
 
-                    Profile profile = profileRepository.save(new Profile(member));
+        Profile profile = profileRepository.save(new Profile(member));
 
-                    return new UserProfileResult(member, profile);
-                })
-                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
-                                                    "Role not found",
-                                                    List.of("Role has to exists in order to create member.")));
+        return new UserProfileResult(member, profile);
     }
 
     @Transactional

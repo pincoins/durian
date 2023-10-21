@@ -5,9 +5,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.pincoin.durian.auth.domain.QProfile;
-import kr.pincoin.durian.auth.domain.QRole;
 import kr.pincoin.durian.auth.domain.QUser;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +26,10 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     @Override
     public Optional<User> findUser(String email, UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
 
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .where(emailEq(email),
                        statusEq(status));
 
@@ -42,13 +39,10 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     @Override
     public Optional<User> findUser(Long id, UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
 
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .where(idEq(id),
                        statusEq(status));
 
@@ -57,18 +51,17 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     @Override
     public Optional<User> findAdmin(Long id, UserStatus status) {
-        return getUser(id, "ROLE_SYSADMIN", status);
+        return getUser(id, Role.ROLE_SYSADMIN, status);
     }
 
     @Override
     public Optional<User> findStaff(Long id, UserStatus status) {
-        return getUser(id, "ROLE_STAFF", status);
+        return getUser(id, Role.ROLE_STAFF, status);
     }
 
     @Override
     public Optional<UserProfileResult> findMember(Long id, UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
         QProfile profile = QProfile.profile;
 
         JPAQuery<UserProfileResult> contentQuery = queryFactory
@@ -76,12 +69,10 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                                            user.as("user"),
                                            profile.as("profile")))
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
                 .where(idEq(id),
-                       roleCodeEq("ROLE_MEMBER"),
+                       roleEq(Role.ROLE_MEMBER),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -90,7 +81,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     @Override
     public Optional<UserProfileResult> findMember(Long id, List<UserStatus> statuses) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
         QProfile profile = QProfile.profile;
 
         JPAQuery<UserProfileResult> contentQuery = queryFactory
@@ -98,12 +88,10 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                                            user.as("user"),
                                            profile.as("profile")))
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
                 .where(idEq(id),
-                       roleCodeEq("ROLE_MEMBER"),
+                       roleEq(Role.ROLE_MEMBER),
                        statusIn(statuses));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -111,18 +99,17 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     @Override
     public List<User> findAdmins(UserStatus status) {
-        return getUsers("ROLE_SYSADMIN", status);
+        return getUsers(Role.ROLE_SYSADMIN, status);
     }
 
     @Override
     public List<User> findStaffs(UserStatus status) {
-        return getUsers("ROLE_STAFF", status);
+        return getUsers(Role.ROLE_STAFF, status);
     }
 
     @Override
     public List<UserProfileResult> findMembers(UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
         QProfile profile = QProfile.profile;
 
         JPAQuery<UserProfileResult> contentQuery = queryFactory
@@ -130,42 +117,34 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                                            user.as("user"),
                                            profile.as("profile")))
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
-                .where(roleCodeEq("ROLE_MEMBER"),
+                .where(roleEq(Role.ROLE_MEMBER),
                        statusEq(status));
 
         return contentQuery.fetch();
     }
 
-    private Optional<User> getUser(Long id, String roleCode, UserStatus status) {
+    private Optional<User> getUser(Long id, Role role, UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
 
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
                 .where(idEq(id),
-                       roleCodeEq(roleCode),
+                       roleEq(role),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
-    private List<User> getUsers(String roleCode, UserStatus status) {
+    private List<User> getUsers(Role role, UserStatus status) {
         QUser user = QUser.user;
-        QRole role = QRole.role;
 
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
                 .from(user)
-                .leftJoin(user.role, role)
-                .fetchJoin()
-                .where(roleCodeEq(roleCode),
+                .where(roleEq(role),
                        statusEq(status));
 
         return contentQuery.fetch();
@@ -201,9 +180,9 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return statuses != null ? user.status.in(statuses) : user.status.eq(UserStatus.NORMAL);
     }
 
-    BooleanExpression roleCodeEq(String roleCode) {
-        QRole role = QRole.role;
+    BooleanExpression roleEq(Role role) {
+        QUser user = QUser.user;
 
-        return roleCode != null ? role.code.eq(roleCode) : role.code.eq("ROLE_USER");
+        return role != null ? user.role.eq(role) : user.role.eq(Role.ROLE_MEMBER);
     }
 }
