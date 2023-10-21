@@ -52,7 +52,7 @@ public class AdminService {
                                                   request.getName(),
                                                   request.getEmail(),
                                                   UserStatus.NORMAL)
-                                                 .grant(Role.ROLE_SYSADMIN));
+                                                 .grant(Role.SYSADMIN));
 
         return new UserResponse(admin);
     }

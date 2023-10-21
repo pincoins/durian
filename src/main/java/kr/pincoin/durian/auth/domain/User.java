@@ -97,7 +97,7 @@ public class User extends BaseDateTime implements UserDetails {
         if (role.toString().isBlank()) {
             return List.of();
         }
-        return List.of(new SimpleGrantedAuthority(role.toString()));
+        return List.of(new SimpleGrantedAuthority(String.format("ROLE_%s", role)));
     }
 
     // getUsername(), getPassword() methods are overridden by lombok.

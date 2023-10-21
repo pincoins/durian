@@ -51,12 +51,12 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     @Override
     public Optional<User> findAdmin(Long id, UserStatus status) {
-        return getUser(id, Role.ROLE_SYSADMIN, status);
+        return getUser(id, Role.SYSADMIN, status);
     }
 
     @Override
     public Optional<User> findStaff(Long id, UserStatus status) {
-        return getUser(id, Role.ROLE_STAFF, status);
+        return getUser(id, Role.STAFF, status);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
                 .where(idEq(id),
-                       roleEq(Role.ROLE_MEMBER),
+                       roleEq(Role.MEMBER),
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -91,7 +91,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
                 .where(idEq(id),
-                       roleEq(Role.ROLE_MEMBER),
+                       roleEq(Role.MEMBER),
                        statusIn(statuses));
 
         return Optional.ofNullable(contentQuery.fetchOne());
@@ -99,12 +99,12 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     @Override
     public List<User> findAdmins(UserStatus status) {
-        return getUsers(Role.ROLE_SYSADMIN, status);
+        return getUsers(Role.SYSADMIN, status);
     }
 
     @Override
     public List<User> findStaffs(UserStatus status) {
-        return getUsers(Role.ROLE_STAFF, status);
+        return getUsers(Role.STAFF, status);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
                 .from(user)
                 .innerJoin(profile)
                 .on(profile.user.id.eq(user.id))
-                .where(roleEq(Role.ROLE_MEMBER),
+                .where(roleEq(Role.MEMBER),
                        statusEq(status));
 
         return contentQuery.fetch();
@@ -183,6 +183,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     BooleanExpression roleEq(Role role) {
         QUser user = QUser.user;
 
-        return role != null ? user.role.eq(role) : user.role.eq(Role.ROLE_MEMBER);
+        return role != null ? user.role.eq(role) : user.role.eq(Role.MEMBER);
     }
 }

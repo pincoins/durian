@@ -54,7 +54,7 @@ public class StaffService {
                                                  request.getName(),
                                                  request.getEmail(),
                                                  UserStatus.NORMAL)
-                                                .grant(Role.ROLE_STAFF));
+                                                .grant(Role.STAFF));
 
         return new UserResponse(user);
     }

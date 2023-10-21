@@ -60,7 +60,7 @@ public class MemberService {
                                                    request.getName(),
                                                    request.getEmail(),
                                                    UserStatus.NORMAL)
-                                                  .grant(Role.ROLE_MEMBER));
+                                                  .grant(Role.MEMBER));
 
         Profile profile = profileRepository.save(new Profile(member));
 
