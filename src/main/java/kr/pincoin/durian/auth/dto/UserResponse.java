@@ -3,8 +3,8 @@ package kr.pincoin.durian.auth.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kr.pincoin.durian.auth.domain.Role;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,14 +32,8 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
 
-    @JsonProperty("roleId")
-    private Long roleId;
-
-    @JsonProperty("roleCode")
-    private String roleCode;
-
-    @JsonProperty("roleName")
-    private String roleName;
+    @JsonProperty("role")
+    private Role role;
 
     public UserResponse(Long id,
                         String username,
@@ -50,13 +44,7 @@ public class UserResponse {
         this.id = id;
         this.username = username;
         this.name = name;
-
-        if (role != null) {
-            this.roleId = role.getId();
-            this.roleCode = role.getCode();
-            this.roleName = role.getName();
-        }
-
+        this.role = role;
         this.status = status;
         this.created = created;
     }

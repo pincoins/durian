@@ -1,6 +1,7 @@
 package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
@@ -39,9 +40,8 @@ public class User extends BaseDateTime implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private UserStatus status;
 
-    @ManyToOne(optional = false,
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @Column(name = "role")
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
     public User(String username, String password, String name, String email, UserStatus status) {
@@ -82,9 +82,7 @@ public class User extends BaseDateTime implements UserDetails {
     }
 
     public User grant(Role role) {
-        if (role != null) {
-            this.role = role;
-        }
+        this.role = role;
         return this;
     }
 
@@ -96,10 +94,10 @@ public class User extends BaseDateTime implements UserDetails {
     // UserDetails method implementations
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (getRole() != null) {
-            return List.of(new SimpleGrantedAuthority(getRole().getCode()));
+        if (role.toString().isBlank()) {
+            return List.of();
         }
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(String.format("ROLE_%s", role)));
     }
 
     // getUsername(), getPassword() methods are overridden by lombok.

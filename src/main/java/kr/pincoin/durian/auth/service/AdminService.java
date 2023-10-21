@@ -1,10 +1,10 @@
 package kr.pincoin.durian.auth.service;
 
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
-import kr.pincoin.durian.auth.repository.jpa.RoleRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +23,11 @@ import java.util.Optional;
 public class AdminService {
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     public AdminService(UserRepository userRepository,
-                        RoleRepository roleRepository,
                         PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,20 +47,14 @@ public class AdminService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createAdmin(UserCreateRequest request) {
-        return roleRepository.findRole("ROLE_SYSADMIN")
-                .map(role -> {
-                    User admin = userRepository.save(new User(request.getUsername(),
-                                                             passwordEncoder.encode(request.getPassword()),
-                                                             request.getName(),
-                                                             request.getEmail(),
-                                                             UserStatus.NORMAL)
-                                                            .grant(role));
+        User admin = userRepository.save(new User(request.getUsername(),
+                                                  passwordEncoder.encode(request.getPassword()),
+                                                  request.getName(),
+                                                  request.getEmail(),
+                                                  UserStatus.NORMAL)
+                                                 .grant(Role.SYSADMIN));
 
-                    return new UserResponse(admin);
-                })
-                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
-                                                    "Role not found",
-                                                    List.of("Role has to exists in order to create admin.")));
+        return new UserResponse(admin);
     }
 
     @Transactional
