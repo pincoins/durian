@@ -1,7 +1,10 @@
 package kr.pincoin.durian.auth.service;
 
+import kr.pincoin.durian.auth.domain.DocumentVerification;
+import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
@@ -62,7 +65,10 @@ public class MemberService {
                                                    UserStatus.NORMAL)
                                                   .grant(Role.MEMBER));
 
-        Profile profile = profileRepository.save(new Profile(member));
+        Profile profile = profileRepository.save(new Profile(member,
+                                                             new PhoneVerification(false,
+                                                                                   PhoneVerifiedStatus.UNVERIFIED),
+                                                             new DocumentVerification(false)));
 
         return new UserProfileResult(member, profile);
     }

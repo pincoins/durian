@@ -2,6 +2,8 @@ package kr.pincoin.durian.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.pincoin.durian.auth.domain.DocumentVerification;
+import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
@@ -94,16 +96,11 @@ public class UserProfileResponse extends UserResponse {
         super(result.getUser());
 
         Profile profile = result.getProfile();
-
-        this.phone = profile.getPhone();
+        PhoneVerification phoneVerification = profile.getPhoneVerification();
+        DocumentVerification documentVerification = profile.getDocumentVerification();
 
         this.address = profile.getAddress();
-        this.phoneVerified = profile.isPhoneVerified();
-        this.phoneVerifiedStatus = profile.getPhoneVerifiedStatus();
-        this.documentVerified = profile.isDocumentVerified();
         this.allowOrder = profile.isAllowOrder();
-        this.photoId = profile.getPhotoId();
-        this.card = profile.getCard();
         this.totalOrderCount = profile.getTotalOrderCount();
         this.firstPurchased = profile.getFirstPurchased();
         this.lastPurchased = profile.getLastPurchased();
@@ -115,9 +112,17 @@ public class UserProfileResponse extends UserResponse {
         this.averagePrice = profile.getAveragePrice();
         this.mileage = profile.getMileage();
         this.memo = profile.getMemo();
-        this.dateOfBirth = profile.getDateOfBirth();
-        this.gender = profile.getGender();
-        this.domestic = profile.getDomestic();
-        this.telecom = profile.getTelecom();
+
+        this.phone = phoneVerification.getPhone();
+        this.phoneVerified = phoneVerification.isPhoneVerified();
+        this.phoneVerifiedStatus = phoneVerification.getPhoneVerifiedStatus();
+        this.dateOfBirth = phoneVerification.getDateOfBirth();
+        this.gender = phoneVerification.getGender();
+        this.domestic = phoneVerification.getDomestic();
+        this.telecom = phoneVerification.getTelecom();
+
+        this.photoId = documentVerification.getPhotoId();
+        this.card = documentVerification.getCard();
+        this.documentVerified = documentVerification.isDocumentVerified();
     }
 }
