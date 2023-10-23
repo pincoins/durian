@@ -2,16 +2,12 @@ package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
-import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
-import kr.pincoin.durian.auth.domain.converter.ProfileGender;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,30 +19,17 @@ public class Profile extends BaseDateTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone")
-    private String phone;
-
     @Column(name = "address")
     private String address;
 
-    @Column(name = "phone_verified")
-    private boolean phoneVerified;
+    @Embedded
+    private PhoneVerification phoneVerification;
 
-    @Column(name = "phone_verified_status")
-    @Enumerated(value = EnumType.STRING)
-    private PhoneVerifiedStatus phoneVerifiedStatus;
-
-    @Column(name = "document_verified")
-    private boolean documentVerified;
+    @Embedded
+    private DocumentVerification documentVerification;
 
     @Column(name = "allow_order")
     private boolean allowOrder;
-
-    @Column(name = "photo_id")
-    private String photoId;
-
-    @Column(name = "card")
-    private String card;
 
     @Column(name = "total_order_count")
     private Integer totalOrderCount;
@@ -81,20 +64,6 @@ public class Profile extends BaseDateTime {
     @Column(name = "memo")
     private String memo;
 
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @Column(name = "gender")
-    @Enumerated(value = EnumType.STRING)
-    private ProfileGender gender;
-
-    @Column(name = "domestic")
-    @Enumerated(value = EnumType.STRING)
-    private ProfileDomestic domestic;
-
-    @Column(name = "telecom")
-    private String telecom;
-
     @OneToOne(optional = false,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -102,9 +71,8 @@ public class Profile extends BaseDateTime {
     private User user;
 
     public Profile(User user,
-                   boolean phoneVerified,
-                   PhoneVerifiedStatus phoneVerifiedStatus,
-                   boolean documentVerified,
+                   PhoneVerification phoneVerification,
+                   DocumentVerification documentVerification,
                    boolean allowOrder,
                    boolean notPurchasedMonths,
                    Integer totalOrderCount,
@@ -114,10 +82,8 @@ public class Profile extends BaseDateTime {
                    BigDecimal averagePrice,
                    BigDecimal mileage) {
         this.user = user;
-
-        this.phoneVerified = phoneVerified;
-        this.phoneVerifiedStatus = phoneVerifiedStatus;
-        this.documentVerified = documentVerified;
+        this.phoneVerification = phoneVerification;
+        this.documentVerification = documentVerification;
         this.allowOrder = allowOrder;
         this.notPurchasedMonths = notPurchasedMonths;
         this.totalOrderCount = totalOrderCount;
@@ -128,11 +94,12 @@ public class Profile extends BaseDateTime {
         this.mileage = mileage;
     }
 
-    public Profile(User user) {
+    public Profile(User user,
+                   PhoneVerification phoneVerification,
+                   DocumentVerification documentVerification) {
         this(user,
-             false,
-             PhoneVerifiedStatus.UNVERIFIED,
-             false,
+             phoneVerification,
+             documentVerification,
              false,
              false,
              0,
