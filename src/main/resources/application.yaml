@@ -16,9 +16,10 @@ spring:
     hibernate.ddl-auto: validate # validate, create, create-drop., update, none
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true
-    show-sql: true
     properties:
-      hibernate.format_sql: true
+      hibernate:
+        format_sql: true
+        show_sql: true
   web.resources.add-mappings: false # resolves NoHandlerFoundException
   mvc.throw-exception-if-no-handler-found: true # resolves NoHandlerFoundException
 
