@@ -16,9 +16,12 @@ spring:
     hibernate.ddl-auto: validate # validate, create, create-drop., update, none
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true
-    show-sql: true
     properties:
-      hibernate.format_sql: true
+      hibernate:
+        format_sql: true
+        show_sql: true
+        highlight_sql: true
+        use_sql_comments: true
   web.resources.add-mappings: false # resolves NoHandlerFoundException
   mvc.throw-exception-if-no-handler-found: true # resolves NoHandlerFoundException
 
@@ -35,6 +38,8 @@ logging:
   #    name: logs/spring.log
   level:
     kr.pincoin.durian: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE # show binding parameters (Spring boot 3+ and Hibernate 6+)
 
 auth:
   jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
