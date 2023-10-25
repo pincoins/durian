@@ -1,0 +1,56 @@
+spring:
+  application.name: durian
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:tcp://localhost/~/durian"
+    username: sa
+    password: pass
+#    hikari:
+#      connectionInitSql: "SET NAMES utf8mb4"
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jpa:
+    open-in-view: false # database queries may be performed during view rendering if true
+    hibernate.ddl-auto: create # validate, create, create-drop., update, none
+    # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
+    # generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        # show_sql: true # show sql in stdout
+        highlight_sql: true
+        use_sql_comments: true
+  web.resources.add-mappings: false # resolves NoHandlerFoundException
+  mvc.throw-exception-if-no-handler-found: true # resolves NoHandlerFoundException
+
+security-config:
+  content-security-policy: default-src 'none'
+  cors:
+    origins: "*"
+    headers: "*"
+    methods: "*"
+    allow-credentials: true
+
+logging:
+  #  file:
+  #    name: logs/spring.log
+  level:
+    kr.pincoin.durian: DEBUG
+    org.hibernate.SQL: DEBUG # show sql in logger
+    org.hibernate.orm.jdbc.bind: TRACE # show binding parameters (Spring boot 3+ and Hibernate 6+)
+
+auth:
+  jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
+
+aligo:
+  api-key: api-key
+  user-id: user-id
+  sender: 01012341234
+
+mailgun:
+  api-key: api-key
+
+line-notify:
+  token: access-token
