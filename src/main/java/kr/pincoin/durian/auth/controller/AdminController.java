@@ -6,6 +6,7 @@ import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.AdminService;
 import kr.pincoin.durian.common.exception.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/admins")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class AdminController {
     private final AdminService adminService;
-
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
 
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>

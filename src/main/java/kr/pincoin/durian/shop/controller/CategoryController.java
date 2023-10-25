@@ -6,6 +6,7 @@ import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.dto.CategoryCreateRequest;
 import kr.pincoin.durian.shop.dto.CategoryResponse;
 import kr.pincoin.durian.shop.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("")
     public ResponseEntity<List<CategoryResponse>>

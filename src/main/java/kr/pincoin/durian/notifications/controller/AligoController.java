@@ -5,6 +5,7 @@ import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.notifications.dto.AligoSendRequest;
 import kr.pincoin.durian.notifications.dto.AligoSendResponse;
 import kr.pincoin.durian.notifications.service.AligoService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/aligo")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class AligoController {
     private final AligoService aligoService;
-
-    public AligoController(AligoService aligoService) {
-        this.aligoService = aligoService;
-    }
 
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")

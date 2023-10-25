@@ -5,6 +5,7 @@ import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.notifications.dto.LineNotifyRequest;
 import kr.pincoin.durian.notifications.dto.LineNotifyResponse;
 import kr.pincoin.durian.notifications.service.LineNotifyService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/line-notify")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class LineNotifyController {
     private final LineNotifyService lineNotifyService;
-
-    public LineNotifyController(LineNotifyService lineNotifyService) {
-        this.lineNotifyService = lineNotifyService;
-    }
 
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")

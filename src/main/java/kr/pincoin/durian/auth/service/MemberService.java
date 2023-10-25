@@ -13,6 +13,7 @@ import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Slf4j
 public class MemberService {
     private final UserRepository userRepository;
@@ -33,14 +35,6 @@ public class MemberService {
     private final ProfileRepository profileRepository;
 
     private final PasswordEncoder passwordEncoder;
-
-    public MemberService(UserRepository userRepository,
-                         ProfileRepository profileRepository,
-                         PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<UserProfileResult>

@@ -7,6 +7,7 @@ import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.service.StaffService;
 import kr.pincoin.durian.common.exception.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/staffs")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class StaffController {
     private final StaffService staffService;
-
-    public StaffController(StaffService staffService) {
-        this.staffService = staffService;
-    }
 
     @GetMapping("")
     public ResponseEntity<List<UserResponse>>

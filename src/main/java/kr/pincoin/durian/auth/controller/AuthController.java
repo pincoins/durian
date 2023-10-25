@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.dto.*;
 import kr.pincoin.durian.auth.service.AuthService;
 import kr.pincoin.durian.common.exception.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class AuthController {
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
