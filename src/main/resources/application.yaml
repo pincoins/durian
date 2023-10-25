@@ -19,7 +19,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+        # show_sql: true # show sql in stdout
         highlight_sql: true
         use_sql_comments: true
   web.resources.add-mappings: false # resolves NoHandlerFoundException
@@ -38,7 +38,7 @@ logging:
   #    name: logs/spring.log
   level:
     kr.pincoin.durian: DEBUG
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: DEBUG # show sql in logger
     org.hibernate.orm.jdbc.bind: TRACE # show binding parameters (Spring boot 3+ and Hibernate 6+)
 
 auth:

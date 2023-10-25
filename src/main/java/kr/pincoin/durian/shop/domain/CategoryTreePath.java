@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class CategoryTreePath extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_tree_path_id")
     private Long id;
 
     @ManyToOne(optional = false,

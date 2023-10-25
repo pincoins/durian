@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserResponse {
-    @JsonProperty("id")
+    @JsonProperty("userId")
     private Long id;
 
     @JsonProperty("username")

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class Voucher extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "voucher_id")
     private Long id;
 
     @Column(name = "is_removed")

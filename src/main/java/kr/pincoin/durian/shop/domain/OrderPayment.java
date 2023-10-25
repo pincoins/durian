@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class OrderPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_payment_id")
     private Long id;
 
     @Column(name = "account")

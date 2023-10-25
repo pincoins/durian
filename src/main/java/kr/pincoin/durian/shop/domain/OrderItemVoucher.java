@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class OrderItemVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_voucher_id")
     private Long id;
 
     @Column(name = "code")

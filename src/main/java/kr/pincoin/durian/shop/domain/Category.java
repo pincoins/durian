@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 public class Category extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long id;
 
     @Column(name = "title")
