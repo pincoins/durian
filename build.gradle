@@ -15,6 +15,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // Found multiple occurrences of org.json.JSONObject on the class path: conflict fix
+    testImplementation {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
 }
 
 repositories {

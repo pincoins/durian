@@ -2,7 +2,7 @@ spring:
   application.name: durian
   datasource:
     driver-class-name: org.h2.Driver
-    url: "jdbc:h2:tcp://localhost/~/durian"
+    url: "jdbc:h2:tcp://localhost/~/durian;NON_KEYWORDS=USER,ORDER"
     username: sa
     password: pass
 #    hikari:
@@ -13,7 +13,7 @@ spring:
       port: 6379
   jpa:
     open-in-view: false # database queries may be performed during view rendering if true
-    hibernate.ddl-auto: create # validate, create, create-drop., update, none
+    hibernate.ddl-auto: create-drop # validate, create, create-drop., update, none
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true
     properties:
