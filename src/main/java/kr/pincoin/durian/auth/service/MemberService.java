@@ -72,7 +72,6 @@ public class MemberService {
             " or hasRole('USER') and @identity.isOwner(#userId)")
     public boolean
     deleteMember(Long userId) {
-        log.warn("delete {}", userId);
         return userRepository.findMember(userId, Arrays.asList(UserStatus.PENDING,
                                                                UserStatus.INACTIVE,
                                                                UserStatus.UNREGISTERED))
@@ -96,7 +95,6 @@ public class MemberService {
                                                     List.of("Member does not exist to approve.")));
         User user = result.getUser();
         user.approve();
-        userRepository.save(user);
 
         return Optional.of(result);
     }
@@ -113,7 +111,6 @@ public class MemberService {
 
         User user = result.getUser();
         user.inactivate();
-        userRepository.save(user);
 
         return Optional.of(result);
     }
@@ -131,7 +128,6 @@ public class MemberService {
 
         User user = result.getUser();
         user.activate();
-        userRepository.save(user);
 
         return Optional.of(result);
     }
@@ -149,7 +145,6 @@ public class MemberService {
 
         User user = result.getUser();
         user.unregister();
-        userRepository.save(user);
 
         return Optional.of(result);
     }
@@ -167,7 +162,6 @@ public class MemberService {
 
         User user = result.getUser();
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
 
         return Optional.of(result);
     }

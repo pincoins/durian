@@ -91,7 +91,7 @@ public class AuthService {
 
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
 
-        return Optional.of(userRepository.save(user));
+        return Optional.of(user);
     }
 
     private AccessTokenResponse

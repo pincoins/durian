@@ -82,6 +82,6 @@ public class StaffService {
 
         staff.changePassword(passwordEncoder.encode(request.getNewPassword()));
 
-        return Optional.of(userRepository.save(staff));
+        return Optional.of(staff);
     }
 }
