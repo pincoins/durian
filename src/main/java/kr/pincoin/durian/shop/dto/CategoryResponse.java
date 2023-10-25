@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryResponse {
-    @JsonProperty("id")
+    @JsonProperty("categoryId")
     private Long id;
 
     @JsonProperty("title")

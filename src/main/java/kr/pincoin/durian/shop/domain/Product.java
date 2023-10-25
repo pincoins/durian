@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 public class Product extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     @Column(name = "is_removed")

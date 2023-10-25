@@ -13,7 +13,7 @@ import static kr.pincoin.durian.auth.dto.UserCreateRequest.PASSWORD_PATTERN;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChangePasswordRequest {
-    @JsonProperty("id")
+    @JsonProperty("userId")
     @NotNull
     private Long userId;
 

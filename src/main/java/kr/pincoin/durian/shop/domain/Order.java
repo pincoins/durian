@@ -19,13 +19,14 @@ import java.math.BigDecimal;
 public class Order extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
 
     @Column(name = "is_removed")
     private boolean removed;
 
-    @Column(name = "order_id", columnDefinition = "char")
-    private String orderId;
+    @Column(name = "order_uuid", columnDefinition = "char")
+    private String orderUuid;
 
     @Column(name = "fullname")
     private String fullName;

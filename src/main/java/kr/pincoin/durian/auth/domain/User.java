@@ -22,6 +22,7 @@ import java.util.UUID;
 public class User extends BaseDateTime implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "username")
