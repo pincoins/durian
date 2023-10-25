@@ -6,16 +6,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.QCategory;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
-
-    public CategoryRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
 
     @Override
     public List<Category> findCategories() {

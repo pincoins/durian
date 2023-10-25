@@ -10,18 +10,16 @@ import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Slf4j
 public class UserRepositoryImpl implements UserRepositoryQuery {
     private final JPAQueryFactory queryFactory;
-
-    public UserRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
 
     @Override
     public Optional<User> findUser(String email, UserStatus status) {

@@ -5,6 +5,7 @@ import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.notifications.dto.MailgunSendRequest;
 import kr.pincoin.durian.notifications.dto.MailgunSendResponse;
 import kr.pincoin.durian.notifications.service.MailgunService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/mailgun")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class MailgunController {
     private final MailgunService mailgunService;
-
-    public MailgunController(MailgunService mailgunService) {
-        this.mailgunService = mailgunService;
-    }
 
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")

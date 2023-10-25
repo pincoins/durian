@@ -8,6 +8,7 @@ import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.service.MemberService;
 import kr.pincoin.durian.common.exception.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     @GetMapping("")
     public ResponseEntity<List<UserProfileResponse>>
