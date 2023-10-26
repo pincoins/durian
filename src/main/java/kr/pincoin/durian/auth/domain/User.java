@@ -45,12 +45,40 @@ public class User extends BaseDateTime implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public User(String username, String password, String name, String email, UserStatus status) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.status = status;
+    public User(Builder builder) {
+        this.username = builder.username;
+        this.password = builder.password;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.status = builder.status;
+    }
+
+    public static class Builder {
+        private final String username;
+
+        private final String password;
+
+        private final String name;
+
+        private final String email;
+
+        private UserStatus status;
+
+        public Builder(String username, String password, String name, String email) {
+            this.username = username;
+            this.password = password;
+            this.name = name;
+            this.email = email;
+        }
+
+        public Builder status(UserStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
     }
 
     public void changePassword(String password) {

@@ -4,7 +4,9 @@ import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.domain.converter.*;
+import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
+import kr.pincoin.durian.auth.domain.converter.Role;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
@@ -50,11 +52,13 @@ public class MemberService {
     @Transactional
     public UserProfileResult
     createMember(UserCreateRequest request) {
-        User member = new User(request.getUsername(),
-                                                   passwordEncoder.encode(request.getPassword()),
-                                                   request.getName(),
-                                                   request.getEmail(),
-                                                   UserStatus.PENDING)
+        User member = new User
+                .Builder(request.getUsername(),
+                         passwordEncoder.encode(request.getPassword()),
+                         request.getName(),
+                         request.getEmail())
+                .status(UserStatus.PENDING)
+                .build()
                 .grant(Role.MEMBER);
 
         // user entity is persisted in cascade.
