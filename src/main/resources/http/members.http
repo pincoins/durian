@@ -20,26 +20,26 @@ Content-Type: application/json
 }
 
 ### Member Delete
-DELETE http://localhost:8080/members/11
+DELETE http://localhost:8080/members/{{memberId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Member Approve
-PUT http://localhost:8080/members/11/approve
+PUT http://localhost:8080/members/{{memberId}}/approve
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Member Inactivate
-PUT http://localhost:8080/members/11/inactivate
+PUT http://localhost:8080/members/{{memberId}}/inactivate
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Member Activate
-PUT http://localhost:8080/members/11/activate
+PUT http://localhost:8080/members/{{memberId}}/activate
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Member Unregister
-PUT http://localhost:8080/members/11/unregister
+PUT http://localhost:8080/members/{{memberId}}/unregister
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

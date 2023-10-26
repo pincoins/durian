@@ -50,7 +50,6 @@ public class CategoryService {
                                                     "Category not found",
                                                     List.of("Category does not exist to hide.")));
         category.hide();
-        categoryRepository.save(category);
 
         return Optional.of(category);
     }
@@ -66,7 +65,6 @@ public class CategoryService {
                                                     List.of("Category does not exist to show.")));
 
         category.show();
-        categoryRepository.save(category);
 
         return Optional.of(category);
     }
