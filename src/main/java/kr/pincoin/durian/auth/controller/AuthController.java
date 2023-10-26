@@ -1,7 +1,10 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
-import kr.pincoin.durian.auth.dto.*;
+import kr.pincoin.durian.auth.dto.AccessTokenResponse;
+import kr.pincoin.durian.auth.dto.PasswordGrantRequest;
+import kr.pincoin.durian.auth.dto.RefreshTokenRequest;
+import kr.pincoin.durian.auth.dto.UserChangePasswordRequest;
 import kr.pincoin.durian.auth.service.AuthService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -50,13 +53,10 @@ public class AuthController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<UserResponse>
+    public ResponseEntity<Boolean>
     userPasswordChange(@Valid @RequestBody UserChangePasswordRequest request) {
-        return authService.changePassword(request.getUserId(), request)
-                .map(user -> ResponseEntity.ok().body(
-                        new UserResponse(user)))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "User not found",
-                                                    List.of("Failed to change user password.")));
+        log.warn("{} {} {}", request.getUserId(), request.getNewPassword(), request.getOldPassword());
+        boolean result = authService.changePassword(request.getUserId(), request);
+        return ResponseEntity.ok().body(result);
     }
 }

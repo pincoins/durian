@@ -74,7 +74,7 @@ public class AuthService {
 
     @Transactional
     @PreAuthorize("isAuthenticated() and @identity.isOwner(#userId)")
-    public Optional<User>
+    public boolean
     changePassword(Long userId,
                    UserChangePasswordRequest request) {
         User user = userRepository
@@ -91,7 +91,7 @@ public class AuthService {
 
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
 
-        return Optional.of(user);
+        return true;
     }
 
     private AccessTokenResponse
