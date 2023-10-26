@@ -2,6 +2,7 @@ package kr.pincoin.durian.auth.repository.jpa;
 
 
 import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,14 @@ class UserRepositoryTest {
 
     @Test
     void addUser() {
-        User user = new User("username",
-                             "password",
-                             "john",
-                             "test@example.com",
-                             UserStatus.NORMAL);
+        User user = new User
+                .Builder("username",
+                         "password",
+                         "john",
+                         "test@example.com")
+                .status(UserStatus.NORMAL)
+                .build()
+                .grant(Role.MEMBER);
 
         // `user` entity is new/transient.
         assertThat(user.getId()).isNull();
@@ -52,11 +56,14 @@ class UserRepositoryTest {
 
     @Test
     void inactivateUser() {
-        User user = new User("username",
-                             "password",
-                             "john",
-                             "test@example.com",
-                             UserStatus.NORMAL);
+        User user = new User
+                .Builder("username",
+                         "password",
+                         "john",
+                         "test@example.com")
+                .status(UserStatus.NORMAL)
+                .build()
+                .grant(Role.MEMBER);
 
         userRepository.save(user).inactivate();
 

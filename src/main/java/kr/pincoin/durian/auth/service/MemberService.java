@@ -52,22 +52,21 @@ public class MemberService {
     @Transactional
     public UserProfileResult
     createMember(UserCreateRequest request) {
-        User member = new User
-                .Builder(request.getUsername(),
-                         passwordEncoder.encode(request.getPassword()),
-                         request.getName(),
-                         request.getEmail())
+        User member = new User.Builder(request.getUsername(),
+                                       passwordEncoder.encode(request.getPassword()),
+                                       request.getName(),
+                                       request.getEmail())
                 .status(UserStatus.PENDING)
                 .build()
                 .grant(Role.MEMBER);
 
-        // user entity is persisted in cascade.
-        Profile profile = profileRepository.save(new Profile(member,
-                                                             new PhoneVerification(false,
-                                                                                   PhoneVerifiedStatus.UNVERIFIED),
-                                                             new DocumentVerification(false)));
+        Profile profile = new Profile.Builder(member,
+                                              new PhoneVerification(false,
+                                                                    PhoneVerifiedStatus.UNVERIFIED),
+                                              new DocumentVerification(false))
+                .build();
 
-        return new UserProfileResult(member, profile);
+        return new UserProfileResult(member, profile); // user entity is persisted in cascade.
     }
 
     @Transactional

@@ -73,43 +73,102 @@ public class Profile extends BaseDateTime {
     @NotNull
     private User user;
 
-    public Profile(User user,
-                   PhoneVerification phoneVerification,
-                   DocumentVerification documentVerification,
-                   boolean allowOrder,
-                   boolean notPurchasedMonths,
-                   Integer totalOrderCount,
-                   BigDecimal maxPrice,
-                   BigDecimal totalListPrice,
-                   BigDecimal totalSellingPrice,
-                   BigDecimal averagePrice,
-                   BigDecimal mileage) {
-        this.user = user;
-        this.phoneVerification = phoneVerification;
-        this.documentVerification = documentVerification;
-        this.allowOrder = allowOrder;
-        this.notPurchasedMonths = notPurchasedMonths;
-        this.totalOrderCount = totalOrderCount;
-        this.maxPrice = maxPrice;
-        this.totalListPrice = totalListPrice;
-        this.totalSellingPrice = totalSellingPrice;
-        this.averagePrice = averagePrice;
-        this.mileage = mileage;
+    public Profile(Builder builder) {
+        this.user = builder.user;
+        this.phoneVerification = builder.phoneVerification;
+        this.documentVerification = builder.documentVerification;
+        this.allowOrder = builder.allowOrder;
+        this.notPurchasedMonths = builder.notPurchasedMonths;
+        this.totalOrderCount = builder.totalOrderCount;
+        this.maxPrice = builder.maxPrice;
+        this.totalListPrice = builder.totalListPrice;
+        this.totalSellingPrice = builder.totalSellingPrice;
+        this.averagePrice = builder.averagePrice;
+        this.mileage = builder.mileage;
     }
 
-    public Profile(User user,
-                   PhoneVerification phoneVerification,
-                   DocumentVerification documentVerification) {
-        this(user,
-             phoneVerification,
-             documentVerification,
-             false,
-             false,
-             0,
-             BigDecimal.ZERO,
-             BigDecimal.ZERO,
-             BigDecimal.ZERO,
-             BigDecimal.ZERO,
-             BigDecimal.ZERO);
+    public static class Builder {
+        private final User user;
+
+        private final PhoneVerification phoneVerification;
+
+        private final DocumentVerification documentVerification;
+
+        private boolean allowOrder;
+
+        private boolean notPurchasedMonths;
+
+        private Integer totalOrderCount;
+
+        private BigDecimal maxPrice;
+
+        private BigDecimal totalListPrice;
+
+        private BigDecimal totalSellingPrice;
+
+        private BigDecimal averagePrice;
+
+        private BigDecimal mileage;
+
+        public Builder(User user,
+                       PhoneVerification phoneVerification,
+                       DocumentVerification documentVerification) {
+            this.user = user;
+            this.phoneVerification = phoneVerification;
+            this.documentVerification = documentVerification;
+
+            this.allowOrder = false;
+            this.notPurchasedMonths = false;
+            this.totalOrderCount = 0;
+            this.maxPrice = BigDecimal.ZERO;
+            this.totalListPrice = BigDecimal.ZERO;
+            this.totalSellingPrice = BigDecimal.ZERO;
+            this.averagePrice = BigDecimal.ZERO;
+            this.mileage = BigDecimal.ZERO;
+        }
+
+        public Builder allowOrder(boolean allowOrder) {
+            this.allowOrder = allowOrder;
+            return this;
+        }
+
+        public Builder notPurchasedMonths(boolean notPurchasedMonths) {
+            this.notPurchasedMonths = notPurchasedMonths;
+            return this;
+        }
+
+        public Builder totalOrderCount(Integer totalOrderCount) {
+            this.totalOrderCount = totalOrderCount;
+            return this;
+        }
+
+        public Builder maxPrice(BigDecimal maxPrice) {
+            this.maxPrice = maxPrice;
+            return this;
+        }
+
+        public Builder totalListPrice(BigDecimal totalListPrice) {
+            this.totalListPrice = totalListPrice;
+            return this;
+        }
+
+        public Builder totalSellingPrice(BigDecimal totalSellingPrice) {
+            this.totalSellingPrice = totalSellingPrice;
+            return this;
+        }
+
+        public Builder averagePrice(BigDecimal averagePrice) {
+            this.averagePrice = averagePrice;
+            return this;
+        }
+
+        public Builder mileage(BigDecimal mileage) {
+            this.mileage = mileage;
+            return this;
+        }
+
+        public Profile build() {
+            return new Profile(this);
+        }
     }
 }
