@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
 import kr.pincoin.durian.auth.domain.converter.ProfileGender;
 import lombok.AccessLevel;
@@ -19,29 +19,39 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserProfileResponse extends UserResponse {
-    @JsonProperty("phone")
-    private String phone;
-
     @JsonProperty("address")
     private String address;
 
-    @JsonProperty("phoneVerified")
-    private boolean phoneVerified;
+    @JsonProperty("phone")
+    private String phone;
+
+    @JsonProperty("dateOfBirth")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
+
+    @JsonProperty("gender")
+    private ProfileGender gender;
+
+    @JsonProperty("domestic")
+    private ProfileDomestic domestic;
+
+    @JsonProperty("telecom")
+    private String telecom;
 
     @JsonProperty("phoneVerifiedStatus")
-    private PhoneVerifiedStatus phoneVerifiedStatus;
-
-    @JsonProperty("documentVerified")
-    private boolean documentVerified;
-
-    @JsonProperty("allowOrder")
-    private boolean allowOrder;
+    private VerificationStatus phoneVerifiedStatus;
 
     @JsonProperty("photoId")
     private String photoId;
 
     @JsonProperty("card")
     private String card;
+
+    @JsonProperty("documentVerifiedStatus")
+    private VerificationStatus documentVerifiedStatus;
+
+    @JsonProperty("allowOrder")
+    private boolean allowOrder;
 
     @JsonProperty("totalOrderCount")
     private Integer totalOrderCount;
@@ -79,19 +89,6 @@ public class UserProfileResponse extends UserResponse {
     @JsonProperty("memo")
     private String memo;
 
-    @JsonProperty("dateOfBirth")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateOfBirth;
-
-    @JsonProperty("gender")
-    private ProfileGender gender;
-
-    @JsonProperty("domestic")
-    private ProfileDomestic domestic;
-
-    @JsonProperty("telecom")
-    private String telecom;
-
     public UserProfileResponse(UserProfileResult result) {
         super(result.getUser());
 
@@ -100,6 +97,18 @@ public class UserProfileResponse extends UserResponse {
         DocumentVerification documentVerification = profile.getDocumentVerification();
 
         this.address = profile.getAddress();
+
+        this.phone = phoneVerification.getPhone();
+        this.dateOfBirth = phoneVerification.getDateOfBirth();
+        this.gender = phoneVerification.getGender();
+        this.domestic = phoneVerification.getDomestic();
+        this.telecom = phoneVerification.getTelecom();
+        this.phoneVerifiedStatus = phoneVerification.getPhoneVerifiedStatus();
+
+        this.photoId = documentVerification.getPhotoId();
+        this.card = documentVerification.getCard();
+        this.documentVerifiedStatus = documentVerification.getDocumentVerifiedStatus();
+
         this.allowOrder = profile.isAllowOrder();
         this.totalOrderCount = profile.getTotalOrderCount();
         this.firstPurchased = profile.getFirstPurchased();
@@ -112,17 +121,5 @@ public class UserProfileResponse extends UserResponse {
         this.averagePrice = profile.getAveragePrice();
         this.mileage = profile.getMileage();
         this.memo = profile.getMemo();
-
-        this.phone = phoneVerification.getPhone();
-        this.phoneVerified = phoneVerification.isPhoneVerified();
-        this.phoneVerifiedStatus = phoneVerification.getPhoneVerifiedStatus();
-        this.dateOfBirth = phoneVerification.getDateOfBirth();
-        this.gender = phoneVerification.getGender();
-        this.domestic = phoneVerification.getDomestic();
-        this.telecom = phoneVerification.getTelecom();
-
-        this.photoId = documentVerification.getPhotoId();
-        this.card = documentVerification.getCard();
-        this.documentVerified = documentVerification.isDocumentVerified();
     }
 }

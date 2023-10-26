@@ -4,9 +4,9 @@ import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
@@ -61,9 +61,8 @@ public class MemberService {
                 .grant(Role.MEMBER);
 
         Profile profile = new Profile.Builder(member,
-                                              new PhoneVerification(false,
-                                                                    PhoneVerifiedStatus.UNVERIFIED),
-                                              new DocumentVerification(false))
+                                              new PhoneVerification(VerificationStatus.UNVERIFIED),
+                                              new DocumentVerification(VerificationStatus.UNVERIFIED))
                 .build();
 
         return new UserProfileResult(member, profile); // user entity is persisted in cascade.

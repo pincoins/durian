@@ -1,6 +1,6 @@
 package kr.pincoin.durian.common.config;
 
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatusRequestConverter;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatusRequestConverter;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomesticRequestConverter;
 import kr.pincoin.durian.auth.domain.converter.ProfileGenderRequestConverter;
 import kr.pincoin.durian.shop.domain.conveter.*;
@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         // Using converters with @RequestParam
 
         // auth converters
-        registry.addConverter(new PhoneVerifiedStatusRequestConverter());
+        registry.addConverter(new VerificationStatusRequestConverter());
         registry.addConverter(new ProfileDomesticRequestConverter());
         registry.addConverter(new ProfileGenderRequestConverter());
 

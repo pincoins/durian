@@ -4,9 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
 import kr.pincoin.durian.auth.domain.converter.ProfileGender;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +20,9 @@ public class PhoneVerification {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "phone_verified")
-    private boolean phoneVerified;
-
     @Column(name = "phone_verified_status")
     @Enumerated(value = EnumType.STRING)
-    private PhoneVerifiedStatus phoneVerifiedStatus;
+    private VerificationStatus phoneVerifiedStatus;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -41,9 +38,22 @@ public class PhoneVerification {
     @Column(name = "telecom")
     private String telecom;
 
-    public PhoneVerification(boolean phoneVerified,
-                             PhoneVerifiedStatus phoneVerifiedStatus) {
-        this.phoneVerified = phoneVerified;
+    public PhoneVerification(VerificationStatus phoneVerifiedStatus) {
         this.phoneVerifiedStatus = phoneVerifiedStatus;
+    }
+
+    public PhoneVerification verify() {
+        this.phoneVerifiedStatus = VerificationStatus.VERIFIED;
+        return this;
+    }
+
+    public PhoneVerification reject() {
+        this.phoneVerifiedStatus = VerificationStatus.UNVERIFIED;
+        return this;
+    }
+
+    public PhoneVerification revoke() {
+        this.phoneVerifiedStatus = VerificationStatus.REVOKED;
+        return this;
     }
 }
