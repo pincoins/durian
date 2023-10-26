@@ -45,12 +45,16 @@ public class StaffService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createStaff(UserCreateRequest request) {
-        User user = userRepository.save(new User(request.getUsername(),
-                                                 passwordEncoder.encode(request.getPassword()),
-                                                 request.getName(),
-                                                 request.getEmail(),
-                                                 UserStatus.NORMAL)
-                                                .grant(Role.STAFF));
+        User user = new User
+                .Builder(request.getUsername(),
+                         passwordEncoder.encode(request.getPassword()),
+                         request.getName(),
+                         request.getEmail())
+                .status(UserStatus.NORMAL)
+                .build()
+                .grant(Role.STAFF);
+
+        userRepository.save(user);
 
         return new UserResponse(user);
     }
