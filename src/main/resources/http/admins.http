@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Admin Detail
-GET http://localhost:8080/admins/1
+GET http://localhost:8080/admins/{{adminId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -20,6 +20,6 @@ Content-Type: application/json
 }
 
 ### Admin Delete
-DELETE http://localhost:8080/admins/3
+DELETE http://localhost:8080/admins/{{adminId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

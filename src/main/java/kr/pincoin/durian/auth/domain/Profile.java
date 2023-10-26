@@ -66,7 +66,9 @@ public class Profile extends BaseDateTime {
     private String memo;
 
     @OneToOne(optional = false,
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;

@@ -4,9 +4,7 @@ import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.domain.converter.PhoneVerifiedStatus;
-import kr.pincoin.durian.auth.domain.converter.Role;
-import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.domain.converter.*;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserProfileResult;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
@@ -52,13 +50,14 @@ public class MemberService {
     @Transactional
     public UserProfileResult
     createMember(UserCreateRequest request) {
-        User member = userRepository.save(new User(request.getUsername(),
+        User member = new User(request.getUsername(),
                                                    passwordEncoder.encode(request.getPassword()),
                                                    request.getName(),
                                                    request.getEmail(),
-                                                   UserStatus.NORMAL)
-                                                  .grant(Role.MEMBER));
+                                                   UserStatus.PENDING)
+                .grant(Role.MEMBER);
 
+        // user entity is persisted in cascade.
         Profile profile = profileRepository.save(new Profile(member,
                                                              new PhoneVerification(false,
                                                                                    PhoneVerifiedStatus.UNVERIFIED),
@@ -76,8 +75,7 @@ public class MemberService {
                                                                UserStatus.INACTIVE,
                                                                UserStatus.UNREGISTERED))
                 .map(result -> {
-                    profileRepository.deleteByUserId(userId);
-                    userRepository.deleteById(userId);
+                    profileRepository.delete(result.getProfile()); // user entity is deleted in cascade.
                     return true;
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Member not found",

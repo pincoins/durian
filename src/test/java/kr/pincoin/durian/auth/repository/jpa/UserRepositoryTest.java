@@ -60,8 +60,7 @@ class UserRepositoryTest {
 
         userRepository.save(user).inactivate();
 
-        // em.flush();
-        // em.clear();
+        // It syncs without `em.flush(); em.clear();`.
 
         Optional<User> userFound = userRepository.findUser(user.getId(), UserStatus.INACTIVE);
 
