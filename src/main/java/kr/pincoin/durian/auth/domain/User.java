@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.common.domain.BaseDateTime;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +15,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "user")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class User extends BaseDateTime implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,40 +45,15 @@ public class User extends BaseDateTime implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public User(Builder builder) {
-        this.username = builder.username;
-        this.password = builder.password;
-        this.name = builder.name;
-        this.email = builder.email;
-        this.status = builder.status;
-    }
-
-    public static class Builder {
-        private final String username;
-
-        private final String password;
-
-        private final String name;
-
-        private final String email;
-
-        private UserStatus status;
-
-        public Builder(String username, String password, String name, String email) {
-            this.username = username;
-            this.password = password;
-            this.name = name;
-            this.email = email;
-        }
-
-        public Builder status(UserStatus status) {
-            this.status = status;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+    public static UserBuilder builder(String username,
+                                      String password,
+                                      String name,
+                                      String email) {
+        return new UserBuilder()
+                .username(username)
+                .password(password)
+                .name(name)
+                .email(email);
     }
 
     public void changePassword(String password) {

@@ -2,13 +2,14 @@ package kr.pincoin.durian.auth.repository.jpa;
 
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.dto.UserProfileResult;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryQuery {
-    Optional<User> findUser(String email, UserStatus status);
+    Optional<User> findUserByEmail(String email, UserStatus status);
+
+    Optional<User> findUserByUsername(String username, UserStatus status);
 
     Optional<User> findUser(Long id, UserStatus status);
 
@@ -16,13 +17,7 @@ public interface UserRepositoryQuery {
 
     Optional<User> findStaff(Long id, UserStatus status);
 
-    Optional<UserProfileResult> findMember(Long id, UserStatus status);
-
-    Optional<UserProfileResult> findMember(Long id, List<UserStatus> statuses);
-
     List<User> findAdmins(UserStatus status);
 
     List<User> findStaffs(UserStatus status);
-
-    List<UserProfileResult> findMembers(UserStatus status);
 }

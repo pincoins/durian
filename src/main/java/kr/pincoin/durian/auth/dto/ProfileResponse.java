@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserProfileResponse extends UserResponse {
+public class ProfileResponse extends UserResponse {
     @JsonProperty("address")
     private String address;
 
@@ -89,10 +89,9 @@ public class UserProfileResponse extends UserResponse {
     @JsonProperty("memo")
     private String memo;
 
-    public UserProfileResponse(UserProfileResult result) {
-        super(result.getUser());
+    public ProfileResponse(Profile profile) {
+        super(profile.getUser());
 
-        Profile profile = result.getProfile();
         PhoneVerification phoneVerification = profile.getPhoneVerification();
         DocumentVerification documentVerification = profile.getDocumentVerification();
 

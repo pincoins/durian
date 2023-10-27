@@ -43,16 +43,15 @@ public class AdminService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createAdmin(UserCreateRequest request) {
-        User user = new User
-                .Builder(request.getUsername(),
-                         passwordEncoder.encode(request.getPassword()),
-                         request.getName(),
-                         request.getEmail())
+        User admin = User.builder(request.getUsername(),
+                                   passwordEncoder.encode(request.getPassword()),
+                                   request.getName(),
+                                   request.getEmail())
                 .status(UserStatus.NORMAL)
-                .build()
-                .grant(Role.SYSADMIN);
+                .role(Role.SYSADMIN)
+                .build();
 
-        User admin = userRepository.save(user);
+        userRepository.save(admin);
 
         return new UserResponse(admin);
     }
