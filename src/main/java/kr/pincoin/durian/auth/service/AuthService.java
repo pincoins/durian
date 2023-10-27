@@ -40,7 +40,7 @@ public class AuthService {
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
-        User user = userRepository.findUser(request.getEmail(), UserStatus.NORMAL)
+        User user = userRepository.findUserByEmail(request.getEmail(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Authentication failed",
                                                     List.of("Your email or password is not correct.")));
