@@ -11,14 +11,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static kr.pincoin.durian.shop.domain.QCategory.category;
+
 @RequiredArgsConstructor
 public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
     public List<Category> findCategories() {
-        QCategory category = QCategory.category;
-
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category);
@@ -28,8 +28,6 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
 
     @Override
     public Optional<Category> findCategory(Long id, CategoryStatus status) {
-        QCategory category = QCategory.category;
-
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
@@ -40,14 +38,10 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     }
 
     BooleanExpression idEq(Long id) {
-        QCategory category = QCategory.category;
-
         return id != null ? category.id.eq(id) : null;
     }
 
     BooleanExpression statusEq(CategoryStatus status) {
-        QCategory category = QCategory.category;
-
         return status != null ? category.status.eq(status) : category.status.eq(CategoryStatus.NORMAL);
     }
 }
