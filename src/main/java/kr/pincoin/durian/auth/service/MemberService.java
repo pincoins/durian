@@ -52,20 +52,22 @@ public class MemberService {
     @Transactional
     public UserProfileResult
     createMember(UserCreateRequest request) {
-        User member = new User.Builder(request.getUsername(),
-                                       passwordEncoder.encode(request.getPassword()),
-                                       request.getName(),
-                                       request.getEmail())
+        User member = User.builder(request.getUsername(),
+                                   passwordEncoder.encode(request.getPassword()),
+                                   request.getName(),
+                                   request.getEmail())
                 .status(UserStatus.PENDING)
-                .build()
-                .grant(Role.MEMBER);
-
-        Profile profile = new Profile.Builder(member,
-                                              new PhoneVerification(VerificationStatus.UNVERIFIED),
-                                              new DocumentVerification(VerificationStatus.UNVERIFIED))
+                .role(Role.MEMBER)
                 .build();
 
-        return new UserProfileResult(member, profile); // user entity is persisted in cascade.
+        Profile profile = Profile.builder(member,
+                                          new PhoneVerification(VerificationStatus.UNVERIFIED),
+                                          new DocumentVerification(VerificationStatus.UNVERIFIED))
+                .build();
+
+        profileRepository.save(profile); // user entity is persisted in cascade.
+
+        return new UserProfileResult(member, profile);
     }
 
     @Transactional

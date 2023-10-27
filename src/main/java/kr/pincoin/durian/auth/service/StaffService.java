@@ -45,18 +45,17 @@ public class StaffService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public UserResponse
     createStaff(UserCreateRequest request) {
-        User user = new User
-                .Builder(request.getUsername(),
-                         passwordEncoder.encode(request.getPassword()),
-                         request.getName(),
-                         request.getEmail())
+        User staff = User.builder(request.getUsername(),
+                                  passwordEncoder.encode(request.getPassword()),
+                                  request.getName(),
+                                  request.getEmail())
                 .status(UserStatus.NORMAL)
-                .build()
-                .grant(Role.STAFF);
+                .role(Role.STAFF)
+                .build();
 
-        userRepository.save(user);
+        userRepository.save(staff);
 
-        return new UserResponse(user);
+        return new UserResponse(staff);
     }
 
     @Transactional
