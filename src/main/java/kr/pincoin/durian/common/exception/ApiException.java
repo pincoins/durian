@@ -13,7 +13,17 @@ public class ApiException extends RuntimeException {
         this.response = new ApiErrorResponse(status, message, errors);
     }
 
+    public ApiException(HttpStatus status, String message, List<String> errors, Throwable cause) {
+        super(cause);
+        this.response = new ApiErrorResponse(status, message, errors);
+    }
+
     public ApiException(HttpStatus status, String message, String error) {
+        this.response = new ApiErrorResponse(status, message, error);
+    }
+
+    public ApiException(HttpStatus status, String message, String error, Throwable cause) {
+        super(cause);
         this.response = new ApiErrorResponse(status, message, error);
     }
 }

@@ -12,7 +12,7 @@ spring:
       host: localhost
       port: 6379
   jpa:
-    open-in-view: false # database queries may be performed during view rendering if true
+    open-in-view: false # lazy loading queries may be performed during view rendering if true
     hibernate.ddl-auto: validate # validate, create, create-drop., update, none
     # `hibernate.ddl-auto` is prior to `generate-ddl`. Thus, `generate-ddl` is ignored.
     # generate-ddl: true

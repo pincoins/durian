@@ -17,7 +17,7 @@ public class IdentityService {
             return false;
         }
 
-        log.debug("{} is owner", userId);
+        log.trace("{} is owner", userId);
 
         return true;
     }
