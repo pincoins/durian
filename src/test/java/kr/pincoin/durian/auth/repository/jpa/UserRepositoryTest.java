@@ -21,14 +21,13 @@ class UserRepositoryTest {
 
     @Test
     void addUser() {
-        User user = new User
-                .Builder("username",
-                         "password",
-                         "john",
-                         "test@example.com")
+        User user = User.builder("username",
+                                 "password",
+                                 "john",
+                                 "test@example.com")
                 .status(UserStatus.NORMAL)
-                .build()
-                .grant(Role.MEMBER);
+                .role(Role.MEMBER)
+                .build();
 
         // `user` entity is new/transient.
         assertThat(user.getId()).isNull();
@@ -56,14 +55,13 @@ class UserRepositoryTest {
 
     @Test
     void inactivateUser() {
-        User user = new User
-                .Builder("username",
-                         "password",
-                         "john",
-                         "test@example.com")
+        User user = User.builder("username",
+                                 "password",
+                                 "john",
+                                 "test@example.com")
                 .status(UserStatus.NORMAL)
-                .build()
-                .grant(Role.MEMBER);
+                .role(Role.MEMBER)
+                .build();
 
         userRepository.save(user).inactivate();
 
