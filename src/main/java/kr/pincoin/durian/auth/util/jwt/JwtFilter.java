@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.jwt;
+package kr.pincoin.durian.auth.util.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,8 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static kr.pincoin.durian.auth.jwt.JwtAuthenticationEntryPoint.ERROR_401_USER_NOT_FOUND;
 
 @Slf4j
 @Component
@@ -68,7 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         // 7. Save user in context
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     } catch (UsernameNotFoundException ignored) {
-                        request.setAttribute("exception", ERROR_401_USER_NOT_FOUND);
+                        request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_USER_NOT_FOUND);
                         log.warn("{} is not found.", sub);
                     }
                 });

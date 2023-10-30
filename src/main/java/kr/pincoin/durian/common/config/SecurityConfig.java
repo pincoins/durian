@@ -1,10 +1,10 @@
 package kr.pincoin.durian.common.config;
 
 
-import kr.pincoin.durian.auth.jwt.JwtAccessDeniedHandler;
-import kr.pincoin.durian.auth.jwt.JwtAuthenticationEntryPoint;
-import kr.pincoin.durian.auth.jwt.JwtFilter;
-import kr.pincoin.durian.auth.password.DjangoPasswordEncoder;
+import kr.pincoin.durian.auth.util.jwt.JwtAccessDeniedHandler;
+import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint;
+import kr.pincoin.durian.auth.util.jwt.JwtFilter;
+import kr.pincoin.durian.auth.util.password.DjangoPasswordEncoder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
