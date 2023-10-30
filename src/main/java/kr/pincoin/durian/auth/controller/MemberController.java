@@ -1,7 +1,6 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
-import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.ProfileResponse;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
@@ -48,8 +47,8 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<ProfileResponse>
     memberCreate(@Valid @RequestBody UserCreateRequest request) {
-        Profile profile = memberService.createMember(request);
-        return ResponseEntity.ok().body(new ProfileResponse(profile));
+        ProfileResponse response = new ProfileResponse(memberService.createMember(request));
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("{userId}/approve")

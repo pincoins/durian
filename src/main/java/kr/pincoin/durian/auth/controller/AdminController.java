@@ -46,7 +46,7 @@ public class AdminController {
     @PostMapping("")
     public ResponseEntity<UserResponse>
     adminCreate(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = adminService.createAdmin(request);
+        UserResponse response = new UserResponse(adminService.createAdmin(request));
         return ResponseEntity.ok().body(response);
     }
 
