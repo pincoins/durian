@@ -22,7 +22,6 @@ public class CategoryTreePath extends BaseDateTime {
     @JoinColumn(name = "ancestor_id")
     private Category ancestor;
 
-
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "descendant_id")

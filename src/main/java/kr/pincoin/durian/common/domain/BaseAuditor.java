@@ -10,10 +10,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 @MappedSuperclass
 public abstract class BaseAuditor extends BaseDateTime {
     @CreatedBy
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false)
     private Long createdBy;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by", nullable = false)
+    @Column(name = "last_modified_by")
     private Long lastModifiedBy;
 }
