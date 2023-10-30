@@ -1,7 +1,7 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import kr.pincoin.durian.common.domain.BaseDateTime;
+import kr.pincoin.durian.common.domain.BaseAuditor;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Table(name = "product")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product extends BaseDateTime {
+public class Product extends BaseAuditor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")

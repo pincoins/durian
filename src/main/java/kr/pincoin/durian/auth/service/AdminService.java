@@ -4,7 +4,6 @@ import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,7 @@ public class AdminService {
 
     @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
-    public UserResponse
+    public User
     createAdmin(UserCreateRequest request) {
         User admin = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
@@ -53,7 +52,7 @@ public class AdminService {
 
         userRepository.save(admin);
 
-        return new UserResponse(admin);
+        return admin;
     }
 
     @Transactional

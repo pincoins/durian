@@ -47,7 +47,7 @@ public class StaffController {
     @PostMapping("")
     public ResponseEntity<UserResponse>
     staffCreate(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = staffService.createStaff(request);
+        UserResponse response = new UserResponse(staffService.createStaff(request));
         return ResponseEntity.ok().body(response);
     }
 

@@ -1,7 +1,7 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import kr.pincoin.durian.common.domain.BaseDateTime;
+import kr.pincoin.durian.common.domain.BaseAuditor;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.dto.CategoryCreateRequest;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Table(name = "category")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category extends BaseDateTime {
+public class Category extends BaseAuditor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")

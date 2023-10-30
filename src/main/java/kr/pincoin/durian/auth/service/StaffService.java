@@ -5,7 +5,6 @@ import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.dto.UserResetPasswordRequest;
-import kr.pincoin.durian.auth.dto.UserResponse;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class StaffService {
 
     @Transactional
     @PreAuthorize("hasRole('SYSADMIN')")
-    public UserResponse
+    public User
     createStaff(UserCreateRequest request) {
         User staff = User.builder(request.getUsername(),
                                   passwordEncoder.encode(request.getPassword()),
@@ -55,7 +54,7 @@ public class StaffService {
 
         userRepository.save(staff);
 
-        return new UserResponse(staff);
+        return staff;
     }
 
     @Transactional
