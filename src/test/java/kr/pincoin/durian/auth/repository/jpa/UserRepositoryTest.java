@@ -1,6 +1,8 @@
 package kr.pincoin.durian.auth.repository.jpa;
 
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
@@ -19,6 +21,9 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Test
     void addUser() {
         User user = User.builder("username",
@@ -33,6 +38,7 @@ class UserRepositoryTest {
         assertThat(user.getId()).isNull();
 
         userRepository.save(user);
+        em.clear();
 
         // `user` entity is now being managed.
         assertThat(user.getId()).isPositive();
@@ -64,6 +70,7 @@ class UserRepositoryTest {
                 .build();
 
         userRepository.save(user).inactivate();
+        em.clear();
 
         // It syncs without `em.flush(); em.clear();`.
 
