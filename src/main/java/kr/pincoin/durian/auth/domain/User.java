@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -54,6 +55,19 @@ public class User extends BaseDateTime implements UserDetails {
                 .password(password)
                 .name(name)
                 .email(email);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User member = (User) o;
+        return id != null && Objects.equals(id, member.id) && Objects.equals(username, member.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 
     public void changePassword(String password) {

@@ -72,6 +72,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.h2database:h2:2.2.224'
+    testImplementation 'org.projectlombok:lombok'
 
     // WebFlux WebClient Apple-Silicon support
     boolean isMacOS = System.getProperty("os.name").startsWith("Mac OS X") // os.name=Mac OS X

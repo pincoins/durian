@@ -1,10 +1,12 @@
 package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.domain.Category;
-import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.domain.Category;
+import kr.pincoin.durian.shop.domain.CategoryTreePath;
+import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
+import kr.pincoin.durian.shop.repository.jpa.CategoryTreePathRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
+    private final CategoryTreePathRepository categoryTreePathRepository;
+
     public List<Category>
     listCategories() {
         return categoryRepository.findCategories();
@@ -35,8 +39,33 @@ public class CategoryService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Category>
-    createCategory(CategoryCreateRequest request) {
-        Category category = categoryRepository.save(new Category(request));
+    createRootCategory(CategoryCreateRequest request) {
+        Category rootCategory = Category.builder(request).build();
+
+        categoryRepository.save(rootCategory);
+        categoryTreePathRepository.save(CategoryTreePath.builder(rootCategory, rootCategory, 0).build());
+
+        return Optional.of(rootCategory);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Category>
+    addChildCategory(Category parent, CategoryCreateRequest request) {
+        Category category = Category.builder(request).build();
+
+        List<CategoryTreePath> paths = categoryTreePathRepository.findParentAncestors(parent)
+                .stream()
+                .map(path -> CategoryTreePath.builder(path.getAncestor(),
+                                                      category,
+                                                      path.getPathLength() + 1)
+                        .build())
+                .toList();
+
+        categoryRepository.save(category);
+        categoryTreePathRepository.saveAll(paths);
+        categoryTreePathRepository.save(CategoryTreePath.builder(category, category, 0).build());
+
         return Optional.of(category);
     }
 

@@ -1,0 +1,161 @@
+package kr.pincoin.durian.shop.repository.jpa;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import kr.pincoin.durian.shop.domain.Category;
+import kr.pincoin.durian.shop.domain.CategoryTreePath;
+import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@Transactional
+@Slf4j
+class CategoryRepositoryTest {
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryTreePathRepository categoryTreePathRepository;
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Test
+    void createCategory() {
+        Category category1 = Category.builder("c1",
+                                              "slug",
+                                              "description",
+                                              "sub description",
+                                              BigDecimal.ZERO,
+                                              CategoryStatus.NORMAL).build();
+
+        categoryRepository.save(category1);
+        em.clear();
+
+        Optional<Category> category1Found = categoryRepository.findById(category1.getId());
+        assertThat(category1Found).isPresent();
+        assertThat(category1Found).hasValue(category1);
+    }
+
+    @Test
+    void addParentChild() {
+        Category parent = Category.builder("parent",
+                                           "slug",
+                                           "description",
+                                           "sub description",
+                                           BigDecimal.ZERO,
+                                           CategoryStatus.NORMAL).build();
+
+        Category child1 = Category.builder("child1",
+                                           "slug",
+                                           "description",
+                                           "sub description",
+                                           BigDecimal.ZERO,
+                                           CategoryStatus.NORMAL).build();
+
+        Category child2 = Category.builder("child2",
+                                           "slug",
+                                           "description",
+                                           "sub description",
+                                           BigDecimal.ZERO,
+                                           CategoryStatus.NORMAL).build();
+
+        parent.addChild(child1);
+        parent.addChild(child2);
+
+        assertThat(parent.getChildren().size()).isEqualTo(2);
+        assertThat(child1.getParent().isRoot()).isTrue();
+        assertThat(child1.getParent().getTitle()).isEqualTo("parent");
+        assertThat(child1.isLeaf()).isTrue();
+    }
+
+    @Test
+    void makeTree() {
+        Category root = Category.builder("root",
+                                         "slug",
+                                         "description",
+                                         "sub description",
+                                         BigDecimal.ZERO,
+                                         CategoryStatus.NORMAL).build();
+
+        Category second1 = Category.builder("second1",
+                                            "slug",
+                                            "description",
+                                            "sub description",
+                                            BigDecimal.ZERO,
+                                            CategoryStatus.NORMAL).build();
+
+        Category second2 = Category.builder("second2",
+                                            "slug",
+                                            "description",
+                                            "sub description",
+                                            BigDecimal.ZERO,
+                                            CategoryStatus.NORMAL).build();
+
+        Category third1 = Category.builder("third1",
+                                           "slug",
+                                           "description",
+                                           "sub description",
+                                           BigDecimal.ZERO,
+                                           CategoryStatus.NORMAL).build();
+
+        categoryRepository.save(root);
+        categoryTreePathRepository.save(CategoryTreePath.builder(root, root, 0).build());
+
+        // root -> second1
+        root.addChild(second1);
+        List<CategoryTreePath> pathsToRoot1 = categoryTreePathRepository.findParentAncestors(root)
+                .stream()
+                .map(path -> CategoryTreePath.builder(path.getAncestor(),
+                                                      second1,
+                                                      path.getPathLength() + 1)
+                        .build())
+                .toList();
+
+        categoryRepository.save(second1);
+        categoryTreePathRepository.saveAll(pathsToRoot1);
+        categoryTreePathRepository.save(CategoryTreePath.builder(second1, second1, 0).build());
+
+        // root -> second2
+        root.addChild(second2);
+        List<CategoryTreePath> pathsToRoot2 = categoryTreePathRepository.findParentAncestors(root)
+                .stream()
+                .map(path -> CategoryTreePath.builder(path.getAncestor(),
+                                                      second2,
+                                                      path.getPathLength() + 1)
+                        .build())
+                .toList();
+
+        categoryRepository.save(second2);
+        categoryTreePathRepository.saveAll(pathsToRoot2);
+        categoryTreePathRepository.save(CategoryTreePath.builder(second2, second2, 0).build());
+
+        // second2 -> third1
+        root.addChild(third1);
+        List<CategoryTreePath> pathsToSecond2 = categoryTreePathRepository.findParentAncestors(second2)
+                .stream()
+                .map(path -> CategoryTreePath.builder(path.getAncestor(),
+                                                      third1,
+                                                      path.getPathLength() + 1)
+                        .build())
+                .toList();
+
+        categoryRepository.save(third1);
+        categoryTreePathRepository.saveAll(pathsToSecond2);
+        categoryTreePathRepository.save(CategoryTreePath.builder(third1, third1, 0).build());
+
+        List<CategoryTreePath> all = categoryTreePathRepository.findAll();
+
+        assertThat(all.size()).isEqualTo(8);
+    }
+}

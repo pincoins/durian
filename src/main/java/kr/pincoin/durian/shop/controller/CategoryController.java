@@ -46,7 +46,7 @@ public class CategoryController {
     @PostMapping("")
     public ResponseEntity<CategoryResponse>
     categoryCreate(@Valid @RequestBody CategoryCreateRequest request) {
-        return categoryService.createCategory(request)
+        return categoryService.createRootCategory(request)
                 .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
                                                     "Role creation failure",
