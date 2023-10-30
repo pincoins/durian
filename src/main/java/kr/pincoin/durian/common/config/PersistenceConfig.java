@@ -14,11 +14,9 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.sql.DataSource;
 import java.util.Optional;
 
 @Configuration
@@ -36,16 +34,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class PersistenceConfig {
-    private final DataSource dataSource;
-
     @PersistenceContext
     private final EntityManager em;
 
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
-        // JdbcTemplate configuration
-        return new JdbcTemplate(dataSource);
-    }
+    // DataSource bean injection by Spring boot 'Auto configuration' with `application.yaml`
+
+    // JdbcTemplate bean injection by `spring-boot-starter-jdbc` (DataSource injected)
+    // Instances of the JdbcTemplate class are thread-safe, once configured.
+    // This is important because it means that you can configure a single instance of a JdbcTemplate
+    // and then safely inject this shared reference into multiple DAOs (or repositories).
+    // The JdbcTemplate is stateful, in that it maintains a reference to a DataSource,
+    // but this state is not "conversational state (stateless session)".
 
     @Bean
     public JPAQueryFactory jpaQueryFactory() {
