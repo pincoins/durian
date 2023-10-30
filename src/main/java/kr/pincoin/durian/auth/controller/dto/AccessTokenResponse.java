@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.dto;
+package kr.pincoin.durian.auth.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

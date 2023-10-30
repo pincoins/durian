@@ -2,8 +2,8 @@ package kr.pincoin.durian.notifications.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.notifications.dto.LineNotifyRequest;
-import kr.pincoin.durian.notifications.dto.LineNotifyResponse;
+import kr.pincoin.durian.notifications.controller.dto.LineNotifyRequest;
+import kr.pincoin.durian.notifications.controller.dto.LineNotifyResponse;
 import kr.pincoin.durian.notifications.service.LineNotifyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

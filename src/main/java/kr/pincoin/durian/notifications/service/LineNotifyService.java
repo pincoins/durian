@@ -1,8 +1,8 @@
 package kr.pincoin.durian.notifications.service;
 
-import kr.pincoin.durian.notifications.dto.LineNotifyRequest;
-import kr.pincoin.durian.notifications.dto.LineNotifyResponse;
-import kr.pincoin.durian.notifications.dto.LineNotifyResult;
+import kr.pincoin.durian.notifications.controller.dto.LineNotifyRequest;
+import kr.pincoin.durian.notifications.controller.dto.LineNotifyResponse;
+import kr.pincoin.durian.notifications.service.dto.LineNotifyResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

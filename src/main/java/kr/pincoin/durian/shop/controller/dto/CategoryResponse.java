@@ -1,4 +1,4 @@
-package kr.pincoin.durian.shop.dto;
+package kr.pincoin.durian.shop.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.pincoin.durian.shop.domain.Category;

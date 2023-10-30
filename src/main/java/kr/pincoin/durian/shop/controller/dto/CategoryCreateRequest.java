@@ -1,4 +1,4 @@
-package kr.pincoin.durian.shop.dto;
+package kr.pincoin.durian.shop.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;

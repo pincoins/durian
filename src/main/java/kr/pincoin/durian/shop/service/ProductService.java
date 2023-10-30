@@ -1,7 +1,7 @@
 package kr.pincoin.durian.shop.service;
 
-import kr.pincoin.durian.shop.dto.ProductCreateRequest;
-import kr.pincoin.durian.shop.dto.ProductResponse;
+import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.ProductResponse;
 import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

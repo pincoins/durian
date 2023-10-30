@@ -1,10 +1,10 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
-import kr.pincoin.durian.auth.dto.AccessTokenResponse;
-import kr.pincoin.durian.auth.dto.PasswordGrantRequest;
-import kr.pincoin.durian.auth.dto.RefreshTokenRequest;
-import kr.pincoin.durian.auth.dto.UserChangePasswordRequest;
+import kr.pincoin.durian.auth.controller.dto.AccessTokenResponse;
+import kr.pincoin.durian.auth.controller.dto.PasswordGrantRequest;
+import kr.pincoin.durian.auth.controller.dto.RefreshTokenRequest;
+import kr.pincoin.durian.auth.controller.dto.UserChangePasswordRequest;
 import kr.pincoin.durian.auth.service.AuthService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
