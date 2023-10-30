@@ -3,7 +3,7 @@ package kr.pincoin.durian.shop.service;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
 import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

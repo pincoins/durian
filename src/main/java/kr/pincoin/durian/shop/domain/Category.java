@@ -3,7 +3,7 @@ package kr.pincoin.durian.shop.domain;
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseAuditor;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

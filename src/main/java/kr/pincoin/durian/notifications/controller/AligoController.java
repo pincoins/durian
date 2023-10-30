@@ -2,8 +2,8 @@ package kr.pincoin.durian.notifications.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.notifications.dto.AligoSendRequest;
-import kr.pincoin.durian.notifications.dto.AligoSendResponse;
+import kr.pincoin.durian.notifications.controller.dto.AligoSendRequest;
+import kr.pincoin.durian.notifications.controller.dto.AligoSendResponse;
 import kr.pincoin.durian.notifications.service.AligoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

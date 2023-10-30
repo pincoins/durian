@@ -1,8 +1,8 @@
 package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
-import kr.pincoin.durian.shop.dto.ProductCreateRequest;
-import kr.pincoin.durian.shop.dto.ProductResponse;
+import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.ProductResponse;
 import kr.pincoin.durian.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

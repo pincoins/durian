@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.dto;
+package kr.pincoin.durian.auth.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
