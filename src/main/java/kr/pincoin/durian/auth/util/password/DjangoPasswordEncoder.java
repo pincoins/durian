@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.password;
+package kr.pincoin.durian.auth.util.password;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 

@@ -1,4 +1,4 @@
-package kr.pincoin.durian.auth.jwt;
+package kr.pincoin.durian.auth.util.jwt;
 
 
 import io.jsonwebtoken.*;
@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
-import static kr.pincoin.durian.auth.jwt.JwtAuthenticationEntryPoint.*;
 
 @Slf4j
 @Component
@@ -73,13 +71,13 @@ public class TokenProvider {
 
             return Optional.ofNullable(jws.getPayload().getSubject());
         } catch (SignatureException | DecodingException ignored) {
-            request.setAttribute("exception", ERROR_401_INVALID_SECRET_KEY);
+            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_INVALID_SECRET_KEY);
         } catch (ExpiredJwtException ignored) {
-            request.setAttribute("exception", ERROR_401_EXPIRED_JWT);
+            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_EXPIRED_JWT);
         } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
                  IllegalArgumentException ex) {
             log.warn(ex.getLocalizedMessage());
-            request.setAttribute("exception", ERROR_401_INVALID_TOKEN);
+            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_INVALID_TOKEN);
         }
 
         return Optional.empty();

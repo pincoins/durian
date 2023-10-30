@@ -7,7 +7,7 @@ import kr.pincoin.durian.auth.controller.dto.AccessTokenResponse;
 import kr.pincoin.durian.auth.controller.dto.PasswordGrantRequest;
 import kr.pincoin.durian.auth.controller.dto.RefreshTokenRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangePasswordRequest;
-import kr.pincoin.durian.auth.jwt.TokenProvider;
+import kr.pincoin.durian.auth.util.jwt.TokenProvider;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.common.exception.ApiException;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static kr.pincoin.durian.auth.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
+import static kr.pincoin.durian.auth.util.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
 
 @Service
 @Transactional(readOnly = true)
