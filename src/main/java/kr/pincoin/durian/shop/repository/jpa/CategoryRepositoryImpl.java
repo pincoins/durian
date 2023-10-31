@@ -18,20 +18,12 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Category> findCategories() {
-        JPAQuery<Category> contentQuery = queryFactory
-                .select(category)
-                .from(category);
-
-        return contentQuery.fetch();
-    }
-
-    @Override
-    public List<Category> findCategories(Boolean isRoot) {
+    public List<Category> findCategories(Boolean isRoot, CategoryStatus status) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
-                .where(isRootEq(isRoot));
+                .where(isRootEq(isRoot),
+                       statusEq(status));
 
         return contentQuery.fetch();
     }
@@ -49,12 +41,39 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
 
     @Override
     public List<Category> findAncestorCategories(Long id) {
-        return null;
+        JPAQuery<Category> contentQuery = queryFactory
+                .select(category)
+                .from(categoryTreePath)
+                .innerJoin(categoryTreePath.ancestor, category)
+                .where(categoryTreePath.descendant.id.eq(id))
+                .orderBy(categoryTreePath.pathLength.desc());
+
+        return contentQuery.fetch();
     }
 
     @Override
-    public List<Category> findChildrenCategories(Long id) {
-        return null;
+    public List<Category> findChildCategories(Long id) {
+        JPAQuery<Category> contentQuery = queryFactory
+                .select(category)
+                .from(categoryTreePath)
+                .innerJoin(categoryTreePath.descendant, category)
+                .where(categoryTreePath.ancestor.id.eq(id),
+                       pathLengthEq(1))
+                .orderBy(categoryTreePath.position.asc());
+
+        return contentQuery.fetch();
+    }
+
+    @Override
+    public Optional<Category> findParentCategory(Long id) {
+        JPAQuery<Category> contentQuery = queryFactory
+                .select(category)
+                .from(categoryTreePath)
+                .innerJoin(categoryTreePath.ancestor, category)
+                .where(categoryTreePath.descendant.id.eq(id),
+                       pathLengthEq(1));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     @Override

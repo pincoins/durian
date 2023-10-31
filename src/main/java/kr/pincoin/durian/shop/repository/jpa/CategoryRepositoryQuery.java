@@ -7,15 +7,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepositoryQuery {
-    List<Category> findCategories();
-
-    List<Category> findCategories(Boolean isRoot);
+    List<Category> findCategories(Boolean isRoot, CategoryStatus status);
 
     Optional<Category> findCategory(Long id, CategoryStatus status);
 
+    // findRootCategory
+    // findLeafCategory
+    // findSubtree
+
     List<Category> findAncestorCategories(Long id);
 
-    List<Category> findChildrenCategories(Long id);
+    List<Category> findChildCategories(Long id);
+
+    Optional<Category> findParentCategory(Long id);
 
     boolean hasPath(Long parentId, Long childId, Integer pathLength);
 

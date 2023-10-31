@@ -90,7 +90,13 @@ class CategoryRepositoryTest {
         categoryTreePathRepository.save(second2, third1);
 
         List<CategoryTreePath> all = categoryTreePathRepository.findAll();
-
         assertThat(all.size()).isEqualTo(8);
+
+        List<Category> ancestors = categoryRepository.findAncestorCategories(third1.getId());
+        assertThat(ancestors.size()).isEqualTo(3);
+        assertThat(ancestors.get(0).getTitle()).isEqualTo("root");
+
+        List<Category> children = categoryRepository.findChildCategories(root.getId());
+        assertThat(children.size()).isEqualTo(2);
     }
 }

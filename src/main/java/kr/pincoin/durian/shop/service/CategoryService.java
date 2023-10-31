@@ -8,6 +8,7 @@ import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
 import kr.pincoin.durian.shop.repository.jpa.CategoryTreePathRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CategoryService {
 
     public List<Category>
     listCategories() {
-        return categoryRepository.findCategories();
+        return categoryRepository.findCategories(null, null);
     }
 
     public Optional<Category>
@@ -63,8 +64,15 @@ public class CategoryService {
                                                     "Parent category not found",
                                                     List.of("Parent category does not exist to add.")));
 
-        categoryRepository.save(category);
-        categoryTreePathRepository.save(parent, category);
+        try {
+            categoryRepository.save(category);
+            categoryTreePathRepository.save(parent, category);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ApiException(HttpStatus.CONFLICT,
+                                   "Duplicated slug",
+                                   List.of("Category slug is duplicated."),
+                                   ex);
+        }
 
         return Optional.of(category);
     }
