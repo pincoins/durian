@@ -19,6 +19,6 @@ public interface CategoryTreePathRepository
             " WHERE ctp.descendant_id = ?#{#parent.id}" +
             " UNION ALL" +
             " SELECT NOW(), NOW(), CAST(?#{#child.id} AS INT), CAST(?#{#child.id} AS INT), 0, 0",
-            nativeQuery = true)
+            nativeQuery = true) // JPA(JPQL/HQL) does not support `UNION ALL`, but native query does.
     void save(@Param("parent") Category parent, @Param("child") Category child);
 }

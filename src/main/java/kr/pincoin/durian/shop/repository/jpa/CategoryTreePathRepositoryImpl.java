@@ -14,14 +14,7 @@ public class CategoryTreePathRepositoryImpl implements CategoryTreePathRepositor
 
     @Override
     public int save(Category category) {
-        // @Transactional
-        // @Modifying(clearAutomatically = true)
-        // @Query(value = "INSERT INTO" +
-        //            " category_tree_path(created, modified, ancestor_id, descendant_id, path_length, position)" +
-        //            " VALUES (NOW(), NOW(), ?#{#category.id}, ?#{#category.id}, 0, 0)",
-        //            nativeQuery = true)
-        // void save(@Param("category") Category category);
-
+        // JPQL does not support `INSERT INTO SELECT`, but HQL does.
         return em.createQuery(
                         "INSERT INTO" +
                                 " CategoryTreePath (ancestor, descendant, pathLength, position, created, modified)" +
