@@ -3,7 +3,6 @@ package kr.pincoin.durian.shop.service;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
 import kr.pincoin.durian.shop.domain.Category;
-import kr.pincoin.durian.shop.domain.CategoryTreePath;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
 import kr.pincoin.durian.shop.repository.jpa.CategoryTreePathRepository;
@@ -64,17 +63,8 @@ public class CategoryService {
                                                     "Parent category not found",
                                                     List.of("Parent category does not exist to add.")));
 
-        List<CategoryTreePath> paths = categoryTreePathRepository.findParentAncestors(parent)
-                .stream()
-                .map(path -> CategoryTreePath.builder(path.getAncestor(),
-                                                      category,
-                                                      path.getPathLength() + 1)
-                        .build())
-                .toList();
-
         categoryRepository.save(category);
-        categoryTreePathRepository.saveAll(paths);
-        categoryTreePathRepository.save(category);
+        categoryTreePathRepository.save(parent, category);
 
         return Optional.of(category);
     }

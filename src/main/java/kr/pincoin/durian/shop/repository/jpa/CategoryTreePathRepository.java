@@ -14,7 +14,7 @@ public interface CategoryTreePathRepository
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO" +
             " category_tree_path(created, modified, ancestor_id, descendant_id, path_length, position)" +
-            " VALUES (now(), now(), ?#{#category.id}, ?#{#category.id}, 0, 0)",
+            " VALUES (NOW(), NOW(), ?#{#category.id}, ?#{#category.id}, 0, 0)",
             nativeQuery = true)
     void save(@Param("category") Category category);
 
@@ -22,9 +22,11 @@ public interface CategoryTreePathRepository
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO" +
             " category_tree_path(created, modified, ancestor_id, descendant_id, path_length, position)" +
-            " SELECT now(), now(), ctp.ancestor_id, ?#{#child.id}, ctp.path_length + 1, 0" +
+            " SELECT NOW(), NOW(), ctp.ancestor_id, ?#{#child.id}, ctp.path_length + 1, 0" +
             " FROM category_tree_path AS ctp" +
-            " WHERE ctp.descendant_id = ?#{#parent.id}",
+            " WHERE ctp.descendant_id = ?#{#parent.id}" +
+            " UNION ALL" +
+            " SELECT NOW(), NOW(), CAST(?#{#child.id} AS INT), CAST(?#{#child.id} AS INT), 0, 0",
             nativeQuery = true)
     void save(@Param("parent") Category parent, @Param("child") Category child);
 }

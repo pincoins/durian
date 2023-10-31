@@ -82,15 +82,12 @@ class CategoryRepositoryTest {
 
         categoryRepository.save(second1);
         categoryTreePathRepository.save(root, second1);
-        categoryTreePathRepository.save(second1);
 
         categoryRepository.save(second2);
         categoryTreePathRepository.save(root, second2);
-        categoryTreePathRepository.save(second2);
 
         categoryRepository.save(third1);
         categoryTreePathRepository.save(second2, third1);
-        categoryTreePathRepository.save(third1);
 
         List<CategoryTreePath> all = categoryTreePathRepository.findAll();
 
