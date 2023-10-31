@@ -1,0 +1,12 @@
+### Category Root Create
+POST http://localhost:8080/categories
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "category title",
+  "slug": "category-title",
+  "description": "This is a category example.",
+  "subDescription": "yet another category",
+  "discountRate": 3.345
+}

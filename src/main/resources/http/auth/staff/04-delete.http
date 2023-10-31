@@ -1,0 +1,4 @@
+### Staff Delete
+DELETE http://localhost:8080/staffs/{{staffId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

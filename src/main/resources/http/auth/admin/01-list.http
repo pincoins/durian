@@ -1,0 +1,4 @@
+### Admin List
+GET http://localhost:8080/admins
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

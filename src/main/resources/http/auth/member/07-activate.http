@@ -1,0 +1,4 @@
+### Member Activate
+PUT http://localhost:8080/members/{{memberId}}/activate
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

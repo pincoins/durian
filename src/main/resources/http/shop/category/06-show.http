@@ -1,0 +1,4 @@
+### Category Show
+PUT http://localhost:8080/categories/1/show
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

@@ -51,8 +51,14 @@ public class CategoryService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Category>
-    addChildCategory(Category parent, CategoryCreateRequest request) {
+    addChildCategory(Long parentId, CategoryCreateRequest request) {
         Category category = Category.builder(request).build();
+
+        Category parent = categoryRepository
+                .findById(parentId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Parent category not found",
+                                                    List.of("Parent category does not exist to add.")));
 
         List<CategoryTreePath> paths = categoryTreePathRepository.findParentAncestors(parent)
                 .stream()
