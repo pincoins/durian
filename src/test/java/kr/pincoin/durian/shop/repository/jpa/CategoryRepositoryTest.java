@@ -78,46 +78,19 @@ class CategoryRepositoryTest {
                                            CategoryStatus.NORMAL).build();
 
         categoryRepository.save(root);
-        categoryTreePathRepository.save(CategoryTreePath.builder(root, root, 0).build());
-
-        // root -> second1
-        List<CategoryTreePath> pathsToRoot1 = categoryTreePathRepository.findParentAncestors(root)
-                .stream()
-                .map(path -> CategoryTreePath.builder(path.getAncestor(),
-                                                      second1,
-                                                      path.getPathLength() + 1)
-                        .build())
-                .toList();
+        categoryTreePathRepository.save(root);
 
         categoryRepository.save(second1);
-        categoryTreePathRepository.saveAll(pathsToRoot1);
-        categoryTreePathRepository.save(CategoryTreePath.builder(second1, second1, 0).build());
-
-        // root -> second2
-        List<CategoryTreePath> pathsToRoot2 = categoryTreePathRepository.findParentAncestors(root)
-                .stream()
-                .map(path -> CategoryTreePath.builder(path.getAncestor(),
-                                                      second2,
-                                                      path.getPathLength() + 1)
-                        .build())
-                .toList();
+        categoryTreePathRepository.save(root, second1);
+        categoryTreePathRepository.save(second1);
 
         categoryRepository.save(second2);
-        categoryTreePathRepository.saveAll(pathsToRoot2);
-        categoryTreePathRepository.save(CategoryTreePath.builder(second2, second2, 0).build());
-
-        // second2 -> third1
-        List<CategoryTreePath> pathsToSecond2 = categoryTreePathRepository.findParentAncestors(second2)
-                .stream()
-                .map(path -> CategoryTreePath.builder(path.getAncestor(),
-                                                      third1,
-                                                      path.getPathLength() + 1)
-                        .build())
-                .toList();
+        categoryTreePathRepository.save(root, second2);
+        categoryTreePathRepository.save(second2);
 
         categoryRepository.save(third1);
-        categoryTreePathRepository.saveAll(pathsToSecond2);
-        categoryTreePathRepository.save(CategoryTreePath.builder(third1, third1, 0).build());
+        categoryTreePathRepository.save(second2, third1);
+        categoryTreePathRepository.save(third1);
 
         List<CategoryTreePath> all = categoryTreePathRepository.findAll();
 

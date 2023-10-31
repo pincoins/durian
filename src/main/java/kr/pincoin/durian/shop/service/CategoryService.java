@@ -45,7 +45,7 @@ public class CategoryService {
                 .build();
 
         categoryRepository.save(rootCategory);
-        categoryTreePathRepository.save(CategoryTreePath.builder(rootCategory, rootCategory, 0).build());
+        categoryTreePathRepository.save(rootCategory);
 
         return Optional.of(rootCategory);
     }
@@ -74,7 +74,7 @@ public class CategoryService {
 
         categoryRepository.save(category);
         categoryTreePathRepository.saveAll(paths);
-        categoryTreePathRepository.save(CategoryTreePath.builder(category, category, 0).build());
+        categoryTreePathRepository.save(category);
 
         return Optional.of(category);
     }
