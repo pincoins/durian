@@ -7,8 +7,6 @@ import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -42,10 +40,8 @@ public class Category extends BaseAuditor {
     @Enumerated(value = EnumType.STRING)
     private CategoryStatus status;
 
-    @Transient
-    private final List<Category> children = new ArrayList<>();
-    @Transient
-    private Category parent;
+    @Column(name = "is_root")
+    private boolean isRoot;
 
     public static CategoryBuilder builder(String title,
                                           String slug,
@@ -96,22 +92,5 @@ public class Category extends BaseAuditor {
     public Category show() {
         this.status = CategoryStatus.NORMAL;
         return this;
-    }
-
-    public void changeParent(Category parent) {
-        this.parent = parent;
-    }
-
-    public void addChild(Category child) {
-        child.changeParent(this);
-        this.children.add(child);
-    }
-
-    public boolean isRoot() {
-        return (this.parent == null);
-    }
-
-    public boolean isLeaf() {
-        return this.children.isEmpty();
     }
 }

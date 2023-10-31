@@ -9,5 +9,15 @@ import java.util.Optional;
 public interface CategoryRepositoryQuery {
     List<Category> findCategories();
 
+    List<Category> findCategories(Boolean isRoot);
+
     Optional<Category> findCategory(Long id, CategoryStatus status);
+
+    List<Category> findAncestorCategories(Long id);
+
+    List<Category> findChildrenCategories(Long id);
+
+    boolean hasPath(Long parentId, Long childId, Integer pathLength);
+
+    boolean hasPath(Category parent, Category child, Integer pathLength);
 }
