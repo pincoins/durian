@@ -48,16 +48,6 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     }
 
     @Override
-    public List<Category> findAncestorCategories(Long id) {
-        return null;
-    }
-
-    @Override
-    public List<Category> findChildrenCategories(Long id) {
-        return null;
-    }
-
-    @Override
     public boolean hasPath(Long ancestorId, Long descendantId, Integer pathLength) {
         JPAQuery<Integer> countQuery = queryFactory.selectOne()
                 .from(categoryTreePath)

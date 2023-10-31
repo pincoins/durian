@@ -13,10 +13,6 @@ public interface CategoryRepositoryQuery {
 
     Optional<Category> findCategory(Long id, CategoryStatus status);
 
-    List<Category> findAncestorCategories(Long id);
-
-    List<Category> findChildrenCategories(Long id);
-
     boolean hasPath(Long parentId, Long childId, Integer pathLength);
 
     boolean hasPath(Category parent, Category child, Integer pathLength);
