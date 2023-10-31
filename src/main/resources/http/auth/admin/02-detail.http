@@ -1,0 +1,4 @@
+### Admin Detail
+GET http://localhost:8080/admins/{{adminId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

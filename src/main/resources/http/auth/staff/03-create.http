@@ -1,0 +1,11 @@
+### Staff Create
+POST http://localhost:8080/staffs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "staff@example.com",
+  "username": "staff",
+  "password": "Test12!@",
+  "name": "staff"
+}

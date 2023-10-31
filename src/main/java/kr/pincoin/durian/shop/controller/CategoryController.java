@@ -2,9 +2,9 @@ package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.CategoryResponse;
+import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +49,19 @@ public class CategoryController {
         return categoryService.createRootCategory(request)
                 .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
-                                                    "Role creation failure",
-                                                    List.of("Failed to create role")));
+                                                    "Root category creation failure",
+                                                    List.of("Failed to create a root category")));
+    }
+
+    @PostMapping("{categoryId}/add")
+    public ResponseEntity<CategoryResponse>
+    categoryAdd(@PathVariable Long categoryId,
+                @Valid @RequestBody CategoryCreateRequest request) {
+        return categoryService.addChildCategory(categoryId, request)
+                .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
+                                                    "Child category creation failure",
+                                                    List.of("Failed to add a child category")));
     }
 
     @PutMapping("{categoryId}/hide")
@@ -71,7 +82,7 @@ public class CategoryController {
                 .map(category -> ResponseEntity.ok().body(
                         new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
+                                                    "Category not found",
                                                     List.of("Failed to show category.")));
     }
 
