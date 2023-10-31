@@ -8,7 +8,7 @@ import java.util.List;
 public interface CategoryTreePathRepositoryQuery {
     List<CategoryTreePath> findParentAncestors(Category parent);
 
-    boolean hasPath(Long parentId, Long childId, Integer pathLength);
+
 
     // findRoots
     // findParent

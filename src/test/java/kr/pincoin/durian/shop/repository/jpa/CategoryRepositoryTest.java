@@ -48,38 +48,6 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void addParentChild() {
-        Category parent = Category.builder("parent",
-                                           "slug",
-                                           "description",
-                                           "sub description",
-                                           BigDecimal.ZERO,
-                                           CategoryStatus.NORMAL).build();
-
-        Category child1 = Category.builder("child1",
-                                           "slug",
-                                           "description",
-                                           "sub description",
-                                           BigDecimal.ZERO,
-                                           CategoryStatus.NORMAL).build();
-
-        Category child2 = Category.builder("child2",
-                                           "slug",
-                                           "description",
-                                           "sub description",
-                                           BigDecimal.ZERO,
-                                           CategoryStatus.NORMAL).build();
-
-        parent.addChild(child1);
-        parent.addChild(child2);
-
-        assertThat(parent.getChildren().size()).isEqualTo(2);
-        assertThat(child1.getParent().isRoot()).isTrue();
-        assertThat(child1.getParent().getTitle()).isEqualTo("parent");
-        assertThat(child1.isLeaf()).isTrue();
-    }
-
-    @Test
     void makeTree() {
         Category root = Category.builder("root",
                                          "slug",
@@ -113,7 +81,6 @@ class CategoryRepositoryTest {
         categoryTreePathRepository.save(CategoryTreePath.builder(root, root, 0).build());
 
         // root -> second1
-        root.addChild(second1);
         List<CategoryTreePath> pathsToRoot1 = categoryTreePathRepository.findParentAncestors(root)
                 .stream()
                 .map(path -> CategoryTreePath.builder(path.getAncestor(),
@@ -127,7 +94,6 @@ class CategoryRepositoryTest {
         categoryTreePathRepository.save(CategoryTreePath.builder(second1, second1, 0).build());
 
         // root -> second2
-        root.addChild(second2);
         List<CategoryTreePath> pathsToRoot2 = categoryTreePathRepository.findParentAncestors(root)
                 .stream()
                 .map(path -> CategoryTreePath.builder(path.getAncestor(),
@@ -141,7 +107,6 @@ class CategoryRepositoryTest {
         categoryTreePathRepository.save(CategoryTreePath.builder(second2, second2, 0).build());
 
         // second2 -> third1
-        root.addChild(third1);
         List<CategoryTreePath> pathsToSecond2 = categoryTreePathRepository.findParentAncestors(second2)
                 .stream()
                 .map(path -> CategoryTreePath.builder(path.getAncestor(),

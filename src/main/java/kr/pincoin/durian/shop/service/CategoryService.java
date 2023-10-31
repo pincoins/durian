@@ -40,7 +40,9 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Category>
     createRootCategory(CategoryCreateRequest request) {
-        Category rootCategory = Category.builder(request).build();
+        Category rootCategory = Category.builder(request)
+                .isRoot(true)
+                .build();
 
         categoryRepository.save(rootCategory);
         categoryTreePathRepository.save(CategoryTreePath.builder(rootCategory, rootCategory, 0).build());
@@ -52,7 +54,9 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Category>
     addChildCategory(Long parentId, CategoryCreateRequest request) {
-        Category category = Category.builder(request).build();
+        Category category = Category.builder(request)
+                .isRoot(false)
+                .build();
 
         Category parent = categoryRepository
                 .findById(parentId)
