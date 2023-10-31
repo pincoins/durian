@@ -1,23 +1,26 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.shop.domain.Category;
-import kr.pincoin.durian.shop.domain.CategoryTreePath;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
-import static kr.pincoin.durian.shop.domain.QCategoryTreePath.categoryTreePath;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class CategoryTreePathRepositoryImpl implements CategoryTreePathRepositoryQuery {
-    private final JPAQueryFactory queryFactory;
+    @PersistenceContext
+    private final EntityManager em;
 
     @Override
-    public List<CategoryTreePath> findParentAncestors(Category parent) {
-        return queryFactory.select(categoryTreePath)
-                .from(categoryTreePath)
-                .where(categoryTreePath.descendant.eq(parent))
-                .fetch();
+    public int save(Category category) {
+        // JPQL does not support `INSERT INTO SELECT`, but HQL does.
+        return em.createQuery(
+                        "INSERT INTO" +
+                                " CategoryTreePath (ancestor, descendant, pathLength, position, created, modified)" +
+                                " SELECT :category, :category, 0, 0, :now, :now")
+                .setParameter("category", category)
+                .setParameter("now", LocalDateTime.now())
+                .executeUpdate();
     }
 }
