@@ -1,4 +1,4 @@
-package kr.pincoin.durian.notifications.controller.dto;
+package kr.pincoin.durian.notification.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LineNotifyRequest {
+public class AligoSendRequest {
+    @JsonProperty("phone")
+    private String phone;
+
     @JsonProperty("message")
     private String message;
 }

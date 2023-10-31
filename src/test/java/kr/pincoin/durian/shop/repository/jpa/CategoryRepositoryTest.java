@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.CategoryTreePath;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
+import kr.pincoin.durian.shop.repository.jpa.dto.CategorySelfParentResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,28 +51,28 @@ class CategoryRepositoryTest {
     @Test
     void makeTree() {
         Category root = Category.builder("root",
-                                         "slug",
+                                         "root",
                                          "description",
                                          "sub description",
                                          BigDecimal.ZERO,
                                          CategoryStatus.NORMAL).build();
 
         Category second1 = Category.builder("second1",
-                                            "slug",
+                                            "second1",
                                             "description",
                                             "sub description",
                                             BigDecimal.ZERO,
                                             CategoryStatus.NORMAL).build();
 
         Category second2 = Category.builder("second2",
-                                            "slug",
+                                            "second2",
                                             "description",
                                             "sub description",
                                             BigDecimal.ZERO,
                                             CategoryStatus.NORMAL).build();
 
         Category third1 = Category.builder("third1",
-                                           "slug",
+                                           "third1",
                                            "description",
                                            "sub description",
                                            BigDecimal.ZERO,
@@ -98,5 +99,15 @@ class CategoryRepositoryTest {
 
         List<Category> children = categoryRepository.findChildCategories(root.getId());
         assertThat(children.size()).isEqualTo(2);
+
+        Optional<Category> parent = categoryRepository.findParentCategory(third1.getId());
+        assertThat(parent).isPresent();
+        assertThat(parent).hasValue(second2);
+
+        List<CategorySelfParentResult> subTree = categoryRepository.findSubTree(root.getId());
+        assertThat(subTree.size()).isEqualTo(3);
+
+        List<Category> leaves = categoryRepository.findLeafCategories(root.getId());
+        assertThat(leaves.size()).isEqualTo(2);
     }
 }

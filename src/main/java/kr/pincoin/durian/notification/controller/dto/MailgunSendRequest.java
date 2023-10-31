@@ -1,4 +1,4 @@
-package kr.pincoin.durian.notifications.controller.dto;
+package kr.pincoin.durian.notification.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
