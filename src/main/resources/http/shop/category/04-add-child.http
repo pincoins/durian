@@ -1,0 +1,12 @@
+### Category Child Create
+POST http://localhost:8080/categories/12/add
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "category title",
+  "slug": "category-title3",
+  "description": "This is a category example.",
+  "subDescription": "yet another category",
+  "discountRate": 3.345
+}
