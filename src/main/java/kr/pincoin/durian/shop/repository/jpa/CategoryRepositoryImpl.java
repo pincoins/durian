@@ -4,7 +4,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.QCategory;
 import kr.pincoin.durian.shop.domain.QCategoryTreePath;
@@ -21,8 +20,6 @@ import static kr.pincoin.durian.shop.domain.QCategoryTreePath.categoryTreePath;
 @RequiredArgsConstructor
 public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
-
-    private final EntityManager em;
 
     @Override
     public List<Category> findCategories(Boolean isRoot, CategoryStatus status) {
