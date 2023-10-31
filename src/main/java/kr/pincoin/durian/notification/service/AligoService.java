@@ -1,10 +1,10 @@
-package kr.pincoin.durian.notifications.service;
+package kr.pincoin.durian.notification.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.pincoin.durian.notifications.controller.dto.AligoSendRequest;
-import kr.pincoin.durian.notifications.controller.dto.AligoSendResponse;
-import kr.pincoin.durian.notifications.service.dto.AligoSendResult;
+import kr.pincoin.durian.notification.controller.dto.AligoSendRequest;
+import kr.pincoin.durian.notification.controller.dto.AligoSendResponse;
+import kr.pincoin.durian.notification.service.dto.AligoSendResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

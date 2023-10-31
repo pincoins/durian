@@ -1,10 +1,10 @@
-package kr.pincoin.durian.notifications.controller;
+package kr.pincoin.durian.notification.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.notifications.controller.dto.MailgunSendRequest;
-import kr.pincoin.durian.notifications.controller.dto.MailgunSendResponse;
-import kr.pincoin.durian.notifications.service.MailgunService;
+import kr.pincoin.durian.notification.controller.dto.MailgunSendRequest;
+import kr.pincoin.durian.notification.controller.dto.MailgunSendResponse;
+import kr.pincoin.durian.notification.service.MailgunService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

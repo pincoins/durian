@@ -1,4 +1,4 @@
-package kr.pincoin.durian.notifications.service.dto;
+package kr.pincoin.durian.notification.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MailgunSendResult {
-    @JsonProperty("id")
-    private String id;
+public class LineNotifyResponse {
+    @JsonProperty("status")
+    private String status;
 
     @JsonProperty("message")
     private String message;
 
-    public MailgunSendResult(String id, String message) {
-        this.id = id;
+    public LineNotifyResponse(String status,
+                              String message) {
+        this.status = status;
         this.message = message;
     }
 }

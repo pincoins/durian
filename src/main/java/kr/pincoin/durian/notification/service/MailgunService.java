@@ -1,8 +1,8 @@
-package kr.pincoin.durian.notifications.service;
+package kr.pincoin.durian.notification.service;
 
-import kr.pincoin.durian.notifications.controller.dto.MailgunSendRequest;
-import kr.pincoin.durian.notifications.controller.dto.MailgunSendResponse;
-import kr.pincoin.durian.notifications.service.dto.MailgunSendResult;
+import kr.pincoin.durian.notification.controller.dto.MailgunSendRequest;
+import kr.pincoin.durian.notification.controller.dto.MailgunSendResponse;
+import kr.pincoin.durian.notification.service.dto.MailgunSendResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
