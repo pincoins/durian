@@ -28,7 +28,7 @@ public class CategoryService {
 
     public List<Category>
     listCategories() {
-        return categoryRepository.findCategories();
+        return categoryRepository.findCategories(null, null);
     }
 
     public Optional<Category>
