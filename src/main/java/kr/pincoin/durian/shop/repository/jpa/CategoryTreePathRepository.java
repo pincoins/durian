@@ -11,15 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CategoryTreePathRepository
         extends JpaRepository<CategoryTreePath, Long>, CategoryTreePathRepositoryQuery {
     @Transactional
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "INSERT INTO" +
-            " category_tree_path(created, modified, ancestor_id, descendant_id, path_length, position)" +
-            " VALUES (NOW(), NOW(), ?#{#category.id}, ?#{#category.id}, 0, 0)",
-            nativeQuery = true)
-    void save(@Param("category") Category category);
-
-    @Transactional
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(clearAutomatically = true)
     @Query(value = "INSERT INTO" +
             " category_tree_path(created, modified, ancestor_id, descendant_id, path_length, position)" +
             " SELECT NOW(), NOW(), ctp.ancestor_id, ?#{#child.id}, ctp.path_length + 1, 0" +
