@@ -1,10 +1,15 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import kr.pincoin.durian.shop.domain.Category;
+import kr.pincoin.durian.shop.domain.QCategory;
+import kr.pincoin.durian.shop.domain.QCategoryTreePath;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
+import kr.pincoin.durian.shop.repository.jpa.dto.CategorySelfParentResult;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,6 +21,8 @@ import static kr.pincoin.durian.shop.domain.QCategoryTreePath.categoryTreePath;
 @RequiredArgsConstructor
 public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
+
+    private final EntityManager em;
 
     @Override
     public List<Category> findCategories(Boolean isRoot, CategoryStatus status) {
@@ -37,6 +44,27 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
                        statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
+    @Override
+    public List<CategorySelfParentResult> findSubTree(Long rootId) {
+        QCategory self = new QCategory("self");
+        QCategory parent = new QCategory("parent");
+
+        QCategoryTreePath ctp1 = new QCategoryTreePath("ctp1");
+        QCategoryTreePath ctp2 = new QCategoryTreePath("ctp2");
+
+        JPAQuery<CategorySelfParentResult> contentQuery = queryFactory
+                .select(Projections.fields(CategorySelfParentResult.class, self, parent))
+                .from(ctp1)
+                .innerJoin(ctp1.descendant, self)
+                .innerJoin(ctp2)
+                .on(ctp2.descendant.id.eq(self.id)) // force join
+                .innerJoin(ctp2.ancestor, parent)
+                .where(ctp1.ancestor.id.eq(rootId),
+                       ctp2.pathLength.eq(1));
+
+        return contentQuery.fetch();
     }
 
     @Override
@@ -77,8 +105,27 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     }
 
     @Override
+    public List<Category> findLeafCategories(Long id) {
+        QCategoryTreePath ctp1 = new QCategoryTreePath("ctp1");
+        QCategoryTreePath ctp2 = new QCategoryTreePath("ctp2");
+
+        JPAQuery<Category> contentQuery = queryFactory
+                .select(category)
+                .from(ctp1)
+                .innerJoin(ctp1.ancestor, category)
+                .innerJoin(ctp2)
+                .on(ctp1.descendant.id.eq(ctp2.descendant.id),
+                    ctp2.ancestor.id.eq(id))
+                .groupBy(ctp1.ancestor)
+                .having(ctp1.ancestor.count().eq(1L));
+
+        return contentQuery.fetch();
+    }
+
+    @Override
     public boolean hasPath(Long ancestorId, Long descendantId, Integer pathLength) {
-        JPAQuery<Integer> countQuery = queryFactory.selectOne()
+        JPAQuery<Integer> countQuery = queryFactory
+                .selectOne()
                 .from(categoryTreePath)
                 .where(categoryTreePath.ancestor.id.eq(ancestorId),
                        categoryTreePath.descendant.id.eq(descendantId),
