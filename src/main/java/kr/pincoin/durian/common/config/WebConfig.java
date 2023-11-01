@@ -1,12 +1,23 @@
 package kr.pincoin.durian.common.config;
 
-import kr.pincoin.durian.auth.domain.converter.VerificationStatusRequestConverter;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomesticRequestConverter;
 import kr.pincoin.durian.auth.domain.converter.ProfileGenderRequestConverter;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatusRequestConverter;
 import kr.pincoin.durian.shop.domain.conveter.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.io.IOException;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -27,5 +38,26 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new OrderStatusRequestConverter());
         registry.addConverter(new PaymentAccountRequestConverter());
         registry.addConverter(new CategoryStatusRequestConverter());
+    }
+
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(mappingJackson2HttpMessageConverter());
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        SimpleModule simpleModule = new SimpleModule()
+                .addDeserializer(String.class, new StdScalarDeserializer<>(String.class) {
+                    @Override
+                    public String deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+                        return p.getText() != null ? p.getText().trim() : null;
+                    }
+                });
+
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setObjectMapper(new ObjectMapper().registerModule(simpleModule));
+        return converter;
     }
 }

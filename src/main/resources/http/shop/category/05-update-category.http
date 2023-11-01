@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "nexon",
+  "title": "nexon    ",
   "slug": "nexon",
   "description": "This is a category example.",
   "subDescription": "yet another category",
