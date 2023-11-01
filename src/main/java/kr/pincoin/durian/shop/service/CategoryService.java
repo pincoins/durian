@@ -34,7 +34,7 @@ public class CategoryService {
 
     public Optional<Category>
     getCategory(Long categoryId, CategoryStatus status) {
-        return categoryRepository.findCategory(categoryId, status);
+        return categoryRepository.findCategory(categoryId, null, status, null);
     }
 
     @Transactional
@@ -62,9 +62,9 @@ public class CategoryService {
                 .build();
 
         Category parent = categoryRepository
-                .findById(parentId)
+                .findCategory(parentId, null, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Parent category not found",
+                                                    "Normal parent category not found",
                                                     List.of("Parent category does not exist to add.")));
 
         preventDuplicateSlug(category);
@@ -93,13 +93,13 @@ public class CategoryService {
         }
 
         Category parent = categoryRepository
-                .findById(parentId)
+                .findCategory(parentId, null, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Parent category not found",
+                                                    "Normal parent category not found",
                                                     List.of("Parent category does not exist to move.")));
 
         Category category = categoryRepository
-                .findById(categoryId)
+                .findCategory(categoryId, false, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Current category not found",
                                                     List.of("Current category does not exist to move.")));
@@ -115,7 +115,7 @@ public class CategoryService {
     public Optional<Category>
     updateCategory(Long categoryId, CategoryUpdateRequest request) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.NORMAL)
+                .findCategory(categoryId, null, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to update.")));
@@ -129,7 +129,7 @@ public class CategoryService {
     public Optional<Category>
     hideCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.NORMAL)
+                .findCategory(categoryId, null, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to hide.")));
@@ -143,7 +143,7 @@ public class CategoryService {
     public Optional<Category>
     showCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.HIDDEN)
+                .findCategory(categoryId, null, CategoryStatus.HIDDEN, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to show.")));
@@ -157,7 +157,7 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public boolean
     deleteCategory(Long categoryId) {
-        return categoryRepository.findCategory(categoryId, CategoryStatus.HIDDEN)
+        return categoryRepository.findCategory(categoryId, null, CategoryStatus.HIDDEN, null)
                 .map(category -> {
                     categoryRepository.delete(category);
                     return true;
