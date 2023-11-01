@@ -28,18 +28,20 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
                 .from(category)
                 .where(isRootEq(isRoot),
                        statusEq(status),
-                       slugEq(slug));
+                       slugContains(slug));
 
         return contentQuery.fetch();
     }
 
     @Override
-    public Optional<Category> findCategory(Long id, CategoryStatus status) {
+    public Optional<Category> findCategory(Long id, Boolean isRoot, CategoryStatus status, String slug) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
                 .where(idEq(id),
-                       statusEq(status));
+                       isRootEq(isRoot),
+                       statusEq(status),
+                       slugContains(slug));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
@@ -151,8 +153,8 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
         return status != null ? category.status.eq(status) : category.status.eq(CategoryStatus.NORMAL);
     }
 
-    BooleanExpression slugEq(String slug) {
-        return slug != null && !slug.isBlank() ? category.slug.eq(slug) : null;
+    BooleanExpression slugContains(String slug) {
+        return slug != null && !slug.isBlank() ? category.slug.contains(slug) : null;
     }
 
     BooleanExpression isRootEq(Boolean isRoot) {
