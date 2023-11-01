@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomesticRequestConverter;
 import kr.pincoin.durian.auth.domain.converter.ProfileGenderRequestConverter;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatusRequestConverter;
@@ -57,7 +58,8 @@ public class WebConfig implements WebMvcConfigurer {
                 });
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(new ObjectMapper().registerModule(simpleModule));
+        converter.setObjectMapper(new ObjectMapper().registerModule(simpleModule)
+                                          .registerModule(new JavaTimeModule())); // Java 8 LocalDateTime support
         return converter;
     }
 }
