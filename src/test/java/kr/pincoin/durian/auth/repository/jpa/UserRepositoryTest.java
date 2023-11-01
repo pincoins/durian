@@ -69,14 +69,19 @@ class UserRepositoryTest {
                 .role(Role.MEMBER)
                 .build();
 
-        userRepository.save(user).inactivate();
+        userRepository.save(user);
+        em.flush();
         em.clear();
 
-        // It syncs without `em.flush(); em.clear();`.
+        Optional<User> normalUserFound = userRepository.findUser(user.getId(), UserStatus.NORMAL);
+        assertThat(normalUserFound).isPresent();
+        User normalUser = normalUserFound.get();
+        normalUser.inactivate();
+        em.flush();
+        em.clear();
 
-        Optional<User> userFound = userRepository.findUser(user.getId(), UserStatus.INACTIVE);
-
-        assertThat(userFound).isPresent();
+        Optional<User> inactiveUserFound = userRepository.findUser(user.getId(), UserStatus.INACTIVE);
+        assertThat(inactiveUserFound).isPresent();
     }
 
     // delete user
