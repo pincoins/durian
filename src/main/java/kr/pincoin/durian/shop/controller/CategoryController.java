@@ -26,9 +26,10 @@ public class CategoryController {
     @GetMapping("")
     public ResponseEntity<List<CategoryResponse>>
     categoryList(@RequestParam(name = "isRoot", required = false) Boolean isRoot,
-                 @RequestParam(name = "status", required = false) CategoryStatus status) {
+                 @RequestParam(name = "status", required = false) CategoryStatus status,
+                 @RequestParam(name = "slug", required = false) String slug) {
         return ResponseEntity.ok()
-                .body(categoryService.listCategories(isRoot, status)
+                .body(categoryService.listCategories(isRoot, status, slug)
                               .stream()
                               .map(CategoryResponse::new)
                               .toList());
