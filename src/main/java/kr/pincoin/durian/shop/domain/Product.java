@@ -41,6 +41,9 @@ public class Product extends BaseAuditor {
     @Column(name = "selling_price")
     private BigDecimal sellingPrice;
 
+    @Column(name = "buying_price")
+    private BigDecimal buyingPrice;
+
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
