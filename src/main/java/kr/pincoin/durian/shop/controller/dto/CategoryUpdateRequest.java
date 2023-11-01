@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CategoryCreateRequest {
+public class CategoryUpdateRequest {
     @JsonProperty("title")
     @NotEmpty
     @NotBlank

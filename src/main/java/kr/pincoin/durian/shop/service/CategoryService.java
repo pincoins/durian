@@ -2,6 +2,7 @@ package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.CategoryUpdateRequest;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
@@ -26,9 +27,8 @@ public class CategoryService {
 
     private final CategoryTreePathRepository categoryTreePathRepository;
 
-    public List<Category>
-    listCategories() {
-        return categoryRepository.findCategories(null, null);
+    public List<Category> listCategories(Boolean isRoot, CategoryStatus status) {
+        return categoryRepository.findCategories(isRoot, status);
     }
 
     public Optional<Category>
@@ -73,6 +73,20 @@ public class CategoryService {
                                    List.of("Category slug is duplicated."),
                                    ex);
         }
+
+        return Optional.of(category);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Category>
+    updateCategory(Long categoryId, CategoryUpdateRequest request) {
+        Category category = categoryRepository
+                .findCategory(categoryId, CategoryStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Category does not exist to update.")));
+        category.update(request);
 
         return Optional.of(category);
     }
