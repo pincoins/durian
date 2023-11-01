@@ -22,12 +22,13 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Category> findCategories(Boolean isRoot, CategoryStatus status) {
+    public List<Category> findCategories(Boolean isRoot, CategoryStatus status, String slug) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
                 .where(isRootEq(isRoot),
-                       statusEq(status));
+                       statusEq(status),
+                       slugEq(slug));
 
         return contentQuery.fetch();
     }
@@ -148,6 +149,10 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
 
     BooleanExpression statusEq(CategoryStatus status) {
         return status != null ? category.status.eq(status) : category.status.eq(CategoryStatus.NORMAL);
+    }
+
+    BooleanExpression slugEq(String slug) {
+        return slug != null && !slug.isBlank() ? category.slug.eq(slug) : null;
     }
 
     BooleanExpression isRootEq(Boolean isRoot) {

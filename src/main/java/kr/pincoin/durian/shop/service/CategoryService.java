@@ -27,8 +27,8 @@ public class CategoryService {
 
     private final CategoryTreePathRepository categoryTreePathRepository;
 
-    public List<Category> listCategories(Boolean isRoot, CategoryStatus status) {
-        return categoryRepository.findCategories(isRoot, status);
+    public List<Category> listCategories(Boolean isRoot, CategoryStatus status, String slug) {
+        return categoryRepository.findCategories(isRoot, status, slug);
     }
 
     public Optional<Category>
@@ -43,6 +43,8 @@ public class CategoryService {
         Category rootCategory = Category.builder(request)
                 .isRoot(true)
                 .build();
+
+        preventDuplicateSlug(rootCategory);
 
         categoryRepository.save(rootCategory);
         categoryTreePathRepository.save(rootCategory);
@@ -63,6 +65,8 @@ public class CategoryService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Parent category not found",
                                                     List.of("Parent category does not exist to add.")));
+
+        preventDuplicateSlug(category);
 
         try {
             categoryRepository.save(category);
@@ -131,5 +135,14 @@ public class CategoryService {
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Category not found",
                                                       List.of("Hidden category does not exist to delete.")));
+    }
+
+    private void preventDuplicateSlug(Category category) {
+        List<Category> categories = categoryRepository.findCategories(null, null, category.getSlug());
+        if (!categories.isEmpty()) {
+            throw new ApiException(HttpStatus.CONFLICT,
+                                   "Duplicate category slug",
+                                   List.of(String.format("The slug '%s' is already exists.", category.getSlug())));
+        }
     }
 }

@@ -2,27 +2,25 @@ package kr.pincoin.durian.auth.util.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.pincoin.durian.auth.exception.ExpiredTokenException;
-import kr.pincoin.durian.auth.exception.InvalidSecretKeyException;
-import kr.pincoin.durian.auth.exception.InvalidTokenException;
-import kr.pincoin.durian.auth.exception.UsernameNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    public static final String ERROR_401_INVALID_SECRET_KEY = "1001";
-    public static final String ERROR_401_EXPIRED_JWT = "1002";
-    public static final String ERROR_401_INVALID_TOKEN = "1003";
-    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1004";
-    public static final String ERROR_401_USERNAME_NOT_FOUND = "1005";
-    public static final String ERROR_401_UNKNOWN = "1006";
+    public static final String ERROR_401_INVALID_TOKEN = "1001";
+    public static final String ERROR_401_EXPIRED_TOKEN = "1002";
+    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1003";
+    public static final String ERROR_401_USERNAME_NOT_FOUND = "1004";
+    public static final String ERROR_401_UNKNOWN = "1005";
 
     @Override
     public void
@@ -33,22 +31,18 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         try {
             log.warn("Authentication Entry Point", authException);
 
-            if (authException instanceof InvalidSecretKeyException) {
-                setResponse(response,
-                            ERROR_401_INVALID_SECRET_KEY,
-                            "Invalid secret key");
-            } else if (authException instanceof ExpiredTokenException) {
-                setResponse(response,
-                            ERROR_401_EXPIRED_JWT,
-                            "Expired token");
-            } else if (authException instanceof InvalidTokenException) {
+            if (authException instanceof BadCredentialsException) {
                 setResponse(response,
                             ERROR_401_INVALID_TOKEN,
-                            "Invalid token");
+                            "Invalid access token or invalid secret key");
+            } else if (authException instanceof CredentialsExpiredException) {
+                setResponse(response,
+                            ERROR_401_EXPIRED_TOKEN,
+                            "Expired access token");
             } else if (authException instanceof InsufficientAuthenticationException) {
                 setResponse(response,
                             ERROR_401_INSUFFICIENT_AUTHENTICATION,
-                            "Token not found or too many attempts");
+                            "Access token missing");
             } else if (authException instanceof UsernameNotFoundException) {
                 setResponse(response,
                             ERROR_401_USERNAME_NOT_FOUND,

@@ -41,7 +41,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new CategoryStatusRequestConverter());
     }
 
-
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(mappingJackson2HttpMessageConverter());

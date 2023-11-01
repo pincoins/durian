@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepositoryQuery {
-    List<Category> findCategories(Boolean isRoot, CategoryStatus status);
+    List<Category> findCategories(Boolean isRoot, CategoryStatus status, String slug);
 
     Optional<Category> findCategory(Long id, CategoryStatus status);
 
