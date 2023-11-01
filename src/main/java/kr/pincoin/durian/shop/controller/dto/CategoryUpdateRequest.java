@@ -2,8 +2,7 @@ package kr.pincoin.durian.shop.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import kr.pincoin.durian.common.validation.NullOrNotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,23 +13,19 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryUpdateRequest {
     @JsonProperty("title")
-    @NotEmpty
-    @NotBlank
+    @NullOrNotBlank
     private String title;
 
     @JsonProperty("slug")
-    @NotEmpty
-    @NotBlank
+    @NullOrNotBlank
     private String slug;
 
     @JsonProperty("description")
-    @NotEmpty
-    @NotBlank
+    @NullOrNotBlank
     private String description;
 
     @JsonProperty("subDescription")
-    @NotEmpty
-    @NotBlank
+    @NullOrNotBlank
     private String subDescription;
 
     @JsonProperty("discountRate")
