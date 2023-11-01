@@ -66,7 +66,7 @@ public class CategoryController {
                                                     List.of("Failed to add a child category")));
     }
 
-    @PutMapping("{categoryId}/update")
+    @PutMapping("{categoryId}")
     public ResponseEntity<CategoryResponse>
     categoryUpdate(@PathVariable Long categoryId,
                  @Valid @RequestBody CategoryUpdateRequest request) {

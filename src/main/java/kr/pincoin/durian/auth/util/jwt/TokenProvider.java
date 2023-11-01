@@ -7,6 +7,9 @@ import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import kr.pincoin.durian.auth.exception.ExpiredTokenException;
+import kr.pincoin.durian.auth.exception.InvalidSecretKeyException;
+import kr.pincoin.durian.auth.exception.InvalidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -71,16 +74,12 @@ public class TokenProvider {
 
             return Optional.ofNullable(jws.getPayload().getSubject());
         } catch (SignatureException | DecodingException ignored) {
-            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_INVALID_SECRET_KEY);
+            throw new InvalidSecretKeyException("Invalid secret key");
         } catch (ExpiredJwtException ignored) {
-            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_EXPIRED_JWT);
-        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
-                 IllegalArgumentException ex) {
-            log.warn(ex.getLocalizedMessage());
-            request.setAttribute("exception", JwtAuthenticationEntryPoint.ERROR_401_INVALID_TOKEN);
+            throw new ExpiredTokenException("Expired JWT");
+        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException | IllegalArgumentException ex) {
+            throw new InvalidTokenException("Invalid JWT");
         }
-
-        return Optional.empty();
     }
 
     public String
