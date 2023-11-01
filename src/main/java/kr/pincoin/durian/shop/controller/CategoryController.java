@@ -2,8 +2,9 @@ package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.CategoryResponse;
 import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.CategoryResponse;
+import kr.pincoin.durian.shop.controller.dto.CategoryUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,10 @@ public class CategoryController {
 
     @GetMapping("")
     public ResponseEntity<List<CategoryResponse>>
-    categoryList() {
+    categoryList(@RequestParam(name = "isRoot", required = false) Boolean isRoot,
+                 @RequestParam(name = "status", required = false) CategoryStatus status) {
         return ResponseEntity.ok()
-                .body(categoryService.listCategories()
+                .body(categoryService.listCategories(isRoot, status)
                               .stream()
                               .map(CategoryResponse::new)
                               .toList());
@@ -62,6 +64,18 @@ public class CategoryController {
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
                                                     "Child category creation failure",
                                                     List.of("Failed to add a child category")));
+    }
+
+    @PutMapping("{categoryId}/update")
+    public ResponseEntity<CategoryResponse>
+    categoryUpdate(@PathVariable Long categoryId,
+                 @Valid @RequestBody CategoryUpdateRequest request) {
+        return categoryService.updateCategory(categoryId, request)
+                .map(category -> ResponseEntity.ok().body(
+                        new CategoryResponse(category)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Failed to update category.")));
     }
 
     @PutMapping("{categoryId}/hide")

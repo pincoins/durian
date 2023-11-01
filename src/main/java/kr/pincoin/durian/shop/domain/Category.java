@@ -3,6 +3,7 @@ package kr.pincoin.durian.shop.domain;
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseAuditor;
 import kr.pincoin.durian.shop.controller.dto.CategoryCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.CategoryUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import lombok.*;
 
@@ -82,6 +83,30 @@ public class Category extends BaseAuditor {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, slug);
+    }
+
+    public Category update(CategoryUpdateRequest request) {
+        if (request.getTitle() != null) {
+            this.title = request.getTitle();
+        }
+
+        if (request.getSlug() != null) {
+            this.slug = request.getSlug();
+        }
+
+        if (request.getDescription() != null) {
+            this.description = request.getDescription();
+        }
+
+        if (request.getSubDescription() != null) {
+            this.subDescription = request.getSubDescription();
+        }
+
+        if (request.getDiscountRate() != null) {
+            this.discountRate = request.getDiscountRate();
+        }
+
+        return this;
     }
 
     public Category hide() {
