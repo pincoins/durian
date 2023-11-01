@@ -2,9 +2,14 @@ package kr.pincoin.durian.auth.util.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.pincoin.durian.auth.exception.ExpiredTokenException;
+import kr.pincoin.durian.auth.exception.InvalidSecretKeyException;
+import kr.pincoin.durian.auth.exception.InvalidTokenException;
+import kr.pincoin.durian.auth.exception.UsernameNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -15,8 +20,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public static final String ERROR_401_INVALID_SECRET_KEY = "1001";
     public static final String ERROR_401_EXPIRED_JWT = "1002";
     public static final String ERROR_401_INVALID_TOKEN = "1003";
-    public static final String ERROR_401_USER_NOT_FOUND = "1004";
-    public static final String ERROR_401_UNKNOWN = "1005";
+    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1004";
+    public static final String ERROR_401_USERNAME_NOT_FOUND = "1005";
+    public static final String ERROR_401_UNKNOWN = "1006";
 
     @Override
     public void
@@ -24,29 +30,33 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
              HttpServletResponse response,
              AuthenticationException authException) throws IOException {
         // 401 Unauthorized
-        String exception = (String) (request.getAttribute("exception"));
-
         try {
-            if (exception == null) {
-                setResponse(response,
-                            ERROR_401_UNKNOWN,
-                            authException != null ? authException.getLocalizedMessage() : "security config error");
-            } else if (exception.equals(ERROR_401_INVALID_SECRET_KEY)) {
+            log.warn("Authentication Entry Point", authException);
+
+            if (authException instanceof InvalidSecretKeyException) {
                 setResponse(response,
                             ERROR_401_INVALID_SECRET_KEY,
-                            "invalid secret key");
-            } else if (exception.equals(ERROR_401_EXPIRED_JWT)) {
+                            "Invalid secret key");
+            } else if (authException instanceof ExpiredTokenException) {
                 setResponse(response,
                             ERROR_401_EXPIRED_JWT,
-                            "expired token");
-            } else if (exception.equals(ERROR_401_INVALID_TOKEN)) {
+                            "Expired token");
+            } else if (authException instanceof InvalidTokenException) {
                 setResponse(response,
                             ERROR_401_INVALID_TOKEN,
-                            "invalid token format");
-            } else if (exception.equals(ERROR_401_USER_NOT_FOUND)) {
+                            "Invalid token");
+            } else if (authException instanceof InsufficientAuthenticationException) {
                 setResponse(response,
-                            ERROR_401_USER_NOT_FOUND,
-                            "user not found");
+                            ERROR_401_INSUFFICIENT_AUTHENTICATION,
+                            "Token not found or too many attempts");
+            } else if (authException instanceof UsernameNotFoundException) {
+                setResponse(response,
+                            ERROR_401_USERNAME_NOT_FOUND,
+                            "Username not found");
+            } else {
+                setResponse(response,
+                            ERROR_401_UNKNOWN,
+                            "Authentication failure");
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

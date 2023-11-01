@@ -1,12 +1,12 @@
-### Category Hide
-PUT http://localhost:8080/categories/11/update
+### Category Update
+PUT http://localhost:8080/categories/11
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "nexon    ",
-  "slug": "nexon",
-  "description": "This is a category example.",
-  "subDescription": "yet another category",
-  "discountRate": 7.5
+  "title": "happy",
+  "slug": "google",
+  "description": "happy",
+  "subDescription": "non refundable",
+  "discountRate": 5.5
 }

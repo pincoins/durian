@@ -118,7 +118,11 @@ public class SecurityConfig {
         // Stateless Session
         http.sessionManagement(session -> {
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            session.maximumSessions(1).maxSessionsPreventsLogin(true);
+            // Login attempt throttling
+            // maximumSessions(1): Prevents a user from logging in multiple times.
+            // A second login will cause the first to be invalidated.
+            // maxSessionsPreventsLogin(true): The second login will then be rejected
+            // session.maximumSessions(1).maxSessionsPreventsLogin(true);
         });
 
         // Request resource permission mapping
