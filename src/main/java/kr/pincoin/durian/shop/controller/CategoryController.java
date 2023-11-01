@@ -67,6 +67,17 @@ public class CategoryController {
                                                     List.of("Failed to add a child category")));
     }
 
+    @PostMapping("{categoryId}/parents/{parentId}")
+    public ResponseEntity<CategoryResponse>
+    categoryMove(@PathVariable Long parentId,
+                 @PathVariable Long categoryId) {
+        return categoryService.changeParentCategory(parentId, categoryId)
+                .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
+                                                    "Child category move failure",
+                                                    List.of("Failed to change parent category")));
+    }
+
     @PutMapping("{categoryId}")
     public ResponseEntity<CategoryResponse>
     categoryUpdate(@PathVariable Long categoryId,
