@@ -4,9 +4,9 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "category title",
-  "slug": "category-title",
-  "description": "This is a category example.",
+  "title": "root",
+  "slug": "root",
+  "description": "This is a a root category",
   "subDescription": "yet another category",
   "discountRate": 3.345
 }

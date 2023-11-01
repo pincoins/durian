@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -77,6 +78,34 @@ public class CategoryService {
                                    List.of("Category slug is duplicated."),
                                    ex);
         }
+
+        return Optional.of(category);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Category>
+    changeParentCategory(Long parentId, Long categoryId) {
+        if (Objects.equals(parentId, categoryId)) {
+           throw new ApiException(HttpStatus.NOT_FOUND,
+                             "Parent same as self",
+                             List.of("Cannot move category to self."));
+        }
+
+        Category parent = categoryRepository
+                .findById(parentId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Parent category not found",
+                                                    List.of("Parent category does not exist to move.")));
+
+        Category category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Current category not found",
+                                                    List.of("Current category does not exist to move.")));
+
+        categoryTreePathRepository.disconnect(category);
+        categoryTreePathRepository.connect(parent, category);
 
         return Optional.of(category);
     }

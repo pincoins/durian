@@ -1,0 +1,4 @@
+### Category Change Parent
+POST http://localhost:8080/categories/19/parents/20
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
