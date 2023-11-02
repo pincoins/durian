@@ -14,6 +14,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -60,8 +61,9 @@ public class PersistenceConfig {
         return () -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authentication == null || !authentication.isAuthenticated()) {
-                log.trace("not authenticated");
+            if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+                // if authentication instanceof AnonymousAuthenticationToken:
+                //  authentication.isAuthenticated() == true
                 return Optional.empty();
             }
 

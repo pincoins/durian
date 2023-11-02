@@ -1,3 +1,0 @@
-### Category Detail
-GET http://localhost:8080/categories/1
-Content-Type: application/json

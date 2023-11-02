@@ -1,0 +1,47 @@
+### Member List
+GET http://localhost:8080/members
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Detail
+GET http://localhost:8080/members/7?
+    roleCode=ROLE_SYSADMIN&
+    status=NORMAL
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Create
+POST http://localhost:8080/members
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "username": {{username}},
+  "password": {{password}},
+  "name": "member"
+}
+
+### Member Delete
+DELETE http://localhost:8080/members/{{memberId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Approve
+PUT http://localhost:8080/members/{{memberId}}/approve
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Inactivate
+PUT http://localhost:8080/members/{{memberId}}/inactivate
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Activate
+PUT http://localhost:8080/members/{{memberId}}/activate
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Unregister
+PUT http://localhost:8080/members/{{memberId}}/unregister
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

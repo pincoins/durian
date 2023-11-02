@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum ProductStatus {
     ENABLED,
-    DISABLED
+    DISABLED,
 }
