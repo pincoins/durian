@@ -1,7 +1,11 @@
 ### Product List
 GET http://localhost:8080/products?categoryId=24
-Content-Type: application/json
+Content-Type: application/jsonR
 Authorization: Bearer {{accessToken}}
+
+### Category Detail
+GET http://localhost:8080/products/2
+Content-Type: application/json
 
 ### Product Create
 POST http://localhost:8080/products
@@ -21,3 +25,46 @@ Authorization: Bearer {{accessToken}}
   "maximumStockLevel": 50,
   "categoryId": 24
 }
+
+### Product Update
+PUT http://localhost:8080/products/2
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "slug": "google1",
+  "name": "google",
+  "subtitle": "subtitle",
+  "description": "google",
+  "position": 0
+}
+
+### Product Disable
+PUT http://localhost:8080/products/2/disable
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Enable
+PUT http://localhost:8080/products/2/enable
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Fill Up Stock
+PUT http://localhost:8080/products/2/fill
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Run Out Of Stock
+PUT http://localhost:8080/products/2/empty
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Remove
+PUT http://localhost:8080/products/2/remove
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Restore
+PUT http://localhost:8080/products/2/restore
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

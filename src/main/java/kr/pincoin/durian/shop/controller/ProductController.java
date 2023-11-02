@@ -1,10 +1,12 @@
 package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.service.IdentityService;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.ProductAdminResponse;
 import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductResponse;
+import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
 import kr.pincoin.durian.shop.service.ProductService;
@@ -16,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,8 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    private final IdentityService identityService;
+
     @GetMapping("")
     public ResponseEntity<List<? extends ProductResponse>>
     productList(@RequestParam(name = "categoryId", required = false) Long categoryId,
@@ -35,18 +38,33 @@ public class ProductController {
                 @RequestParam(name = "stock", required = false) ProductStockStatus stock,
                 @RequestParam(name = "removed", required = false) Boolean removed,
                 @AuthenticationPrincipal UserDetails userDetails) {
-        boolean isAdmin = userDetails != null
-                && userDetails.getAuthorities().stream().anyMatch(role -> Arrays.asList("ROLE_SYSADMIN",
-                                                                                        "ROLE_STAFF")
-                .contains(role.getAuthority()));
-
         return ResponseEntity
                 .ok()
                 .body(productService.listProducts(categoryId, slug, status, stock, removed)
                               .stream()
-                              .map(product -> isAdmin ? new ProductAdminResponse(product)
+                              .map(product -> identityService.isAdmin(userDetails)
+                                      ? new ProductAdminResponse(product)
                                       : new ProductResponse(product))
                               .toList());
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponse>
+    productDetail(@PathVariable Long productId,
+                  @RequestParam(name = "slug", required = false) String slug,
+                  @RequestParam(name = "status", required = false) ProductStatus status,
+                  @RequestParam(name = "stock", required = false) ProductStockStatus stock,
+                  @RequestParam(name = "removed", required = false) Boolean removed,
+                  @AuthenticationPrincipal UserDetails userDetails) {
+        return productService.getProduct(productId, slug, status, stock, removed)
+                .map(product -> ResponseEntity
+                        .ok()
+                        .body(identityService.isAdmin(userDetails)
+                                      ? new ProductAdminResponse(product)
+                                      : new ProductResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to retrieve.")));
     }
 
     @PostMapping("")
@@ -57,5 +75,83 @@ public class ProductController {
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
                                                     "Product creation failure",
                                                     List.of("Failed to create a new product.")));
+    }
+
+    @PutMapping("{productId}")
+    public ResponseEntity<ProductAdminResponse>
+    productUpdate(@PathVariable Long productId,
+                  @Valid @RequestBody ProductUpdateRequest request) {
+        return productService.updateProduct(productId, request)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to update product.")));
+    }
+
+    @PutMapping("{productId}/disable")
+    public ResponseEntity<ProductAdminResponse>
+    productDisable(@PathVariable Long productId) {
+        return productService.disableProduct(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to disable product.")));
+    }
+
+    @PutMapping("{productId}/enable")
+    public ResponseEntity<ProductAdminResponse>
+    productEnable(@PathVariable Long productId) {
+        return productService.enableProduct(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to enable product.")));
+    }
+
+    @PutMapping("{productId}/fill")
+    public ResponseEntity<ProductAdminResponse>
+    productFill(@PathVariable Long productId) {
+        return productService.fillProduct(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to fill stock up.")));
+    }
+
+    @PutMapping("{productId}/empty")
+    public ResponseEntity<ProductAdminResponse>
+    productEmpty(@PathVariable Long productId) {
+        return productService.makeEmptyProduct(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to be out of stock.")));
+    }
+
+    @PutMapping("{productId}/remove")
+    public ResponseEntity<ProductAdminResponse>
+    productRemove(@PathVariable Long productId) {
+        return productService.remove(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to remove product.")));
+    }
+
+    @PutMapping("{productId}/restore")
+    public ResponseEntity<ProductAdminResponse>
+    productRestore(@PathVariable Long productId) {
+        return productService.restore(productId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to restore product.")));
     }
 }

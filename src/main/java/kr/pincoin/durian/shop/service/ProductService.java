@@ -2,6 +2,7 @@ package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
+import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
 import kr.pincoin.durian.shop.domain.Price;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.StockLevel;
@@ -62,5 +63,140 @@ public class ProductService {
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Invalid category",
                                                     List.of("Normal category does not exist.")));
+    }
+
+    public Optional<Product>
+    getProduct(Long productId,
+               String slug,
+               ProductStatus status,
+               ProductStockStatus stock,
+               Boolean removed) {
+        return productRepository.findProduct(productId, null, slug, status, stock, removed);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    updateProduct(Long productId, ProductUpdateRequest request) {
+        Product product = productRepository.findProduct(productId,
+                                                        null,
+                                                        null,
+                                                        ProductStatus.ENABLED,
+                                                        ProductStockStatus.IN_STOCK,
+                                                        false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to update.")));
+
+        return Optional.of(product.update(request));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    disableProduct(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             null,
+                             null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to disable.")));
+
+        return Optional.of(product.disable());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    enableProduct(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.DISABLED,
+                             null,
+                             null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to enable.")));
+
+        return Optional.of(product.enable());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    fillProduct(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             ProductStockStatus.SOLD_OUT,
+                             null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to fill up stock.")));
+
+        return Optional.of(product.fill());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    makeEmptyProduct(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             ProductStockStatus.IN_STOCK,
+                             null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to be sold out.")));
+
+        return Optional.of(product.makeEmpty());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    remove(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             null,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to remove.")));
+
+        return Optional.of(product.remove());
+
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    restore(Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             null,
+                             null,
+                             true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to restore.")));
+
+        return Optional.of(product.restore());
     }
 }

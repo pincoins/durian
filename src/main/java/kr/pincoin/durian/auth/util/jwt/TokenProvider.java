@@ -1,6 +1,5 @@
 package kr.pincoin.durian.auth.util.jwt;
 
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.DecodingException;
@@ -10,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -20,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint.*;
 
 @Slf4j
 @Component
@@ -72,13 +71,16 @@ public class TokenProvider {
             Jws<Claims> jws = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 
             return Optional.ofNullable(jws.getPayload().getSubject());
-        } catch (SignatureException | DecodingException ex) {
-            throw new BadCredentialsException("Invalid secret key", ex);
-        } catch (ExpiredJwtException ex) {
-            throw new CredentialsExpiredException("Expired JWT", ex);
-        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException | IllegalArgumentException ex) {
-            throw new BadCredentialsException("Invalid JWT", ex);
+        } catch (SignatureException | DecodingException ignored) {
+            request.setAttribute("exception", ERROR_401_INVALID_SECRET_KEY);
+        } catch (ExpiredJwtException ignored) {
+            request.setAttribute("exception", ERROR_401_EXPIRED_JWT);
+        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
+                 IllegalArgumentException ignored) {
+            request.setAttribute("exception", ERROR_401_INVALID_TOKEN);
         }
+
+        return Optional.empty();
     }
 
     public String
@@ -100,7 +102,8 @@ public class TokenProvider {
                 .and()
                 .claims(claims)
                 .expiration(Date.from(LocalDateTime.now()
-                                              .plus(Duration.of(60 * 60, ChronoUnit.SECONDS)) // 60 minutes
+                                              .plus(Duration.of(ACCESS_TOKEN_EXPIRES_IN,
+                                                                ChronoUnit.SECONDS)) // 60 minutes
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .subject(String.valueOf(sub)) // sub
                 .signWith(key)
