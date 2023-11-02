@@ -118,7 +118,7 @@ public class SecurityConfig {
         // Stateless Session
         http.sessionManagement(session -> {
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            // Login attempt throttling
+            // Login attempt throttling works in spite of stateless JWT authentication
             // maximumSessions(1): Prevents a user from logging in multiple times.
             // A second login will cause the first to be invalidated.
             // maxSessionsPreventsLogin(true): The second login will then be rejected
@@ -130,16 +130,8 @@ public class SecurityConfig {
                                            // authorizing API examples
                                            // requestMatchers().hasRole().permitAll()
                                            // requestMatchers().denyAll()
-                                           .requestMatchers("/").permitAll()
-                                           .requestMatchers("/auth/**").permitAll()
-                                           .requestMatchers("/members/**").permitAll()
-                                           .requestMatchers("/staffs/**").permitAll()
-                                           .requestMatchers("/admins/**").permitAll()
-                                           .requestMatchers("/categories/**").permitAll()
-                                           .requestMatchers("/orders/**").permitAll()
-                                           .requestMatchers("/aligo/**").permitAll()
-                                           .requestMatchers("/line-notify/**").permitAll()
-                                           .requestMatchers("/mailgun/**").permitAll()
+                                           // .requestMatchers("/auth/**").permitAll()
+                                           .requestMatchers("/**").permitAll()
                                            // anyRequest().authenticated() - rememberMe login enabled (form login)
                                            .anyRequest().fullyAuthenticated() //rememberMe disabled
                                   );

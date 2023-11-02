@@ -28,7 +28,7 @@ public class Order extends BaseDateTime {
     @Column(name = "order_uuid", columnDefinition = "char")
     private String orderUuid;
 
-    @Column(name = "fullname")
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "user_agent")

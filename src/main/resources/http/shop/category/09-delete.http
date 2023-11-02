@@ -1,4 +1,0 @@
-### Category Delete
-DELETE http://localhost:8080/categories/15
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}

@@ -1,0 +1,66 @@
+### Category List
+GET http://localhost:8080/categories
+Content-Type: application/json
+
+### Category Detail
+GET http://localhost:8080/categories/1
+Content-Type: application/json
+
+### Category Root Create
+POST http://localhost:8080/categories
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "root",
+  "slug": "root",
+  "description": "This is a a root category",
+  "subDescription": "yet another category",
+  "discountRate": 3.345
+}
+
+### Category Child Create
+POST http://localhost:8080/categories/21/add
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "third3",
+  "slug": "third3",
+  "description": "This is a category example.",
+  "subDescription": "yet another category",
+  "discountRate": 3.345
+}
+
+### Category Change Parent
+POST http://localhost:8080/categories/19/parents/20
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Category Update
+PUT http://localhost:8080/categories/11
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "happy",
+  "slug": "google",
+  "description": "happy",
+  "subDescription": "non refundable",
+  "discountRate": 5.5
+}
+
+### Category Hide
+PUT http://localhost:8080/categories/1/hide
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Category Show
+PUT http://localhost:8080/categories/1/show
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Category Delete
+DELETE http://localhost:8080/categories/15
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

@@ -27,18 +27,28 @@ public class DocumentVerification {
         this.documentVerifiedStatus = phoneVerifiedStatus;
     }
 
-    public DocumentVerification verify() {
+    public DocumentVerification verify(String photoId, String card) {
         this.documentVerifiedStatus = VerificationStatus.VERIFIED;
+
+        this.photoId = photoId;
+        this.card = card;
+
         return this;
     }
 
     public DocumentVerification reject() {
         this.documentVerifiedStatus = VerificationStatus.UNVERIFIED;
+        invalidate();
         return this;
     }
 
     public DocumentVerification revoke() {
         this.documentVerifiedStatus = VerificationStatus.REVOKED;
         return this;
+    }
+
+    private void invalidate() {
+        this.photoId = null;
+        this.card = null;
     }
 }

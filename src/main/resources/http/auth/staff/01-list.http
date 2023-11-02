@@ -1,4 +1,0 @@
-### Staff List
-GET http://localhost:8080/staffs
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}

@@ -1,0 +1,25 @@
+### Admin List
+GET http://localhost:8080/admins
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Admin Detail
+GET http://localhost:8080/admins/{{adminId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Admin Create
+POST http://localhost:8080/admins
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "username": {{username}},
+  "password": {{password}},
+  "name": "admin"
+}
+
+### Admin Delete
+DELETE http://localhost:8080/admins/{{adminId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

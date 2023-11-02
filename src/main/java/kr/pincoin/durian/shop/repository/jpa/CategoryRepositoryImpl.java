@@ -38,7 +38,7 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
-                .where(idEq(id),
+                .where(category.id.eq(id),
                        isRootEq(isRoot),
                        statusEq(status),
                        slugContains(slug));
@@ -143,10 +143,6 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
                        pathLengthEq(pathLength));
 
         return countQuery.fetchFirst() != null;
-    }
-
-    BooleanExpression idEq(Long id) {
-        return id != null ? category.id.eq(id) : null;
     }
 
     BooleanExpression statusEq(CategoryStatus status) {

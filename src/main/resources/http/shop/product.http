@@ -1,0 +1,23 @@
+### Product List
+GET http://localhost:8080/products?categoryId=24
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Create
+POST http://localhost:8080/products
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "slug": "google",
+  "name": "google",
+  "subtitle": "subtitle",
+  "description": "google",
+  "position": 0,
+  "listPrice": 10000,
+  "sellingPrice": 9500,
+  "buyingPrice": 9400,
+  "minimumStockLevel": 10,
+  "maximumStockLevel": 50,
+  "categoryId": 24
+}

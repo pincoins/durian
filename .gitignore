@@ -42,3 +42,4 @@ application-*.yaml
 logs
 src/main/generated
 http-client.private.env.json
+http-client.env.json

@@ -42,18 +42,39 @@ public class PhoneVerification {
         this.phoneVerifiedStatus = phoneVerifiedStatus;
     }
 
-    public PhoneVerification verify() {
+    public PhoneVerification verify(String phone,
+                                    LocalDate dateOfBirth,
+                                    ProfileGender gender,
+                                    ProfileDomestic domestic,
+                                    String telecom) {
         this.phoneVerifiedStatus = VerificationStatus.VERIFIED;
+
+        this.phone = phone;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.domestic = domestic;
+        this.telecom = telecom;
+
         return this;
     }
 
     public PhoneVerification reject() {
         this.phoneVerifiedStatus = VerificationStatus.UNVERIFIED;
+        invalidate();
         return this;
     }
 
     public PhoneVerification revoke() {
         this.phoneVerifiedStatus = VerificationStatus.REVOKED;
+        invalidate();
         return this;
+    }
+
+    private void invalidate() {
+        this.phone = null;
+        this.dateOfBirth = null;
+        this.gender = null;
+        this.domestic = null;
+        this.telecom = null;
     }
 }
