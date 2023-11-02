@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import kr.pincoin.durian.common.validation.NullOrNotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,9 +31,12 @@ public class ProductCreateRequest {
     private String subtitle;
 
     @JsonProperty("description")
+    @NullOrNotBlank
     private String description;
 
     @JsonProperty("position")
+    @NotNull
+    @DecimalMin(value = "0")
     private Integer position;
 
     @JsonProperty("listPrice")

@@ -19,7 +19,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
         // Request without Bearer header is forbidden.
         // Due to no header, error message is not shown.
-        log.warn(accessDeniedException.getLocalizedMessage());
+        log.warn(accessDeniedException.getLocalizedMessage(), accessDeniedException);
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }
