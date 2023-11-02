@@ -68,3 +68,29 @@ Authorization: Bearer {{accessToken}}
 PUT http://localhost:8080/products/2/restore
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Product Change Category
+PUT http://localhost:8080/products/2/categories/23
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Product Change Price
+PUT http://localhost:8080/products/2/change-price
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "listPrice": 50000,
+  "sellingPrice": 47000,
+  "buyingPrice": 46500
+}
+
+### Product Update
+PUT http://localhost:8080/products/2/change-stock-level
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "minimumStockLevel": 1,
+  "maximumStockLevel": 5
+}

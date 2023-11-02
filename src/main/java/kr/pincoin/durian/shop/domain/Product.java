@@ -2,6 +2,8 @@ package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseAuditor;
+import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
+import kr.pincoin.durian.shop.controller.dto.ProductChangeStockLevelRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
@@ -123,13 +125,13 @@ public class Product extends BaseAuditor {
         return this;
     }
 
-    public Product changePrice(Price price) {
-        this.price = price;
+    public Product changePrice(ProductChangePriceRequest request) {
+        this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
         return this;
     }
 
-    public Product changeStockLevel(StockLevel stockLevel) {
-        this.stockLevel = stockLevel;
+    public Product changeStockLevel(ProductChangeStockLevelRequest request) {
+        this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
         return this;
     }
 
