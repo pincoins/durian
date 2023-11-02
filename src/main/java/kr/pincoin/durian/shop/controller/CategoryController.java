@@ -67,7 +67,7 @@ public class CategoryController {
                                                     List.of("Failed to add a child category")));
     }
 
-    @PostMapping("{categoryId}/parents/{parentId}")
+    @PutMapping("{categoryId}/parents/{parentId}")
     public ResponseEntity<CategoryResponse>
     categoryMove(@PathVariable Long parentId,
                  @PathVariable Long categoryId) {

@@ -1,8 +1,11 @@
 package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
+import kr.pincoin.durian.shop.controller.dto.ProductChangeStockLevelRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
+import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.Price;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.StockLevel;
@@ -198,5 +201,64 @@ public class ProductService {
                                                     List.of("Product does not exist to restore.")));
 
         return Optional.of(product.restore());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    changeCategory(Long productId, Long categoryId) {
+        Category category = categoryRepository
+                .findCategory(categoryId, null, CategoryStatus.NORMAL, null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Normal category not found",
+                                                    List.of("Category does not exist for product to change.")));
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             null,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to change category.")));
+
+        return Optional.of(product.changeCategory(category));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    changeProductPrice(Long productId, ProductChangePriceRequest request) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             ProductStockStatus.IN_STOCK,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to change price.")));
+
+        return Optional.of(product.changePrice(request));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Product>
+    changeProductStockLevel(Long productId, ProductChangeStockLevelRequest request) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             ProductStockStatus.IN_STOCK,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Product does not exist to change stock level.")));
+
+        return Optional.of(product.changeStockLevel(request));
     }
 }

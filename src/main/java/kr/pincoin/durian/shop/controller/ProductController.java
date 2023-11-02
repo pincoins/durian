@@ -3,10 +3,7 @@ package kr.pincoin.durian.shop.controller;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.service.IdentityService;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.ProductAdminResponse;
-import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.ProductResponse;
-import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
+import kr.pincoin.durian.shop.controller.dto.*;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
 import kr.pincoin.durian.shop.service.ProductService;
@@ -153,5 +150,41 @@ public class ProductController {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Product not found",
                                                     List.of("Failed to restore product.")));
+    }
+
+    @PutMapping("{productId}/categories/{categoryId}")
+    public ResponseEntity<ProductAdminResponse>
+    productChangeCategory(@PathVariable Long productId,
+                          @PathVariable Long categoryId) {
+        return productService.changeCategory(productId, categoryId)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to change category of product.")));
+    }
+
+    @PutMapping("{productId}/change-price")
+    public ResponseEntity<ProductAdminResponse>
+    productChangePrice(@PathVariable Long productId,
+                       @Valid @RequestBody ProductChangePriceRequest request) {
+        return productService.changeProductPrice(productId, request)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to change product price.")));
+    }
+
+    @PutMapping("{productId}/change-stock-level")
+    public ResponseEntity<ProductAdminResponse>
+    productChangeStockLevel(@PathVariable Long productId,
+                            @Valid @RequestBody ProductChangeStockLevelRequest request) {
+        return productService.changeProductStockLevel(productId, request)
+                .map(product -> ResponseEntity.ok().body(
+                        new ProductAdminResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to change product stock level.")));
     }
 }
