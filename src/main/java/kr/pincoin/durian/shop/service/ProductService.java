@@ -46,26 +46,25 @@ public class ProductService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Product>
     createProduct(ProductCreateRequest request) {
-        return categoryRepository.findCategory(request.getCategoryId(), null, CategoryStatus.NORMAL, null)
-                .map(category -> {
-                    Product product = Product.builder(request.getSlug(),
-                                                      request.getName(),
-                                                      request.getSubtitle(),
-                                                      request.getDescription(),
-                                                      0,
-                                                      new Price(request.getListPrice(),
-                                                                request.getSellingPrice(),
-                                                                request.getBuyingPrice()),
-                                                      new StockLevel(request.getMinimumStockLevel(),
-                                                                     request.getMaximumStockLevel()),
-                                                      category).build();
-                    productRepository.save(product);
-
-                    return Optional.of(product);
-                })
+        Category category = categoryRepository.findCategory(request.getCategoryId(), null, CategoryStatus.NORMAL, null)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Invalid category",
                                                     List.of("Normal category does not exist.")));
+
+        Product product = Product.builder(request.getSlug(),
+                                          request.getName(),
+                                          request.getSubtitle(),
+                                          request.getDescription(),
+                                          0,
+                                          new Price(request.getListPrice(),
+                                                    request.getSellingPrice(),
+                                                    request.getBuyingPrice()),
+                                          new StockLevel(request.getMinimumStockLevel(),
+                                                         request.getMaximumStockLevel()),
+                                          category).build();
+        productRepository.save(product);
+
+        return Optional.of(product);
     }
 
     public Optional<Product>
@@ -260,5 +259,22 @@ public class ProductService {
                                                     List.of("Product does not exist to change stock level.")));
 
         return Optional.of(product.changeStockLevel(request));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public boolean deleteProduct(Long productId) {
+        return productRepository.findProduct(productId,
+                                             null,
+                                             null,
+                                             null,
+                                             null,
+                                             true)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return true;
+                }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                      "Soft removed product not found",
+                                                      List.of("Product does not exist to delete.")));
     }
 }

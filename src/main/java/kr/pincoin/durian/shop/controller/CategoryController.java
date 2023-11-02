@@ -112,10 +112,10 @@ public class CategoryController {
                                                     List.of("Failed to show category.")));
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/{categoryId}")
     public ResponseEntity<Object>
-    categoryDelete(@PathVariable Long userId) {
-        if (categoryService.deleteCategory(userId)) {
+    categoryDelete(@PathVariable Long categoryId) {
+        if (categoryService.deleteCategory(categoryId)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
