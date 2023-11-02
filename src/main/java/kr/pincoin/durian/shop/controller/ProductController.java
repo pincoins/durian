@@ -187,4 +187,13 @@ public class ProductController {
                                                     "Product not found",
                                                     List.of("Failed to change product stock level.")));
     }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Object>
+    productDelete(@PathVariable Long productId) {
+        if (productService.deleteProduct(productId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 }

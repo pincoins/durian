@@ -68,11 +68,11 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
     }
 
     BooleanExpression statusEq(ProductStatus status) {
-        return status != null ? product.status.eq(status) : product.status.eq(ProductStatus.ENABLED);
+        return status != null ? product.status.eq(status) : null;
     }
 
     BooleanExpression stockEq(ProductStockStatus stock) {
-        return stock != null ? product.stock.eq(stock) : product.stock.eq(ProductStockStatus.IN_STOCK);
+        return stock != null ? product.stock.eq(stock) : null;
     }
 
     BooleanExpression removedEq(Boolean removed) {
