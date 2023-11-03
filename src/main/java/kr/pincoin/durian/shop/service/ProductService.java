@@ -46,7 +46,10 @@ public class ProductService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Product>
     createProduct(ProductCreateRequest request) {
-        Category category = categoryRepository.findCategory(request.getCategoryId(), null, CategoryStatus.NORMAL, null)
+        Category category = categoryRepository.findCategory(request.getCategoryId(),
+                                                            null,
+                                                            CategoryStatus.NORMAL,
+                                                            null)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Invalid category",
                                                     List.of("Normal category does not exist.")));

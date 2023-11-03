@@ -1,10 +1,10 @@
 ### Product List
-GET http://localhost:8080/products?categoryId=24
+GET http://localhost:8080/products?categoryId={{categoryId}}
 Content-Type: application/jsonR
 Authorization: Bearer {{accessToken}}
 
 ### Category Detail
-GET http://localhost:8080/products/2
+GET http://localhost:8080/products/{{productId}}
 Content-Type: application/json
 
 ### Product Create
@@ -27,7 +27,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Product Update
-PUT http://localhost:8080/products/2
+PUT http://localhost:8080/products/{{productId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -40,42 +40,42 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Product Disable
-PUT http://localhost:8080/products/2/disable
+PUT http://localhost:8080/products/{{productId}}/disable
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Enable
-PUT http://localhost:8080/products/2/enable
+PUT http://localhost:8080/products/{{productId}}/enable
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Fill Up Stock
-PUT http://localhost:8080/products/2/fill
+PUT http://localhost:8080/products/{{productId}}/fill
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Run Out Of Stock
-PUT http://localhost:8080/products/2/empty
+PUT http://localhost:8080/products/{{productId}}/empty
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Remove
-PUT http://localhost:8080/products/2/remove
+PUT http://localhost:8080/products/{{productId}}/remove
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Restore
-PUT http://localhost:8080/products/2/restore
+PUT http://localhost:8080/products/{{productId}}/restore
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Change Category
-PUT http://localhost:8080/products/2/categories/23
+PUT http://localhost:8080/products/{{productId}}/categories/{{parentCategoryId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Product Change Price
-PUT http://localhost:8080/products/2/change-price
+PUT http://localhost:8080/products/{{productId}}/change-price
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -86,7 +86,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Product Update
-PUT http://localhost:8080/products/2/change-stock-level
+PUT http://localhost:8080/products/{{productId}}/change-stock-level
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -96,6 +96,6 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Product Delete
-DELETE http://localhost:8080/products/3
+DELETE http://localhost:8080/products/{{productId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

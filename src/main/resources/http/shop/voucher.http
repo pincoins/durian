@@ -1,0 +1,45 @@
+### Voucher List
+GET http://localhost:8080/vouchers?productId={{productId}}&status=PURCHASED,SOLD
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Detail
+GET http://localhost:8080/vouchers/{{voucherId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Create
+POST http://localhost:8080/vouchers
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "1234-5678-1212-3434",
+  "remarks": "20001111",
+  "productId": {{productId}}
+}
+
+### Voucher Update
+PUT http://localhost:8080/vouchers/{{voucherId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "1234-5678-1212-3434",
+  "remarks": "20001112"
+}
+
+### Voucher Buy
+PUT http://localhost:8080/vouchers/{{voucherId}}/buy
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Sell
+PUT http://localhost:8080/vouchers/{{voucherId}}/sell
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Revoke
+PUT http://localhost:8080/vouchers/{{voucherId}}/revoke
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
