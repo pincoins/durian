@@ -41,10 +41,6 @@ logging:
     kr.pincoin.durian: DEBUG
     org.hibernate.SQL: DEBUG # show sql in logger
     org.hibernate.orm.jdbc.bind: TRACE # show binding parameters (Spring boot 3+ and Hibernate 6+)
-    # Ignore WARN:
-    # Using deprecated '-debug' fallback for parameter name resolution.
-    # Compile the affected code with '-parameters' instead or avoid its introspection
-    org.springframework.core.LocalVariableTableParameterNameDiscoverer: ERROR
 
 server.error:
   include-exception: false
