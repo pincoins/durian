@@ -63,3 +63,21 @@ Authorization: Bearer {{accessToken}}
 DELETE http://localhost:8080/vouchers/{{voucherId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Voucher Bulk Create
+POST http://localhost:8080/vouchers/bulk-create
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "productId": {{productId}},
+  "vouchers": [
+  {
+    "code": "1111",
+    "remarks": "20001111"
+  }, {
+    "code": "2222",
+    "remarks": "20001111"
+  }
+  ]
+}

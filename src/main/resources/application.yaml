@@ -2,7 +2,8 @@ spring:
   application.name: durian
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: "jdbc:mariadb://localhost/database"
+    # batch update: rewriteBatchedStatements=true (MySQL), useBatchMultiSend=true (MariaDB)
+    url: "jdbc:mariadb://localhost/database?rewriteBatchedStatements=true&profileSQL=true"
     username: username
     password: password
     hikari:

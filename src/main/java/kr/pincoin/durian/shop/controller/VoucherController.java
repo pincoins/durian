@@ -2,6 +2,7 @@ package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.shop.controller.dto.VoucherBulkCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.VoucherCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.VoucherResponse;
 import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
@@ -145,7 +146,13 @@ public class VoucherController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    // create (bulk)
     // change parent (bulk)
-    // change state (bulk)
+    // change purchased revoked sold (bulk)
+    // change remove (bulk)
+    // change delete (bulk)
+    @PostMapping("/bulk-create")
+    public ResponseEntity<Integer>
+    voucherBulkCreate(@Valid @RequestBody VoucherBulkCreateRequest request) {
+        return ResponseEntity.ok().body(voucherService.createVoucherBulk(request));
+    }
 }

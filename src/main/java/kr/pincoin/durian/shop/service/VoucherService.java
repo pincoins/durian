@@ -1,6 +1,7 @@
 package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.shop.controller.dto.VoucherBulkCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.VoucherCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
 import kr.pincoin.durian.shop.domain.Product;
@@ -11,6 +12,7 @@ import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import kr.pincoin.durian.shop.repository.jpa.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional(readOnly = true)
@@ -203,5 +207,27 @@ public class VoucherService {
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Soft removed voucher not found",
                                                       List.of("Voucher does not exist to delete.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    createVoucherBulk(VoucherBulkCreateRequest request) {
+        try {
+            return voucherRepository.saveAll(request);
+        } catch (DataIntegrityViolationException ex) {
+            Matcher matcher = Pattern.compile("Duplicate entry '([a-zA-Z0-9-_]+)'").matcher(ex.getLocalizedMessage());
+
+            String message = "Duplicate voucher: ";
+
+            if (matcher.find()) {
+                message = message + matcher.group(1).trim();
+            }
+
+            throw new ApiException(HttpStatus.CONFLICT,
+                                   "Duplicate voucher code",
+                                   List.of(message),
+                                   ex);
+        }
     }
 }
