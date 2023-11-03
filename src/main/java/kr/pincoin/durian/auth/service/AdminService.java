@@ -44,7 +44,7 @@ public class AdminService {
     createAdmin(UserCreateRequest request) {
         User admin = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
-                                   request.getName(),
+                                   request.getFullName(),
                                    request.getEmail())
                 .status(UserStatus.NORMAL)
                 .role(Role.SYSADMIN)

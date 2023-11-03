@@ -10,5 +10,5 @@ public enum PaymentMethod {
     CREDIT_CARD,
     BANK_TRANSFER_PG,
     VIRTUAL_ACCOUNT,
-    PHONE_BILL
+    PHONE_BILL,
 }

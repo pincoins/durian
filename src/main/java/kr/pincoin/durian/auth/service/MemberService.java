@@ -50,7 +50,7 @@ public class MemberService {
     createMember(UserCreateRequest request) {
         User member = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
-                                   request.getName(),
+                                   request.getFullName(),
                                    request.getEmail())
                 .status(UserStatus.PENDING)
                 .role(Role.MEMBER)

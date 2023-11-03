@@ -46,7 +46,7 @@ public class StaffService {
     createStaff(UserCreateRequest request) {
         User staff = User.builder(request.getUsername(),
                                   passwordEncoder.encode(request.getPassword()),
-                                  request.getName(),
+                                  request.getFullName(),
                                   request.getEmail())
                 .status(UserStatus.NORMAL)
                 .role(Role.STAFF)

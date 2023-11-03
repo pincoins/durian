@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum CategoryStatus {
     NORMAL,
-    HIDDEN
+    HIDDEN,
 }

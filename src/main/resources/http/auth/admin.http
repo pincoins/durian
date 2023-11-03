@@ -16,7 +16,7 @@ Content-Type: application/json
   "email": {{email}},
   "username": {{username}},
   "password": {{password}},
-  "name": "admin"
+  "fullName": "admin"
 }
 
 ### Admin Delete
