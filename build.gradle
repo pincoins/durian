@@ -101,8 +101,8 @@ tasks.named('test') {
 
 // Using deprecated '-debug' fallback for parameter name resolution.
 // Compile the affected code with '-parameters' instead or avoid its introspection
-compileJava {
-    options.compilerArgs << '-parameters'
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
 }
 
 // build jar file without version tag
