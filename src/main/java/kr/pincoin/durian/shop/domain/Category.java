@@ -62,7 +62,7 @@ public class Category extends BaseAuditor {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Product> categories = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     public static CategoryBuilder builder(String title,
                                           String slug,
@@ -103,6 +103,16 @@ public class Category extends BaseAuditor {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, slug);
+    }
+
+    public void addProduct(Product product) {
+        if (!products.contains(product)) {
+            this.products.add(product);
+        }
+
+        if (product.getCategory() != this) {
+            product.changeCategory(this);
+        }
     }
 
     public Category update(CategoryUpdateRequest request) {

@@ -81,3 +81,67 @@ Authorization: Bearer {{accessToken}}
   }
   ]
 }
+
+### Voucher Bulk Buy
+PUT http://localhost:8080/vouchers/bulk-buy
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Sell
+PUT http://localhost:8080/vouchers/bulk-sell
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Revoke
+PUT http://localhost:8080/vouchers/bulk-revoke
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Remove
+PUT http://localhost:8080/vouchers/bulk-remove
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Restore
+PUT http://localhost:8080/vouchers/bulk-restore
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Change Product
+PUT http://localhost:8080/vouchers/bulk-change-product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "productId": 5,
+  "voucherIds": [4, 5]
+}
+
+### Voucher Bulk Delete
+DELETE http://localhost:8080/vouchers/bulk-delete
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "voucherIds": [5]
+}

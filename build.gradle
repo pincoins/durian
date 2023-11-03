@@ -95,6 +95,16 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// As of version 4, Spring fully supports Java 8’s parameter name discovery based on the -parameters compiler flag.
+// By using this flag in your build as an alternative to debug information,
+// you can omit the @Param annotation for named parameters.
+
+// Using deprecated '-debug' fallback for parameter name resolution.
+// Compile the affected code with '-parameters' instead or avoid its introspection
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}
+
 // build jar file without version tag
 bootJar {
     archiveFileName = "${rootProject.name}.jar"

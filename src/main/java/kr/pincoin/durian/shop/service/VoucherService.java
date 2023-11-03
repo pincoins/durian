@@ -1,9 +1,7 @@
 package kr.pincoin.durian.shop.service;
 
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.VoucherBulkCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.VoucherCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
+import kr.pincoin.durian.shop.controller.dto.*;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.Voucher;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
@@ -216,7 +214,8 @@ public class VoucherService {
         try {
             return voucherRepository.saveAll(request);
         } catch (DataIntegrityViolationException ex) {
-            Matcher matcher = Pattern.compile("Duplicate entry '([a-zA-Z0-9-_]+)'").matcher(ex.getLocalizedMessage());
+            Matcher matcher = Pattern.compile("Duplicate entry '([a-zA-Z0-9-_]+)'")
+                    .matcher(ex.getLocalizedMessage());
 
             String message = "Duplicate voucher: ";
 
@@ -229,5 +228,65 @@ public class VoucherService {
                                    List.of(message),
                                    ex);
         }
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    buyVoucherBulk(VoucherBulkRequest request) {
+        return voucherRepository.changeStatus(request.getVoucherIds(), VoucherStatus.PURCHASED);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    sellVoucherBulk(VoucherBulkRequest request) {
+        return voucherRepository.changeStatus(request.getVoucherIds(), VoucherStatus.SOLD);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    revokeVoucherBulk(VoucherBulkRequest request) {
+        return voucherRepository.changeStatus(request.getVoucherIds(), VoucherStatus.REVOKED);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    removeVoucherBulk(VoucherBulkRequest request) {
+        return voucherRepository.toggleRemove(request.getVoucherIds(), true);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    restoreVoucherBulk(VoucherBulkRequest request) {
+        return voucherRepository.toggleRemove(request.getVoucherIds(), false);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer
+    changeProductBulk(VoucherBulkProductRequest request) {
+        Product product = productRepository
+                .findProduct(request.getProductId(),
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Normal product not found",
+                                                    List.of("Product does not exist for voucher to change.")));
+
+        return voucherRepository.changeProduct(request.getVoucherIds(), product);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Integer deleteVoucherBulk(VoucherBulkRequest request) {
+        voucherRepository.disconnect(request.getVoucherIds()); // set order_item_voucher.voucher_id = null
+        return voucherRepository.delete(request.getVoucherIds());
     }
 }
