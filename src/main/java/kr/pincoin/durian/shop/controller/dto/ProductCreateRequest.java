@@ -65,5 +65,6 @@ public class ProductCreateRequest {
     private Integer maximumStockLevel;
 
     @JsonProperty("categoryId")
+    @NotNull
     private Long categoryId;
 }

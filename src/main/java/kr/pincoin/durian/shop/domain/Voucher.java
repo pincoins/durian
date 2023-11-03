@@ -2,6 +2,7 @@ package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseDateTime;
+import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
 import lombok.*;
 
@@ -71,6 +72,27 @@ public class Voucher extends BaseDateTime {
 
     public Voucher revoked() {
         this.status = VoucherStatus.REVOKED;
+        return this;
+    }
+
+    public Voucher remove() {
+        this.removed = true;
+        return this;
+    }
+
+    public Voucher restore() {
+        this.removed = false;
+        return this;
+    }
+
+    public Voucher changeProduct(Product product) {
+        this.product = product;
+        return this;
+    }
+
+    public Voucher update(VoucherUpdateRequest request) {
+        this.code = request.getCode();
+        this.remarks = request.getRemarks();
         return this;
     }
 }

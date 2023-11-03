@@ -119,9 +119,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to update.")));
-        category.update(request);
-
-        return Optional.of(category);
+        return Optional.of(category.update(request));
     }
 
     @Transactional
@@ -133,9 +131,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to hide.")));
-        category.hide();
-
-        return Optional.of(category);
+        return Optional.of(category.hide());
     }
 
     @Transactional
@@ -147,10 +143,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to show.")));
-
-        category.show();
-
-        return Optional.of(category);
+        return Optional.of(category.show());
     }
 
     @Transactional

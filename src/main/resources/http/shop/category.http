@@ -3,7 +3,7 @@ GET http://localhost:8080/categories
 Content-Type: application/json
 
 ### Category Detail
-GET http://localhost:8080/categories/1
+GET http://localhost:8080/categories/{{categoryId}}
 Content-Type: application/json
 
 ### Category Root Create
@@ -20,7 +20,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Category Child Create
-POST http://localhost:8080/categories/21/add
+POST http://localhost:8080/categories/{{categoryId}}/add
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -33,12 +33,12 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Category Change Parent
-PUT http://localhost:8080/categories/19/parents/20
+PUT http://localhost:8080/categories/{{categoryId}}/parents/{{parentCategoryId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Category Update
-PUT http://localhost:8080/categories/11
+PUT http://localhost:8080/categories/{{categoryId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -51,16 +51,16 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Category Hide
-PUT http://localhost:8080/categories/1/hide
+PUT http://localhost:8080/categories/{{categoryId}}/hide
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Category Show
-PUT http://localhost:8080/categories/1/show
+PUT http://localhost:8080/categories/{{categoryId}}/show
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Category Delete
-DELETE http://localhost:8080/categories/15
+DELETE http://localhost:8080/categories/{{categoryId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
