@@ -3,14 +3,16 @@ package kr.pincoin.durian.shop.domain;
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "voucher")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class Voucher extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +22,10 @@ public class Voucher extends BaseDateTime {
     @Column(name = "is_removed")
     private boolean removed;
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "remarks")
     private String remarks;
 
     @ManyToOne(optional = false,
@@ -33,4 +37,40 @@ public class Voucher extends BaseDateTime {
     @Enumerated(value = EnumType.STRING)
     private VoucherStatus status;
 
+    public static VoucherBuilder builder(String code, String remarks, Product product) {
+        return new VoucherBuilder()
+                .code(code)
+                .remarks(remarks)
+                .product(product)
+                .status(VoucherStatus.PURCHASED)
+                .removed(false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Voucher voucher = (Voucher) o;
+        return id != null && Objects.equals(id, voucher.id) && Objects.equals(code, voucher.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code);
+    }
+
+    public Voucher purchased() {
+        this.status = VoucherStatus.PURCHASED;
+        return this;
+    }
+
+    public Voucher sold() {
+        this.status = VoucherStatus.SOLD;
+        return this;
+    }
+
+    public Voucher revoked() {
+        this.status = VoucherStatus.REVOKED;
+        return this;
+    }
 }

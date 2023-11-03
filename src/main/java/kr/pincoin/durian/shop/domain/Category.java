@@ -8,6 +8,8 @@ import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -43,6 +45,24 @@ public class Category extends BaseAuditor {
 
     @Column(name = "is_root")
     private boolean isRoot;
+
+    @OneToMany(mappedBy = "ancestor",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CategoryTreePath> ancestors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "descendant",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CategoryTreePath> descendants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Product> categories = new ArrayList<>();
 
     public static CategoryBuilder builder(String title,
                                           String slug,
