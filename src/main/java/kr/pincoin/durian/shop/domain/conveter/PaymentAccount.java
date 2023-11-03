@@ -9,5 +9,5 @@ public enum PaymentAccount {
     SHINHAN,
     WOORI,
     IBK,
-    PAYPAL
+    PAYPAL,
 }

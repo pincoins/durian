@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum OrderVisibility {
     VISIBLE,
-    HIDDEN
+    HIDDEN,
 }

@@ -1,11 +1,12 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "order_item")
@@ -29,14 +30,8 @@ public class OrderItem {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "list_price")
-    private BigDecimal listPrice;
-
-    @Column(name = "selling_price")
-    private BigDecimal sellingPrice;
-
-    @Column(name = "buying_price")
-    private BigDecimal buyingPrice;
+    @Embedded
+    Price price;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -45,4 +40,33 @@ public class OrderItem {
             fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return id != null && Objects.equals(id, orderItem.id) && Objects.equals(order, orderItem.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order);
+    }
+
+    public OrderItem changePrice(ProductChangePriceRequest request) {
+        this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
+        return this;
+    }
+
+    public OrderItem remove() {
+        this.removed = true;
+        return this;
+    }
+
+    public OrderItem restore() {
+        this.removed = false;
+        return this;
+    }
+
 }

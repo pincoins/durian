@@ -21,9 +21,9 @@ public class UserResponse {
     @JsonProperty("username")
     private String username;
 
-    @JsonProperty("name")
+    @JsonProperty("fullName")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String name;
+    private String fullName;
 
     @JsonProperty("status")
     private UserStatus status;
@@ -37,13 +37,13 @@ public class UserResponse {
 
     public UserResponse(Long id,
                         String username,
-                        String name,
+                        String fullName,
                         Role role,
                         UserStatus status,
                         LocalDateTime created) {
         this.id = id;
         this.username = username;
-        this.name = name;
+        this.fullName = fullName;
         this.role = role;
         this.status = status;
         this.created = created;
@@ -52,7 +52,7 @@ public class UserResponse {
     public UserResponse(User user) {
         this(user.getId(),
              user.getUsername(),
-             user.getName(),
+             user.getFullName(),
              user.getRole(),
              user.getStatus(),
              user.getCreated());

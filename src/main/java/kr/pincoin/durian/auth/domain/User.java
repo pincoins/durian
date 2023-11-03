@@ -35,8 +35,8 @@ public class User extends BaseDateTime implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
@@ -48,12 +48,12 @@ public class User extends BaseDateTime implements UserDetails {
 
     public static UserBuilder builder(String username,
                                       String password,
-                                      String name,
+                                      String fullName,
                                       String email) {
         return new UserBuilder()
                 .username(username)
                 .password(password)
-                .name(name)
+                .fullName(fullName)
                 .email(email);
     }
 
@@ -94,7 +94,7 @@ public class User extends BaseDateTime implements UserDetails {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         this.username = uuid;
         this.password = "";
-        this.name = uuid;
+        this.fullName = uuid;
         this.email = uuid;
         this.status = UserStatus.UNREGISTERED;
         return this;

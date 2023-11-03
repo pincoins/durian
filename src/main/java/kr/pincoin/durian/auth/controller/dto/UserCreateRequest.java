@@ -29,9 +29,9 @@ public class UserCreateRequest {
     @Pattern(regexp = USERNAME_PATTERN)
     private String username;
 
-    @JsonProperty("name")
+    @JsonProperty("fullName")
     @Size(min = 2, max = 32)
-    private String name;
+    private String fullName;
 
     @JsonProperty("password")
     @Size(min = 8, max = 32)
