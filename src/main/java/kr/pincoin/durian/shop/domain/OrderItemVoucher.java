@@ -29,8 +29,7 @@ public class OrderItemVoucher {
     @JoinColumn(name = "order_item_id")
     private OrderItem orderItem;
 
-    @ManyToOne(optional = false,
-            fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // optional = true
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
 }
