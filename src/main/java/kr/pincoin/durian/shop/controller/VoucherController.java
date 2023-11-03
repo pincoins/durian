@@ -2,10 +2,7 @@ package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.VoucherBulkCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.VoucherCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.VoucherResponse;
-import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
+import kr.pincoin.durian.shop.controller.dto.*;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
 import kr.pincoin.durian.shop.service.VoucherService;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +104,7 @@ public class VoucherController {
                                                     List.of("Failed to update voucher.")));
     }
 
-    @PutMapping("{voucherId}/products/{productId}")
+    @PutMapping("/{voucherId}/products/{productId}")
     public ResponseEntity<VoucherResponse> voucherChangeProduct(@PathVariable Long voucherId,
                                                                 @PathVariable Long productId) {
         return voucherService.changeProduct(voucherId, productId)
@@ -116,7 +113,7 @@ public class VoucherController {
                                                List.of("Failed to change product of voucher.")));
     }
 
-    @PutMapping("{voucherId}/remove")
+    @PutMapping("/{voucherId}/remove")
     public ResponseEntity<VoucherResponse>
     productRemove(@PathVariable Long voucherId) {
         return voucherService.remove(voucherId)
@@ -127,7 +124,7 @@ public class VoucherController {
                                                     List.of("Failed to remove voucher.")));
     }
 
-    @PutMapping("{voucherId}/restore")
+    @PutMapping("/{voucherId}/restore")
     public ResponseEntity<VoucherResponse>
     productRestore(@PathVariable Long voucherId) {
         return voucherService.restore(voucherId)
@@ -146,13 +143,51 @@ public class VoucherController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    // change parent (bulk)
-    // change purchased revoked sold (bulk)
-    // change remove (bulk)
-    // change delete (bulk)
     @PostMapping("/bulk-create")
     public ResponseEntity<Integer>
     voucherBulkCreate(@Valid @RequestBody VoucherBulkCreateRequest request) {
         return ResponseEntity.ok().body(voucherService.createVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-buy")
+    public ResponseEntity<Integer>
+    voucherBulkBuy(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.buyVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-sell")
+    public ResponseEntity<Integer>
+    voucherBulkSell(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.sellVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-revoke")
+    public ResponseEntity<Integer>
+    voucherRevoke(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.revokeVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-remove")
+    public ResponseEntity<Integer>
+    voucherBulkRemove(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.removeVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-restore")
+    public ResponseEntity<Integer>
+    voucherBulkRestore(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.restoreVoucherBulk(request));
+    }
+
+    @PutMapping("/bulk-change-product")
+    public ResponseEntity<Integer>
+    voucherBulkChangeProduct(@Valid @RequestBody VoucherBulkProductRequest request) {
+        return ResponseEntity.ok().body(voucherService.changeProductBulk(request));
+    }
+
+    @DeleteMapping("/bulk-delete")
+    public ResponseEntity<Integer>
+    voucherBulkDelete(@Valid @RequestBody VoucherBulkRequest request) {
+        return ResponseEntity.ok().body(voucherService.deleteVoucherBulk(request));
     }
 }
