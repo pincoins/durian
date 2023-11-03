@@ -144,8 +144,27 @@ public class Product extends BaseAuditor {
     }
 
     public Product changeCategory(Category category) {
+        if (this.category != null) {
+            this.category.getProducts().remove(this);
+        }
+
         this.category = category;
+
+        if (!category.getProducts().contains(this)) {
+            category.getProducts().add(this);
+        }
+
         return this;
+    }
+
+    public void addVoucher(Voucher voucher) {
+        if (!vouchers.contains(voucher)) {
+            this.vouchers.add(voucher);
+        }
+
+        if (voucher.getProduct() != this) {
+            voucher.changeProduct(this);
+        }
     }
 
     public Product update(ProductUpdateRequest request) {
