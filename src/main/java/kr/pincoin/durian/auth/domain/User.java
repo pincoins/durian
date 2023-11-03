@@ -70,8 +70,9 @@ public class User extends BaseDateTime implements UserDetails {
         return Objects.hash(id, username);
     }
 
-    public void changePassword(String password) {
+    public User changePassword(String password) {
         this.password = password;
+        return this;
     }
 
     public User approve() {
@@ -118,7 +119,7 @@ public class User extends BaseDateTime implements UserDetails {
         return List.of(new SimpleGrantedAuthority(String.format("ROLE_%s", role)));
     }
 
-    // getUsername(), getPassword() methods are overridden by lombok.
+    // getUsername(), getPassword() methods are already overridden by Lombok.
 
     @Override
     public boolean isAccountNonExpired() {

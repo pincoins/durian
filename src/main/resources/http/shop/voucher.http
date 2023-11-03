@@ -43,3 +43,23 @@ Authorization: Bearer {{accessToken}}
 PUT http://localhost:8080/vouchers/{{voucherId}}/revoke
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Voucher Change Product
+PUT http://localhost:8080/vouchers/{{voucherId}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Remove
+PUT http://localhost:8080/vouchers/{{voucherId}}/remove
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Restore
+PUT http://localhost:8080/vouchers/{{voucherId}}/restore
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Delete
+DELETE http://localhost:8080/vouchers/{{voucherId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

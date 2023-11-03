@@ -106,11 +106,46 @@ public class VoucherController {
                                                     List.of("Failed to update voucher.")));
     }
 
-    // change product
+    @PutMapping("{voucherId}/products/{productId}")
+    public ResponseEntity<VoucherResponse> voucherChangeProduct(@PathVariable Long voucherId,
+                                                                @PathVariable Long productId) {
+        return voucherService.changeProduct(voucherId, productId)
+                .map(voucher -> ResponseEntity.ok().body(new VoucherResponse(voucher))).orElseThrow(
+                        () -> new ApiException(HttpStatus.NOT_FOUND, "Voucher not found",
+                                               List.of("Failed to change product of voucher.")));
+    }
 
-    // delete (order_item_voucher fk set null first)
+    @PutMapping("{voucherId}/remove")
+    public ResponseEntity<VoucherResponse>
+    productRemove(@PathVariable Long voucherId) {
+        return voucherService.remove(voucherId)
+                .map(voucher -> ResponseEntity.ok().body(
+                        new VoucherResponse(voucher)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Voucher not found",
+                                                    List.of("Failed to remove voucher.")));
+    }
+
+    @PutMapping("{voucherId}/restore")
+    public ResponseEntity<VoucherResponse>
+    productRestore(@PathVariable Long voucherId) {
+        return voucherService.restore(voucherId)
+                .map(voucher -> ResponseEntity.ok().body(
+                        new VoucherResponse(voucher)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Product not found",
+                                                    List.of("Failed to restore voucher.")));
+    }
+
+    @DeleteMapping("/{voucherId}")
+    public ResponseEntity<Object> voucherDelete(@PathVariable Long voucherId) {
+        if (voucherService.deleteVoucher(voucherId)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
     // create (bulk)
-
     // change parent (bulk)
+    // change state (bulk)
 }

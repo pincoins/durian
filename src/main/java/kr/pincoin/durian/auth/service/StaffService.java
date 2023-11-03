@@ -82,8 +82,6 @@ public class StaffService {
                                                     "Member not found",
                                                     List.of("Member does not exist to reset password.")));
 
-        staff.changePassword(passwordEncoder.encode(request.getNewPassword()));
-
-        return Optional.of(staff);
+        return Optional.of(staff.changePassword(passwordEncoder.encode(request.getNewPassword())));
     }
 }

@@ -126,8 +126,82 @@ public class VoucherService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Voucher not found",
                                                     List.of("Voucher does not exist to update.")));
-        voucher.update(request);
+        return Optional.of(voucher.update(request));
+    }
 
-        return Optional.of(voucher);
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    @Transactional
+    public Optional<Voucher>
+    changeProduct(Long voucherId, Long productId) {
+        Product product = productRepository
+                .findProduct(productId,
+                             null,
+                             null,
+                             ProductStatus.ENABLED,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Normal product not found",
+                                                    List.of("Product does not exist for voucher to change.")));
+        Voucher voucher = voucherRepository
+                .findVoucher(voucherId,
+                             null,
+                             null,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Voucher not found",
+                                                    List.of("Voucher does not exist to change product.")));
+
+        return Optional.of(voucher.changeProduct(product));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Voucher> remove(Long voucherId) {
+        Voucher voucher = voucherRepository
+                .findVoucher(voucherId,
+                             null,
+                             null,
+                             null,
+                             false)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Voucher not found",
+                                                    List.of("Voucher does not exist to remove.")));
+
+        return Optional.of(voucher.remove());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Voucher> restore(Long voucherId) {
+        Voucher voucher = voucherRepository
+                .findVoucher(voucherId,
+                             null,
+                             null,
+                             null,
+                             true)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Voucher not found",
+                                                    List.of("Voucher does not exist to restore.")));
+
+        return Optional.of(voucher.restore());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public boolean deleteVoucher(Long voucherId) {
+        return voucherRepository.findVoucher(voucherId,
+                                             null,
+                                             null,
+                                             null,
+                                             true)
+                .map(voucher -> {
+                    voucherRepository.disconnect(voucher); // set order_item_voucher.voucher_id = null
+                    voucherRepository.delete(voucher);
+                    return true;
+                }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                      "Soft removed voucher not found",
+                                                      List.of("Voucher does not exist to delete.")));
     }
 }

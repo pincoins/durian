@@ -75,6 +75,16 @@ public class Voucher extends BaseDateTime {
         return this;
     }
 
+    public Voucher remove() {
+        this.removed = true;
+        return this;
+    }
+
+    public Voucher restore() {
+        this.removed = false;
+        return this;
+    }
+
     public Voucher changeProduct(Product product) {
         this.product = product;
         return this;

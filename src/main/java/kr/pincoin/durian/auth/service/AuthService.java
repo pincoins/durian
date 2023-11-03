@@ -89,9 +89,7 @@ public class AuthService {
                                    List.of("Your old password is not correct."));
         }
 
-        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
-
-        return true;
+        return user.changePassword(passwordEncoder.encode(request.getNewPassword())) != null;
     }
 
     private AccessTokenResponse

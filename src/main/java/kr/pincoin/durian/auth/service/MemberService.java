@@ -91,9 +91,7 @@ public class MemberService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Member does not exist to approve.")));
-        User user = profile.getUser();
-        user.approve();
-
+        profile.getUser().approve();
         return Optional.of(profile);
     }
 
@@ -107,9 +105,7 @@ public class MemberService {
                                                     "Member not found",
                                                     List.of("Member does not exist to inactivate.")));
 
-        User user = profile.getUser();
-        user.inactivate();
-
+        profile.getUser().inactivate();
         return Optional.of(profile);
     }
 
@@ -124,9 +120,7 @@ public class MemberService {
                                                     "Member not found",
                                                     List.of("Member does not exist to activate.")));
 
-        User user = profile.getUser();
-        user.activate();
-
+        profile.getUser().activate();
         return Optional.of(profile);
     }
 
@@ -141,9 +135,7 @@ public class MemberService {
                                                     "Member not found",
                                                     List.of("Member does not exist to unregister.")));
 
-        User user = profile.getUser();
-        user.unregister();
-
+        profile.getUser().unregister();
         return Optional.of(profile);
     }
 
@@ -158,9 +150,7 @@ public class MemberService {
                                                     "Member not found",
                                                     List.of("Member does not exist to reset password.")));
 
-        User user = profile.getUser();
-        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
-
+        profile.getUser().changePassword(passwordEncoder.encode(request.getNewPassword()));
         return Optional.of(profile);
     }
 }
