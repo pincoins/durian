@@ -7,8 +7,8 @@
 - JDBC template (Bulk Insert)
 
 ## Checked/Unchecked Exceptions
-- throw in domain models - catch in service
-- throw in service - catch in ResponseEntityExceptionHandler
-- throw in controller - catch in ResponseEntityExceptionHandler
+- throw in domain models - caught in service
+- throw in service - caught in ResponseEntityExceptionHandler
+- throw in controller - caught in ResponseEntityExceptionHandler
 
 ## Transactions

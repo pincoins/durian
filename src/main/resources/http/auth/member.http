@@ -45,3 +45,30 @@ Authorization: Bearer {{accessToken}}
 PUT http://localhost:8080/members/{{memberId}}/unregister
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Member Change Username
+PUT http://localhost:8080/members/{{memberId}}/change-username
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "username": "{{newUsername}}"
+}
+
+### Member Change Full Name
+PUT http://localhost:8080/members/{{memberId}}/change-full-name
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "fullName": "{{newFullName}}"
+}
+
+### Member Change Email
+PUT http://localhost:8080/members/{{memberId}}/change-email
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "{{newEmail}}"
+}
