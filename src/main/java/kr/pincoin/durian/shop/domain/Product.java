@@ -99,6 +99,20 @@ public class Product extends BaseAuditor {
         }
     }
 
+    public Product changeCategory(Category category) {
+        if (this.category != null) {
+            this.category.getProducts().remove(this);
+        }
+
+        this.category = category;
+
+        if (!category.getProducts().contains(this)) {
+            category.getProducts().add(this);
+        }
+
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,20 +163,6 @@ public class Product extends BaseAuditor {
 
     public Product changeStockLevel(ProductChangeStockLevelRequest request) {
         this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
-        return this;
-    }
-
-    public Product changeCategory(Category category) {
-        if (this.category != null) {
-            this.category.getProducts().remove(this);
-        }
-
-        this.category = category;
-
-        if (!category.getProducts().contains(this)) {
-            category.getProducts().add(this);
-        }
-
         return this;
     }
 

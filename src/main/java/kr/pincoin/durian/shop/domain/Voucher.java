@@ -47,6 +47,20 @@ public class Voucher extends BaseDateTime {
                 .removed(false);
     }
 
+    public Voucher changeProduct(Product product) {
+        if (this.product != null) {
+            this.product.getVouchers().remove(this);
+        }
+
+        this.product = product;
+
+        if (!product.getVouchers().contains(this)) {
+            product.getVouchers().add(this);
+        }
+
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,20 +96,6 @@ public class Voucher extends BaseDateTime {
 
     public Voucher restore() {
         this.removed = false;
-        return this;
-    }
-
-    public Voucher changeProduct(Product product) {
-        if (this.product != null) {
-            this.product.getVouchers().remove(this);
-        }
-
-        this.product = product;
-
-        if (!product.getVouchers().contains(this)) {
-            product.getVouchers().add(this);
-        }
-
         return this;
     }
 

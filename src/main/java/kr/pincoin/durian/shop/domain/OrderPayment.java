@@ -48,4 +48,18 @@ public class OrderPayment {
                 .order(order)
                 .received(LocalDateTime.now());
     }
+
+    public OrderPayment makeOrder(Order order) {
+        if (this.order != null) {
+            this.order.getPayments().remove(this);
+        }
+
+        this.order = order;
+
+        if (!order.getPayments().contains(this)) {
+            order.getPayments().add(this);
+        }
+
+        return this;
+    }
 }

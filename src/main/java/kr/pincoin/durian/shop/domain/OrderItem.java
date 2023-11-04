@@ -54,16 +54,28 @@ public class OrderItem {
                                            String subtitle,
                                            String code,
                                            Price price,
-                                           Integer quantity,
-                                           Order order) {
+                                           Integer quantity) {
         return new OrderItemBuilder()
                 .name(name)
                 .subtitle(subtitle)
                 .code(code)
                 .price(price)
                 .quantity(quantity)
-                .order(order)
                 .removed(false);
+    }
+
+    public OrderItem makeOrder(Order order) {
+        if (this.order != null) {
+            this.order.getItems().remove(this);
+        }
+
+        this.order = order;
+
+        if (!order.getItems().contains(this)) {
+            order.getItems().add(this);
+        }
+
+        return this;
     }
 
     @Override
