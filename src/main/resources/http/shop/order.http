@@ -1,3 +1,8 @@
+### Order List
+GET http://localhost:8080/orders?userId={{userId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
 ### Order Create
 POST http://localhost:8080/orders
 Content-Type: application/json
@@ -6,3 +11,8 @@ Authorization: Bearer {{accessToken}}
 {
   "userId": "29"
 }
+
+### Order Delete
+DELETE http://localhost:8080/orders/{{orderId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

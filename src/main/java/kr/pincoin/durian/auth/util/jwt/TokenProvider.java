@@ -115,8 +115,6 @@ public class TokenProvider {
         // refresh token does not have personal information such as username
         // refresh token can be saved in NoSQL or RDBMS
 
-        // django 32 bytes without dashes
-        // java 36 bytes with dashes
-        return UUID.randomUUID().toString().replace("-", "");
+        return UUID.randomUUID().toString();
     }
 }

@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -40,6 +42,12 @@ public class OrderItem {
             fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @OneToMany(mappedBy = "orderItem",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<OrderItemVoucher> vouchers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
