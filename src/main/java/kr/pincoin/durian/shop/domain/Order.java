@@ -131,4 +131,24 @@ public class Order extends BaseDateTime {
                 .totalSellingPrice(profile.getTotalSellingPrice())
                 .removed(false);
     }
+
+    public void addOrderItem(OrderItem orderItem) {
+        if (!items.contains(orderItem)) {
+            items.add(orderItem);
+        }
+
+        if (orderItem.getOrder() != this) {
+            orderItem.makeOrder(this);
+        }
+    }
+
+    public void addOrderPayment(OrderPayment orderPayment) {
+        if (!payments.contains(orderPayment)) {
+            payments.add(orderPayment);
+        }
+
+        if (orderPayment.getOrder() != this) {
+            orderPayment.makeOrder(this);
+        }
+    }
 }

@@ -102,6 +102,9 @@ public class Category extends BaseAuditor {
         }
     }
 
+    // removeProduct() is not implemented.
+    // products must be removed altogether because category-product has the same life-cycle.
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
