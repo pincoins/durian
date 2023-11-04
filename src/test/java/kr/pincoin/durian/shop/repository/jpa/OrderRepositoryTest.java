@@ -96,7 +96,27 @@ class OrderRepositoryTest {
         assertThat(product1.getPrice().getSellingPrice()).isEqualTo(BigDecimal.valueOf(9500));
         assertThat(product2.getPrice().getListPrice()).isEqualTo(BigDecimal.valueOf(50000));
 
-        Order order = Order.builder(PaymentMethod.BANK_TRANSFER, profile, mock(HttpServletRequest.class)).build();
+        OrderItem orderItem1 = OrderItem.builder(product1.getName(),
+                                                 product1.getSubtitle(),
+                                                 product1.getSlug(),
+                                                 product1.getPrice(),
+                                                 5)
+                .build();
+
+        OrderItem orderItem2 = OrderItem.builder(product2.getName(),
+                                                 product2.getSubtitle(),
+                                                 product2.getSlug(),
+                                                 product2.getPrice(),
+                                                 3)
+                .build();
+
+        Order order = Order.builder(PaymentMethod.BANK_TRANSFER,
+                                    profile,
+                                    mock(HttpServletRequest.class))
+                .build();
+
+        order.addOrderItem(orderItem1);
+        order.addOrderItem(orderItem2);
 
         orderRepository.save(order);
         assertThat(order.getOrderUuid()).isNotBlank();

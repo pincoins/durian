@@ -29,8 +29,8 @@ public class OrderItem {
     @Column(name = "subtitle")
     private String subtitle;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "slug")
+    private String slug;
 
     @Embedded
     Price price;
@@ -52,13 +52,13 @@ public class OrderItem {
 
     public static OrderItemBuilder builder(String name,
                                            String subtitle,
-                                           String code,
+                                           String slug,
                                            Price price,
                                            Integer quantity) {
         return new OrderItemBuilder()
                 .name(name)
                 .subtitle(subtitle)
-                .code(code)
+                .slug(slug)
                 .price(price)
                 .quantity(quantity)
                 .removed(false);
