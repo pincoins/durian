@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum PaymentStatus {
     UNPAID,
     PAID,
+    PARTIALLY_PAID,
     REFUND_REQUESTED,
     NOT_REFUNDED,
     REFUNDED,

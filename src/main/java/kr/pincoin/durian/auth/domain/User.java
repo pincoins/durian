@@ -106,7 +106,7 @@ public class User extends BaseDateTime implements UserDetails {
     }
 
     public User unregister() {
-        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String uuid = UUID.randomUUID().toString();
         this.username = uuid;
         this.password = "";
         this.fullName = uuid;
