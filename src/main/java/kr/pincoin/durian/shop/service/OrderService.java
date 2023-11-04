@@ -39,16 +39,41 @@ public class OrderService {
                                   String orderUuid,
                                   String transactionId,
                                   Boolean removed) {
-        return orderRepository.findOrders(userId,
-                                          status,
-                                          paymentMethod,
-                                          payment,
-                                          delivery,
-                                          visibility,
-                                          fullName,
-                                          orderUuid,
-                                          transactionId,
-                                          removed);
+        return orderRepository.findOrder(userId,
+                                         status,
+                                         paymentMethod,
+                                         payment,
+                                         delivery,
+                                         visibility,
+                                         fullName,
+                                         orderUuid,
+                                         transactionId,
+                                         removed);
+    }
+
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
+    public Optional<Order> getOrder(Long orderId,
+                                    Long userId,
+                                    OrderStatus status,
+                                    PaymentMethod paymentMethod,
+                                    PaymentStatus payment,
+                                    DeliveryStatus delivery,
+                                    OrderVisibility visibility,
+                                    String fullName,
+                                    String orderUuid,
+                                    String transactionId,
+                                    Boolean removed) {
+        return orderRepository.findOrder(orderId,
+                                         userId,
+                                         status,
+                                         paymentMethod,
+                                         payment,
+                                         delivery,
+                                         visibility,
+                                         fullName,
+                                         orderUuid,
+                                         transactionId,
+                                         removed);
     }
 
     @Transactional
@@ -76,4 +101,6 @@ public class OrderService {
                                                       "Soft removed order not found",
                                                       List.of("Order does not exist to delete.")));
     }
+
+
 }
