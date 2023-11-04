@@ -75,6 +75,21 @@ public class User extends BaseDateTime implements UserDetails {
         return this;
     }
 
+    public User changeUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public User changeFullName(String fullName) {
+        this.fullName = fullName;
+        return this;
+    }
+
+    public User changeEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
     public User approve() {
         this.status = UserStatus.NORMAL;
         return this;

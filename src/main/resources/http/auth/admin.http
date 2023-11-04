@@ -24,3 +24,30 @@ Authorization: Bearer {{accessToken}}
 DELETE http://localhost:8080/admins/{{adminId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Admin Change Username
+PUT http://localhost:8080/admins/{{adminId}}/change-username
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "username": "{{newUsername}}"
+}
+
+### Admin Change Full Name
+PUT http://localhost:8080/admins/{{adminId}}/change-full-name
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "fullName": "{{newFullName}}"
+}
+
+### Admin Change Email
+PUT http://localhost:8080/admins/{{adminId}}/change-email
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "{{newEmail}}"
+}

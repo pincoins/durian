@@ -1,9 +1,8 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResponse;
 import kr.pincoin.durian.auth.service.AdminService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +56,38 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PutMapping("/{userId}/change-username")
+    public ResponseEntity<UserResponse>
+    adminChangeUsername(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeUsernameRequest request) {
+        return adminService.changeUsername(userId, request)
+                .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Failed to change admin username")));
+    }
+
+    @PutMapping("/{userId}/change-full-name")
+    public ResponseEntity<UserResponse>
+    adminChangeFullName(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeFullNameRequest request) {
+        return adminService.changeFullName(userId, request)
+                .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Failed to change admin full name")));
+    }
+
+    @PutMapping("/{userId}/change-email")
+    public ResponseEntity<UserResponse>
+    adminChangeEmail(@PathVariable Long userId,
+                     @Valid @RequestBody UserChangeEmailRequest request) {
+        return adminService.changeEmail(userId, request)
+                .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Failed to change admin email address")));
     }
 }
