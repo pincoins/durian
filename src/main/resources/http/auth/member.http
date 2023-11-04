@@ -15,10 +15,10 @@ POST http://localhost:8080/members
 Content-Type: application/json
 
 {
-  "email": {{email}},
-  "username": {{username}},
-  "password": {{password}},
-  "fullName": "member"
+  "email": "{{email}}",
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "fullName": "{{fullName}}"
 }
 
 ### Member Delete

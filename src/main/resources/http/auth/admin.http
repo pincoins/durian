@@ -11,12 +11,13 @@ Authorization: Bearer {{accessToken}}
 ### Admin Create
 POST http://localhost:8080/admins
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
-  "email": {{email}},
-  "username": {{username}},
-  "password": {{password}},
-  "fullName": "admin"
+  "email": "{{email}}",
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "fullName": "{{fullName}}"
 }
 
 ### Admin Delete
