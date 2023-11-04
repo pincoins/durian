@@ -14,10 +14,10 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "email": "{{email}}",
-  "username": "{{username}}",
-  "password": "{{password}}",
-  "fullName": "{{fullName}}"
+  "email": "admin1@example.com",
+  "username": "admin1",
+  "password": "Test12#$",
+  "fullName": "administrator"
 }
 
 ### Admin Delete

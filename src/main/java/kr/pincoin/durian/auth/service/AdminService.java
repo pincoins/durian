@@ -90,7 +90,7 @@ public class AdminService {
                 .map(admin -> Optional.of(admin.changeFullName(request.getFullName())))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Admin not found",
-                                                    List.of("Admin does not exist to change username.")));
+                                                    List.of("Admin does not exist to change full name.")));
     }
 
     @Transactional

@@ -1,10 +1,8 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResetPasswordRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResponse;
 import kr.pincoin.durian.auth.service.StaffService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -70,5 +68,39 @@ public class StaffController {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Staff not found",
                                                     List.of("Failed to reset staff password.")));
+    }
+
+
+    @PutMapping("/{userId}/change-username")
+    public ResponseEntity<UserResponse>
+    adminChangeUsername(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeUsernameRequest request) {
+        return staffService.changeUsername(userId, request)
+                .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Failed to change staff username")));
+    }
+
+    @PutMapping("/{userId}/change-full-name")
+    public ResponseEntity<UserResponse>
+    adminChangeFullName(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeFullNameRequest request) {
+        return staffService.changeFullName(userId, request)
+                .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Failed to change staff full name")));
+    }
+
+    @PutMapping("/{userId}/change-email")
+    public ResponseEntity<UserResponse>
+    adminChangeEmail(@PathVariable Long userId,
+                     @Valid @RequestBody UserChangeEmailRequest request) {
+        return staffService.changeEmail(userId, request)
+                .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Failed to change staff email address")));
     }
 }

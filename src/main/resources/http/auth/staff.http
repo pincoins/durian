@@ -14,13 +14,40 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "email": "{{email}}",
-  "username": "{{username}}",
-  "password": "{{password}}",
-  "fullName": "{{fullName}}"
+  "email": "staff@example.com",
+  "username": "staff",
+  "password": "Test12#$",
+  "fullName": "staff sergeant"
 }
 
 ### Staff Delete
 DELETE http://localhost:8080/staffs/{{staffId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Staff Change Username
+PUT http://localhost:8080/staffs/{{staffId}}/change-username
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "username": "{{newUsername}}"
+}
+
+### Staff Change Full Name
+PUT http://localhost:8080/staffs/{{staffId}}/change-full-name
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "fullName": "{{newFullName}}"
+}
+
+### Staff Change Email
+PUT http://localhost:8080/staffs/{{staffId}}/change-email
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "{{newEmail}}"
+}
