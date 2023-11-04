@@ -132,7 +132,7 @@ public class Order extends BaseDateTime {
                 .removed(false);
     }
 
-    public void addOrderItem(OrderItem orderItem) {
+    public Order addOrderItem(OrderItem orderItem) {
         if (!items.contains(orderItem)) {
             items.add(orderItem);
         }
@@ -140,6 +140,8 @@ public class Order extends BaseDateTime {
         if (orderItem.getOrder() != this) {
             orderItem.makeOrder(this);
         }
+
+        return this;
     }
 
     public void addOrderPayment(OrderPayment orderPayment) {

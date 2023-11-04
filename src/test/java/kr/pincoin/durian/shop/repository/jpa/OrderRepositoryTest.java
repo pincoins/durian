@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -29,9 +30,6 @@ import static org.mockito.Mockito.mock;
 class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -115,8 +113,7 @@ class OrderRepositoryTest {
                                     mock(HttpServletRequest.class))
                 .build();
 
-        order.addOrderItem(orderItem1);
-        order.addOrderItem(orderItem2);
+        Arrays.asList(orderItem1, orderItem2).forEach(order::addOrderItem);
 
         orderRepository.save(order);
         assertThat(order.getOrderUuid()).isNotBlank();

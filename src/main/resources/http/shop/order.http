@@ -14,7 +14,21 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "29"
+  "userId": "29",
+  "items": [
+    {
+      "productId": 5,
+      "quantity": 2
+    },
+    {
+      "productId": 7,
+      "quantity": 3
+    },
+    {
+      "productId": 6,
+      "quantity": 4
+    }
+  ]
 }
 
 ### Order Delete

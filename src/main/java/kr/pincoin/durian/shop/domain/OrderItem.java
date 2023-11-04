@@ -1,6 +1,7 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-public class OrderItem {
+public class OrderItem extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")

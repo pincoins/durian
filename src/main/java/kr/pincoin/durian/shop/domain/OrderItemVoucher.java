@@ -1,6 +1,7 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
+import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
 
 @Entity
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-public class OrderItemVoucher {
+public class OrderItemVoucher extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_voucher_id")

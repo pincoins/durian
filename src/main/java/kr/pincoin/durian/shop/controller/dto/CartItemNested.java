@@ -6,17 +6,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderCreateRequest {
-    @JsonProperty("userId")
+public class CartItemNested {
+    @JsonProperty("productId")
     @NotNull
-    private Long userId;
+    private Long productId;
 
-    @JsonProperty("items")
+    @JsonProperty("quantity")
     @NotNull
-    private List<CartItemNested> items = new ArrayList<>();
+    private Integer quantity;
 }
