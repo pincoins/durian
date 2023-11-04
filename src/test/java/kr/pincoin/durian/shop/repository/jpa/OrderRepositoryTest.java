@@ -1,5 +1,6 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 @Transactional
@@ -47,13 +49,10 @@ class OrderRepositoryTest {
         profileRepository.save(profile);
         assertThat(profile).isNotNull();
 
-        Order order = Order.builder(PaymentMethod.BANK_TRANSFER,
-                                    "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
-                                    "ko-KR",
-                                    "222.102.11.46",
-                                    profile)
-                .build();
+        Order order = Order.builder(PaymentMethod.BANK_TRANSFER, profile, mock(HttpServletRequest.class)).build();
+
         orderRepository.save(order);
+
         assertThat(order.getOrderUuid()).isNotBlank();
         assertThat(order.getTotalListPrice()).isEqualTo(profile.getTotalListPrice());
         assertThat(order.getTotalSellingPrice()).isEqualTo(profile.getTotalSellingPrice());
