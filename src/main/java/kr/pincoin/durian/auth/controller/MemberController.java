@@ -1,10 +1,8 @@
 package kr.pincoin.durian.auth.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.controller.dto.ProfileResponse;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.service.MemberService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +112,38 @@ public class MemberController {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to reset member password.")));
+    }
+
+    @PutMapping("/{userId}/change-username")
+    public ResponseEntity<ProfileResponse>
+    adminChangeUsername(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeUsernameRequest request) {
+        return memberService.changeUsername(userId, request)
+                .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to change member username")));
+    }
+
+    @PutMapping("/{userId}/change-full-name")
+    public ResponseEntity<ProfileResponse>
+    adminChangeFullName(@PathVariable Long userId,
+                        @Valid @RequestBody UserChangeFullNameRequest request) {
+        return memberService.changeFullName(userId, request)
+                .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to change member full name")));
+    }
+
+    @PutMapping("/{userId}/change-email")
+    public ResponseEntity<ProfileResponse>
+    adminChangeEmail(@PathVariable Long userId,
+                     @Valid @RequestBody UserChangeEmailRequest request) {
+        return memberService.changeEmail(userId, request)
+                .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to change member email address")));
     }
 }

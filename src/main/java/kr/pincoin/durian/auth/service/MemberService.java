@@ -1,5 +1,6 @@
 package kr.pincoin.durian.auth.service;
 
+import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
@@ -7,8 +8,6 @@ import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -151,6 +150,46 @@ public class MemberService {
                                                     List.of("Member does not exist to reset password.")));
 
         profile.getUser().changePassword(passwordEncoder.encode(request.getNewPassword()));
+        return Optional.of(profile);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Profile> changeUsername(Long userId, UserChangeUsernameRequest request) {
+        Profile profile = profileRepository
+                .findMember(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to change username.")));
+
+        profile.getUser().changeUsername(request.getUsername());
+        return Optional.of(profile);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
+    public Optional<Profile> changeFullName(Long userId, UserChangeFullNameRequest request) {
+        Profile profile = profileRepository
+                .findMember(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to change full name.")));
+
+        profile.getUser().changeFullName(request.getFullName());
+        return Optional.of(profile);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
+    public Optional<Profile> changeEmail(Long userId, UserChangeEmailRequest request) {
+        Profile profile = profileRepository
+                .findMember(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to change email.")));
+        profile.getUser().changeEmail(request.getEmail());
         return Optional.of(profile);
     }
 }
