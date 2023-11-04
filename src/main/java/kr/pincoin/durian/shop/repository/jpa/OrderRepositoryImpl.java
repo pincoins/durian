@@ -8,24 +8,26 @@ import kr.pincoin.durian.shop.domain.conveter.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static kr.pincoin.durian.shop.domain.QOrder.order1;
+import static kr.pincoin.durian.shop.domain.QOrderItem.orderItem;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Order> findOrders(Long userId,
-                                  OrderStatus status,
-                                  PaymentMethod paymentMethod,
-                                  PaymentStatus payment,
-                                  DeliveryStatus delivery,
-                                  OrderVisibility visibility,
-                                  String fullName,
-                                  String orderUuid,
-                                  String transactionId,
-                                  Boolean removed) {
+    public List<Order> findOrder(Long userId,
+                                 OrderStatus status,
+                                 PaymentMethod paymentMethod,
+                                 PaymentStatus payment,
+                                 DeliveryStatus delivery,
+                                 OrderVisibility visibility,
+                                 String fullName,
+                                 String orderUuid,
+                                 String transactionId,
+                                 Boolean removed) {
         JPAQuery<Order> contentQuery = queryFactory
                 .select(order1)
                 .from(order1)
@@ -41,6 +43,37 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                        removedEq(removed));
 
         return contentQuery.fetch();
+    }
+
+    @Override
+    public Optional<Order> findOrder(Long id,
+                                     Long userId,
+                                     OrderStatus status,
+                                     PaymentMethod paymentMethod,
+                                     PaymentStatus payment,
+                                     DeliveryStatus delivery,
+                                     OrderVisibility visibility,
+                                     String fullName,
+                                     String orderUuid,
+                                     String transactionId,
+                                     Boolean removed) {
+        JPAQuery<Order> contentQuery = queryFactory
+                .select(order1)
+                .from(orderItem)
+                .innerJoin(orderItem.order, order1)
+                .where(order1.id.eq(id),
+                       userIdEq(userId),
+                       statusEq(status),
+                       paymentMethodEq(paymentMethod),
+                       paymentEq(payment),
+                       deliverEq(delivery),
+                       visibilityEq(visibility),
+                       fullNameContains(fullName),
+                       orderUuidContains(orderUuid),
+                       transactionIdContains(transactionId),
+                       removedEq(removed));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
     }
 
     BooleanExpression userIdEq(Long orderId) {

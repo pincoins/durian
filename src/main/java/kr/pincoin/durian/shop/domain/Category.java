@@ -50,18 +50,21 @@ public class Category extends BaseAuditor {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<CategoryTreePath> ancestors = new ArrayList<>();
 
     @OneToMany(mappedBy = "descendant",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<CategoryTreePath> descendants = new ArrayList<>();
 
     @OneToMany(mappedBy = "category",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<Product> products = new ArrayList<>();
 
     public static CategoryBuilder builder(String title,
@@ -89,6 +92,16 @@ public class Category extends BaseAuditor {
                 .status(CategoryStatus.NORMAL);
     }
 
+    public void addProduct(Product product) {
+        if (!products.contains(product)) {
+            products.add(product);
+        }
+
+        if (product.getCategory() != this) {
+            product.changeCategory(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,16 +116,6 @@ public class Category extends BaseAuditor {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, slug);
-    }
-
-    public void addProduct(Product product) {
-        if (!products.contains(product)) {
-            this.products.add(product);
-        }
-
-        if (product.getCategory() != this) {
-            product.changeCategory(this);
-        }
     }
 
     public Category update(CategoryUpdateRequest request) {

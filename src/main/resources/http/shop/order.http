@@ -3,6 +3,11 @@ GET http://localhost:8080/orders?userId={{userId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
+### Order Detail
+GET http://localhost:8080/orders/{{orderId}}?userId={{userId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
 ### Order Create
 POST http://localhost:8080/orders
 Content-Type: application/json

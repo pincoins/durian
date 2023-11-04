@@ -2,17 +2,17 @@ package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "shop_order_payment")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class OrderPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +36,16 @@ public class OrderPayment {
             fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public static OrderPaymentBuilder builder(PaymentAccount account,
+                                              BigDecimal amount,
+                                              BigDecimal balance,
+                                              Order order) {
+        return new OrderPaymentBuilder()
+                .account(account)
+                .amount(amount)
+                .balance(balance)
+                .order(order)
+                .received(LocalDateTime.now());
+    }
 }
