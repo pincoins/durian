@@ -56,6 +56,7 @@ public class MemberService {
                 .build();
 
         Profile profile = Profile.builder(member,
+                                          VerificationStatus.UNVERIFIED,
                                           new PhoneVerification(VerificationStatus.UNVERIFIED),
                                           new DocumentVerification(VerificationStatus.UNVERIFIED))
                 .build();

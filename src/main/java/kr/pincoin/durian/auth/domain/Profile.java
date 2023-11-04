@@ -2,6 +2,7 @@ package kr.pincoin.durian.auth.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
 
@@ -22,6 +23,10 @@ public class Profile extends BaseDateTime {
 
     @Column(name = "address")
     private String address;
+
+    @Column(name = "email_verified_status")
+    @Enumerated(value = EnumType.STRING)
+    private VerificationStatus emailVerification;
 
     @Embedded
     private PhoneVerification phoneVerification;
@@ -82,10 +87,12 @@ public class Profile extends BaseDateTime {
     private User user;
 
     public static ProfileBuilder builder(User user,
+                                         VerificationStatus emailVerification,
                                          PhoneVerification phoneVerification,
                                          DocumentVerification documentVerification) {
         return new ProfileBuilder()
                 .user(user)
+                .emailVerification(emailVerification)
                 .phoneVerification(phoneVerification)
                 .documentVerification(documentVerification);
     }
