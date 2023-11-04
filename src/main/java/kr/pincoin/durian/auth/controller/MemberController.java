@@ -116,8 +116,8 @@ public class MemberController {
 
     @PutMapping("/{userId}/change-username")
     public ResponseEntity<ProfileResponse>
-    adminChangeUsername(@PathVariable Long userId,
-                        @Valid @RequestBody UserChangeUsernameRequest request) {
+    memberChangeUsername(@PathVariable Long userId,
+                         @Valid @RequestBody UserChangeUsernameRequest request) {
         return memberService.changeUsername(userId, request)
                 .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
@@ -127,8 +127,8 @@ public class MemberController {
 
     @PutMapping("/{userId}/change-full-name")
     public ResponseEntity<ProfileResponse>
-    adminChangeFullName(@PathVariable Long userId,
-                        @Valid @RequestBody UserChangeFullNameRequest request) {
+    memberChangeFullName(@PathVariable Long userId,
+                         @Valid @RequestBody UserChangeFullNameRequest request) {
         return memberService.changeFullName(userId, request)
                 .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
@@ -138,12 +138,24 @@ public class MemberController {
 
     @PutMapping("/{userId}/change-email")
     public ResponseEntity<ProfileResponse>
-    adminChangeEmail(@PathVariable Long userId,
-                     @Valid @RequestBody UserChangeEmailRequest request) {
+    memberChangeEmail(@PathVariable Long userId,
+                      @Valid @RequestBody UserChangeEmailRequest request) {
         return memberService.changeEmail(userId, request)
                 .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
                                                     List.of("Failed to change member email address")));
     }
+
+    // verify email
+    // reject email verification
+    // revoke email verification
+
+    // verify phone
+    // reject phone verification
+    // revoke phone verification
+
+    // verify document
+    // reject document verification
+    // revoke document verification
 }

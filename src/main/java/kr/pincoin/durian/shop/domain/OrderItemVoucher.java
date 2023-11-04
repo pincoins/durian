@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order_item_voucher")
+@Table(name = "shop_order_item_voucher")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItemVoucher {

@@ -26,6 +26,15 @@ DELETE http://localhost:8080/members/{{memberId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
+### Member Reset Password
+PUT http://localhost:8080/members/{{memberId}}/reset-password
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "newPassword": "Test12#$"
+}
+
 ### Member Approve
 PUT http://localhost:8080/members/{{memberId}}/approve
 Content-Type: application/json

@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "auth_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder

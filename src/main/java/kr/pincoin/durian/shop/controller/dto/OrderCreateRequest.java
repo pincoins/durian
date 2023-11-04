@@ -6,19 +6,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VoucherBulkCreateRequest {
-    @JsonProperty("productId")
+public class OrderCreateRequest {
+    @JsonProperty("userId")
     @NotNull
-    private Long productId;
-
-    @JsonProperty("vouchers")
-    @NotNull
-    private List<VoucherNested> vouchers = new ArrayList<>();
-
-
+    private Long userId;
 }

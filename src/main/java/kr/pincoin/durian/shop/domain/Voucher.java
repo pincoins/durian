@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "voucher")
+@Table(name = "shop_voucher")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
