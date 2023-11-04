@@ -1,10 +1,9 @@
 package kr.pincoin.durian.auth.service;
 
+import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
-import kr.pincoin.durian.auth.controller.dto.UserResetPasswordRequest;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,7 @@ public class StaffService {
         return userRepository.findStaffs(status);
     }
 
-    @PreAuthorize("hasRole('SYSADMIN')" +
-            " or hasRole('STAFF') and @identity.isOwner(#userId)")
+    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
     public Optional<User>
     getStaff(Long userId, UserStatus status) {
         return userRepository.findStaff(userId, status);
@@ -58,8 +56,7 @@ public class StaffService {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('SYSADMIN')" +
-            " or hasRole('STAFF') and @identity.isOwner(#userId)")
+    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
     public boolean
     deleteStaff(Long userId) {
         return userRepository.findStaff(userId, UserStatus.NORMAL)
@@ -83,5 +80,39 @@ public class StaffService {
                                                     List.of("Member does not exist to reset password.")));
 
         return Optional.of(staff.changePassword(passwordEncoder.encode(request.getNewPassword())));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeUsername(Long userId, UserChangeUsernameRequest request) {
+        return userRepository.findStaff(userId, UserStatus.NORMAL)
+                .map(staff -> Optional.of(staff.changeUsername(request.getUsername())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Staff does not exist to change username.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeFullName(Long userId, UserChangeFullNameRequest request) {
+        return userRepository.findStaff(userId, UserStatus.NORMAL)
+                .map(staff -> Optional.of(staff.changeFullName(request.getFullName())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Staff does not exist to change full name.")));
+
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeEmail(Long userId, UserChangeEmailRequest request) {
+        return userRepository.findStaff(userId, UserStatus.NORMAL)
+                .map(staff -> Optional.of(staff.changeEmail(request.getEmail())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Staff not found",
+                                                    List.of("Staff does not exist to change email address.")));
     }
 }

@@ -55,7 +55,6 @@ public class AuthController {
     @PutMapping("/change-password")
     public ResponseEntity<Boolean>
     userPasswordChange(@Valid @RequestBody UserChangePasswordRequest request) {
-        log.warn("{} {} {}", request.getUserId(), request.getNewPassword(), request.getOldPassword());
         boolean result = authService.changePassword(request.getUserId(), request);
         return ResponseEntity.ok().body(result);
     }

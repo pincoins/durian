@@ -25,8 +25,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "third3",
-  "slug": "third3",
+  "title": "third4",
+  "slug": "third4",
   "description": "This is a category example.",
   "subDescription": "yet another category",
   "discountRate": 3.345

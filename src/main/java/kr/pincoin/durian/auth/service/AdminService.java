@@ -1,9 +1,12 @@
 package kr.pincoin.durian.auth.service;
 
+import kr.pincoin.durian.auth.controller.dto.UserChangeEmailRequest;
+import kr.pincoin.durian.auth.controller.dto.UserChangeFullNameRequest;
+import kr.pincoin.durian.auth.controller.dto.UserChangeUsernameRequest;
+import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
-import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +69,38 @@ public class AdminService {
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Admin not found",
                                                       List.of("Admin does not exist to delete.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeUsername(Long userId, UserChangeUsernameRequest request) {
+        return userRepository.findAdmin(userId, UserStatus.NORMAL)
+                .map(admin -> Optional.of(admin.changeUsername(request.getUsername())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Admin does not exist to change username.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeFullName(Long userId, UserChangeFullNameRequest request) {
+        return userRepository.findAdmin(userId, UserStatus.NORMAL)
+                .map(admin -> Optional.of(admin.changeFullName(request.getFullName())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Admin does not exist to change full name.")));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
+    public Optional<User>
+    changeEmail(Long userId, UserChangeEmailRequest request) {
+        return userRepository.findAdmin(userId, UserStatus.NORMAL)
+                .map(admin -> Optional.of(admin.changeEmail(request.getEmail())))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Admin not found",
+                                                    List.of("Admin does not exist to change email address.")));
     }
 }
