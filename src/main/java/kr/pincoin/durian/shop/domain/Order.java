@@ -41,7 +41,7 @@ public class Order extends BaseDateTime {
     @Column(name = "accept_language")
     private String acceptLanguage;
 
-    @Column(name = "ip_address", columnDefinition = "char(39)")
+    @Column(name = "ip_address")
     private String ipAddress;
 
     @Column(name = "transaction_id")
