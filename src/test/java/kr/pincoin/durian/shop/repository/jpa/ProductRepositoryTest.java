@@ -1,4 +1,4 @@
-package kr.pincoin.durian.shop.controller;
+package kr.pincoin.durian.shop.repository.jpa;
 
 import kr.pincoin.durian.shop.controller.dto.ProductAdminResponse;
 import kr.pincoin.durian.shop.controller.dto.ProductResponse;
@@ -7,8 +7,6 @@ import kr.pincoin.durian.shop.domain.Price;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.StockLevel;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
-import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @Slf4j
-class ProductControllerTest {
+class ProductRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 

@@ -39,6 +39,7 @@ class OrderRepositoryTest {
                 .build();
 
         Profile profile = Profile.builder(user,
+                                          VerificationStatus.UNVERIFIED,
                                           new PhoneVerification(VerificationStatus.UNVERIFIED),
                                           new DocumentVerification(VerificationStatus.UNVERIFIED))
                 .build();

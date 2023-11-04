@@ -6,7 +6,7 @@ import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
 
 @Entity
-@Table(name = "category_tree_path")
+@Table(name = "shop_category_tree_path")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

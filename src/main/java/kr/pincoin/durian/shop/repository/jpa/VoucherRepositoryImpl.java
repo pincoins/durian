@@ -4,7 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.pincoin.durian.shop.controller.dto.VoucherBulkCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.VoucherRecord;
+import kr.pincoin.durian.shop.controller.dto.VoucherNested;
 import kr.pincoin.durian.shop.domain.Voucher;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
 import lombok.NonNull;
@@ -32,7 +32,7 @@ public class VoucherRepositoryImpl implements VoucherRepositoryQuery {
     public int saveAll(VoucherBulkCreateRequest request) {
         Long productId = request.getProductId();
 
-        List<VoucherRecord> vouchers = new ArrayList<>();
+        List<VoucherNested> vouchers = new ArrayList<>();
 
         for (int i = 0; i < request.getVouchers().size(); i++) {
             vouchers.add(request.getVouchers().get(i));
@@ -48,9 +48,9 @@ public class VoucherRepositoryImpl implements VoucherRepositoryQuery {
         return request.getVouchers().size();
     }
 
-    private void batchInsert(Long productId, List<VoucherRecord> vouchers) {
+    private void batchInsert(Long productId, List<VoucherNested> vouchers) {
         jdbcTemplate.batchUpdate(
-                "INSERT INTO voucher (code, remarks, product_id, status, is_removed, created, modified)" +
+                "INSERT INTO shop_voucher (code, remarks, product_id, status, is_removed, created, modified)" +
                         " VALUES (?, ?, ?, 'PURCHASED', 0, NOW(), NOW())",
                 new BatchPreparedStatementSetter() {
                     @Override
