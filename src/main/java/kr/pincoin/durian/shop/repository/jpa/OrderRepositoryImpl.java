@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static kr.pincoin.durian.shop.domain.QOrder.order1;
+import static kr.pincoin.durian.shop.domain.QOrderItem.orderItem;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryQuery {
@@ -58,7 +59,8 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                                      Boolean removed) {
         JPAQuery<Order> contentQuery = queryFactory
                 .select(order1)
-                .from(order1)
+                .from(orderItem)
+                .innerJoin(orderItem.order, order1)
                 .where(order1.id.eq(id),
                        userIdEq(userId),
                        statusEq(status),

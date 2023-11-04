@@ -66,6 +66,7 @@ public class Product extends BaseAuditor {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<Voucher> vouchers = new ArrayList<>();
 
     public static ProductBuilder builder(String slug,
@@ -74,8 +75,7 @@ public class Product extends BaseAuditor {
                                          String description,
                                          Integer position,
                                          Price price,
-                                         StockLevel stockLevel,
-                                         Category category) {
+                                         StockLevel stockLevel) {
         return new ProductBuilder()
                 .slug(slug)
                 .name(name)
@@ -84,10 +84,19 @@ public class Product extends BaseAuditor {
                 .position(position)
                 .price(price)
                 .stockLevel(stockLevel)
-                .category(category)
                 .status(ProductStatus.DISABLED)
                 .stock(ProductStockStatus.IN_STOCK)
                 .removed(false);
+    }
+
+    public void addVoucher(Voucher voucher) {
+        if (!vouchers.contains(voucher)) {
+            this.vouchers.add(voucher);
+        }
+
+        if (voucher.getProduct() != this) {
+            voucher.changeProduct(this);
+        }
     }
 
     @Override
@@ -155,16 +164,6 @@ public class Product extends BaseAuditor {
         }
 
         return this;
-    }
-
-    public void addVoucher(Voucher voucher) {
-        if (!vouchers.contains(voucher)) {
-            this.vouchers.add(voucher);
-        }
-
-        if (voucher.getProduct() != this) {
-            voucher.changeProduct(this);
-        }
     }
 
     public Product update(ProductUpdateRequest request) {

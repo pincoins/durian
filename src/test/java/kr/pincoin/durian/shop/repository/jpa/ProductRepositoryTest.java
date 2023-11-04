@@ -37,19 +37,17 @@ class ProductRepositoryTest {
                                              CategoryStatus.NORMAL)
                 .build();
 
-        categoryRepository.save(category);
-
         Product product = Product.builder("slug",
                                           "name",
                                           "subtitle",
                                           "description",
                                           0,
                                           new Price(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE),
-                                          new StockLevel(0, 0),
-                                          category)
+                                          new StockLevel(0, 0))
                 .build();
 
-        productRepository.save(product);
+        category.addProduct((product));
+        categoryRepository.save(category);
 
         ProductResponse productResponse = new ProductResponse(product);
         assertThat(productResponse.getName()).isEqualTo("name");

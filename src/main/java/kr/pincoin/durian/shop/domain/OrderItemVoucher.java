@@ -1,14 +1,14 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "shop_order_item_voucher")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class OrderItemVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +18,11 @@ public class OrderItemVoucher {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "revoked")
-    private boolean revoked;
-
     @Column(name = "remarks")
     private String remarks;
+
+    @Column(name = "revoked")
+    private boolean revoked;
 
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY)
@@ -32,4 +32,16 @@ public class OrderItemVoucher {
     @ManyToOne(fetch = FetchType.LAZY) // optional = true
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
+
+    public static OrderItemVoucherBuilder builder(String code,
+                                                  String remarks,
+                                                  OrderItem orderItem,
+                                                  Voucher voucher) {
+        return new OrderItemVoucherBuilder()
+                .code(code)
+                .remarks(remarks)
+                .orderItem(orderItem)
+                .voucher(voucher)
+                .revoked(false);
+    }
 }

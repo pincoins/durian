@@ -2,9 +2,7 @@ package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
 import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +10,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "shop_order_item")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@Getter
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,24 @@ public class OrderItem {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<OrderItemVoucher> vouchers = new ArrayList<>();
+
+    public static OrderItemBuilder builder(String name,
+                                           String subtitle,
+                                           String code,
+                                           Price price,
+                                           Integer quantity,
+                                           Order order) {
+        return new OrderItemBuilder()
+                .name(name)
+                .subtitle(subtitle)
+                .code(code)
+                .price(price)
+                .quantity(quantity)
+                .order(order)
+                .removed(false);
+    }
 
     @Override
     public boolean equals(Object o) {

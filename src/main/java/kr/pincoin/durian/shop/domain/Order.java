@@ -92,12 +92,14 @@ public class Order extends BaseDateTime {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "order",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<OrderPayment> payments = new ArrayList<>();
 
     public static OrderBuilder builder(PaymentMethod paymentMethod,
@@ -110,7 +112,7 @@ public class Order extends BaseDateTime {
                 .orElse("User-Agent missing");
 
         String acceptLanguage = Optional.ofNullable(request.getHeader("Accept-Language"))
-                .orElse("Accept-Language missing");
+                .orElse("No language set");
 
         return new OrderBuilder()
                 .paymentMethod(paymentMethod)
