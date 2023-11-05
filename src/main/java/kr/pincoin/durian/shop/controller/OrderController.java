@@ -127,10 +127,11 @@ public class OrderController {
     @GetMapping("/{orderId}/users/{userId}/payments")
     public ResponseEntity<List<OrderPaymentResponse>>
     orderListPayments(@PathVariable Long orderId,
-                      @PathVariable Long userId) {
+                      @PathVariable Long userId,
+                      @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
                 .ok()
-                .body(orderPaymentService.listOrderPayments(orderId, userId)
+                .body(orderPaymentService.listOrderPayments(orderId, userId, userDetails)
                               .stream()
                               .map(OrderPaymentResponse::new)
                               .toList());
@@ -139,10 +140,11 @@ public class OrderController {
     @GetMapping("/{orderId}/users/{userId}/items")
     public ResponseEntity<List<OrderItemResponse>>
     orderListItems(@PathVariable Long orderId,
-                   @PathVariable Long userId) {
+                   @PathVariable Long userId,
+                   @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
                 .ok()
-                .body(orderItemService.listOrderItems(orderId, userId, false)
+                .body(orderItemService.listOrderItems(orderId, userId, userDetails)
                               .stream()
                               .map(OrderItemResponse::new)
                               .toList());
@@ -152,7 +154,8 @@ public class OrderController {
     public ResponseEntity<List<OrderItemVoucherResponse>>
     orderListItemVouchers(@PathVariable Long orderId,
                           @PathVariable Long userId,
-                          @PathVariable Long itemId) {
+                          @PathVariable Long itemId,
+                          @AuthenticationPrincipal UserDetails userDetails) {
         return null;
     }
 }

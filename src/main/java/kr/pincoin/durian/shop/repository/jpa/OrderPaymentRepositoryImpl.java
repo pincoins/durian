@@ -4,6 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.pincoin.durian.shop.domain.OrderPayment;
+import kr.pincoin.durian.shop.domain.conveter.OrderStatus;
+import kr.pincoin.durian.shop.domain.conveter.OrderVisibility;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -17,19 +19,37 @@ public class OrderPaymentRepositoryImpl implements OrderPaymentRepositoryQuery {
 
     @Override
     public List<OrderPayment> findOrderPayments(Long orderId,
-                                                Long userId) {
+                                                Long userId,
+                                                OrderStatus status,
+                                                OrderVisibility visibility,
+                                                Boolean removed) {
         JPAQuery<OrderPayment> contentQuery = queryFactory
                 .select(orderPayment)
                 .from(orderPayment)
                 .innerJoin(orderPayment.order, order1)
                 .fetchJoin()
                 .where(order1.id.eq(orderId),
-                       userIdEq(userId));
+                       userIdEq(userId),
+                       statusEq(status),
+                       visibilityEq(visibility),
+                       removedEq(removed));
 
         return contentQuery.fetch();
     }
 
     BooleanExpression userIdEq(Long orderId) {
         return orderId != null ? order1.user.id.eq(orderId) : null;
+    }
+
+    BooleanExpression statusEq(OrderStatus status) {
+        return status != null ? order1.status.eq(status) : null;
+    }
+
+    BooleanExpression visibilityEq(OrderVisibility visibility) {
+        return visibility != null ? order1.visible.eq(visibility) : null;
+    }
+
+    BooleanExpression removedEq(Boolean removed) {
+        return removed != null ? order1.removed.eq(removed) : order1.removed.eq(false);
     }
 }
