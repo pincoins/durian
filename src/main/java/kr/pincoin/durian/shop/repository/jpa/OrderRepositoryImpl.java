@@ -18,7 +18,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Order> findOrder(Long userId,
+    public List<Order> findOrders(Long userId,
                                  OrderStatus status,
                                  PaymentMethod paymentMethod,
                                  PaymentStatus payment,

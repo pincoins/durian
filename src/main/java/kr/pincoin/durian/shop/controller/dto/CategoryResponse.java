@@ -33,29 +33,13 @@ public class CategoryResponse {
     @JsonProperty("status")
     private CategoryStatus status;
 
-    public CategoryResponse(Long id,
-                            String title,
-                            String slug,
-                            String description,
-                            String subDescription,
-                            BigDecimal discountRate,
-                            CategoryStatus status) {
-        this.id = id;
-        this.title = title;
-        this.slug = slug;
-        this.description = description;
-        this.subDescription = subDescription;
-        this.discountRate = discountRate;
-        this.status = status;
-    }
-
     public CategoryResponse(Category category) {
-        this(category.getId(),
-             category.getTitle(),
-             category.getSlug(),
-             category.getDescription(),
-             category.getSubDescription(),
-             category.getDiscountRate(),
-             category.getStatus());
+        this.id = category.getId();
+        this.title = category.getTitle();
+        this.slug = category.getSlug();
+        this.description = category.getDescription();
+        this.subDescription = category.getSubDescription();
+        this.discountRate = category.getDiscountRate();
+        this.status = category.getStatus();
     }
 }

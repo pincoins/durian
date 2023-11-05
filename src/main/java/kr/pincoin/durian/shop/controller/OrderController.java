@@ -4,10 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.service.IdentityService;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.OrderAdminResponse;
-import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.OrderResponse;
+import kr.pincoin.durian.shop.controller.dto.*;
 import kr.pincoin.durian.shop.domain.conveter.*;
+import kr.pincoin.durian.shop.service.OrderItemService;
+import kr.pincoin.durian.shop.service.OrderItemVoucherService;
+import kr.pincoin.durian.shop.service.OrderPaymentService;
 import kr.pincoin.durian.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,12 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
+    private final OrderItemService orderItemService;
+
+    private final OrderPaymentService orderPaymentService;
+
+    private final OrderItemVoucherService orderItemVoucherService;
+
     private final IdentityService identityService;
 
     @GetMapping("")
@@ -43,8 +50,8 @@ public class OrderController {
               @RequestParam(name = "removed", required = false) Boolean removed,
               @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
-                .ok().
-                body(orderService.listOrders(userId,
+                .ok()
+                .body(orderService.listOrders(userId,
                                              status,
                                              paymentMethod,
                                              payment,
@@ -86,7 +93,8 @@ public class OrderController {
                                      orderUuid,
                                      transactionId,
                                      removed)
-                .map(order -> ResponseEntity.ok()
+                .map(order -> ResponseEntity
+                        .ok()
                         .body(identityService.isAdmin(userDetails)
                                       ? new OrderAdminResponse(order)
                                       : new OrderResponse(order)))
@@ -114,5 +122,37 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("/{orderId}/users/{userId}/payments")
+    public ResponseEntity<List<OrderPaymentResponse>>
+    orderListPayments(@PathVariable Long orderId,
+                      @PathVariable Long userId) {
+        return ResponseEntity
+                .ok()
+                .body(orderPaymentService.listOrderPayments(orderId, userId)
+                              .stream()
+                              .map(OrderPaymentResponse::new)
+                              .toList());
+    }
+
+    @GetMapping("/{orderId}/users/{userId}/items")
+    public ResponseEntity<List<OrderItemResponse>>
+    orderListItems(@PathVariable Long orderId,
+                   @PathVariable Long userId) {
+        return ResponseEntity
+                .ok()
+                .body(orderItemService.listOrderItems(orderId, userId, false)
+                              .stream()
+                              .map(OrderItemResponse::new)
+                              .toList());
+    }
+
+    @GetMapping("/{orderId}/users/{userId}/items/{itemId}/vouchers")
+    public ResponseEntity<List<OrderItemVoucherResponse>>
+    orderListItemVouchers(@PathVariable Long orderId,
+                          @PathVariable Long userId,
+                          @PathVariable Long itemId) {
+        return null;
     }
 }

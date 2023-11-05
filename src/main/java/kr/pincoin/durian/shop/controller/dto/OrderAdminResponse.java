@@ -32,18 +32,7 @@ public class OrderAdminResponse extends OrderResponse {
     private boolean removed;
 
     public OrderAdminResponse(Order order) {
-        super(order.getId(),
-              order.getOrderUuid(),
-              order.getFullName(),
-              order.getTotalListPrice(),
-              order.getTotalSellingPrice(),
-              order.getTransactionId(),
-              order.getCreated(),
-              order.getModified(),
-              order.getStatus(),
-              order.getPaymentMethod(),
-              order.getPayment(),
-              order.getDelivery());
+        super(order);
 
         this.userAgent = order.getUserAgent();
         this.acceptLanguage = order.getAcceptLanguage();

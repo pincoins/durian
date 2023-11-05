@@ -11,6 +11,7 @@ import kr.pincoin.durian.shop.domain.Order;
 import kr.pincoin.durian.shop.domain.OrderItem;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.conveter.*;
+import kr.pincoin.durian.shop.repository.jpa.OrderItemRepository;
 import kr.pincoin.durian.shop.repository.jpa.OrderRepository;
 import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final OrderItemRepository orderItemRepository;
+
     private final ProductRepository productRepository;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
@@ -46,7 +49,7 @@ public class OrderService {
                                   String orderUuid,
                                   String transactionId,
                                   Boolean removed) {
-        return orderRepository.findOrder(userId,
+        return orderRepository.findOrders(userId,
                                          status,
                                          paymentMethod,
                                          payment,
@@ -84,6 +87,7 @@ public class OrderService {
     }
 
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public Optional<Order>
     createOrder(OrderCreateRequest request, HttpServletRequest servletRequest) {
         Profile profile = profileRepository.findMember(request.getUserId(), UserStatus.NORMAL)

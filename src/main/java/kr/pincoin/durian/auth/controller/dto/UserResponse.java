@@ -35,26 +35,12 @@ public class UserResponse {
     @JsonProperty("role")
     private Role role;
 
-    public UserResponse(Long id,
-                        String username,
-                        String fullName,
-                        Role role,
-                        UserStatus status,
-                        LocalDateTime created) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.role = role;
-        this.status = status;
-        this.created = created;
-    }
-
     public UserResponse(User user) {
-        this(user.getId(),
-             user.getUsername(),
-             user.getFullName(),
-             user.getRole(),
-             user.getStatus(),
-             user.getCreated());
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.fullName = user.getFullName();
+        this.role = user.getRole();
+        this.status = user.getStatus();
+        this.created = user.getCreated();
     }
 }
