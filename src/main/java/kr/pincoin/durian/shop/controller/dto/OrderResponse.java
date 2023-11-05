@@ -55,44 +55,18 @@ public class OrderResponse {
     @JsonProperty("delivery")
     private DeliveryStatus delivery;
 
-    public OrderResponse(Long id,
-                         String orderUuid,
-                         String fullName,
-                         BigDecimal totalListPrice,
-                         BigDecimal totalSellingPrice,
-                         String transactionId,
-                         LocalDateTime created,
-                         LocalDateTime modified,
-                         OrderStatus status,
-                         PaymentMethod paymentMethod,
-                         PaymentStatus payment,
-                         DeliveryStatus delivery) {
-        this.id = id;
-        this.orderUuid = orderUuid;
-        this.fullName = fullName;
-        this.totalListPrice = totalListPrice;
-        this.totalSellingPrice = totalSellingPrice;
-        this.transactionId = transactionId;
-        this.created = created;
-        this.modified = modified;
-        this.status = status;
-        this.paymentMethod = paymentMethod;
-        this.payment = payment;
-        this.delivery = delivery;
-    }
-
     public OrderResponse(Order order) {
-        this(order.getId(),
-             order.getOrderUuid(),
-             order.getFullName(),
-             order.getTotalListPrice(),
-             order.getTotalSellingPrice(),
-             order.getTransactionId(),
-             order.getCreated(),
-             order.getModified(),
-             order.getStatus(),
-             order.getPaymentMethod(),
-             order.getPayment(),
-             order.getDelivery());
+        this.id = order.getId();
+        this.orderUuid = order.getOrderUuid();
+        this.fullName = order.getFullName();
+        this.totalListPrice = order.getTotalListPrice();
+        this.totalSellingPrice = order.getTotalSellingPrice();
+        this.transactionId = order.getTransactionId();
+        this.created = order.getCreated();
+        this.modified = order.getModified();
+        this.status = order.getStatus();
+        this.paymentMethod = order.getPaymentMethod();
+        this.payment = order.getPayment();
+        this.delivery = order.getDelivery();
     }
 }
