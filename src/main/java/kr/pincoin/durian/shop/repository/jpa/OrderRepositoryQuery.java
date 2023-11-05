@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepositoryQuery {
-
-    List<Order> findOrder(Long userId,
+    List<Order> findOrders(Long userId,
                           OrderStatus status,
                           PaymentMethod paymentMethod,
                           PaymentStatus payment,

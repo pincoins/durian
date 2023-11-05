@@ -7,6 +7,5 @@ import java.util.List;
 public interface OrderItemRepositoryQuery {
     List<OrderItem> findOrderItems(Long orderId,
                                    Long userId,
-                                   Boolean orderRemoved,
                                    Boolean removed);
 }

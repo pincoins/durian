@@ -36,3 +36,13 @@ Authorization: Bearer {{accessToken}}
 DELETE http://localhost:8080/orders/{{orderId}}/users/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Order Item List
+GET http://localhost:8080/orders/{{orderId}}/users/{{userId}}/items
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Order Payment List
+GET http://localhost:8080/orders/{{orderId}}/users/{{userId}}/payments
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

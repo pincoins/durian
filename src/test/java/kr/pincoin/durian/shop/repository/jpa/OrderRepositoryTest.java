@@ -9,9 +9,9 @@ import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
+import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.*;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
-import kr.pincoin.durian.shop.domain.conveter.PaymentMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ class OrderRepositoryTest {
                                                  3)
                 .build();
 
-        Order order = Order.builder(PaymentMethod.BANK_TRANSFER,
+        Order order = Order.builder(mock(OrderCreateRequest.class),
                                     profile,
                                     mock(HttpServletRequest.class))
                 .build();
@@ -117,7 +117,7 @@ class OrderRepositoryTest {
 
         orderRepository.save(order);
         assertThat(order.getOrderUuid()).isNotBlank();
-        assertThat(order.getTotalListPrice()).isEqualTo(profile.getTotalListPrice());
-        assertThat(order.getTotalSellingPrice()).isEqualTo(profile.getTotalSellingPrice());
+        assertThat(order.getTotalListPrice()).isEqualTo(BigDecimal.valueOf(200000));
+        assertThat(order.getTotalSellingPrice()).isEqualTo(BigDecimal.valueOf(188500));
     }
 }

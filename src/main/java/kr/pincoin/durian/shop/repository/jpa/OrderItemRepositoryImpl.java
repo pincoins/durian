@@ -18,7 +18,6 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
     @Override
     public List<OrderItem> findOrderItems(Long orderId,
                                           Long userId,
-                                          Boolean orderRemoved,
                                           Boolean removed) {
         JPAQuery<OrderItem> contentQuery = queryFactory
                 .select(orderItem)
@@ -27,7 +26,6 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
                 .fetchJoin()
                 .where(order1.id.eq(orderId),
                        userIdEq(userId),
-                       orderRemovedEq(orderRemoved),
                        removedEq(removed));
 
         return contentQuery.fetch();
@@ -35,10 +33,6 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
 
     BooleanExpression removedEq(Boolean removed) {
         return removed != null ? orderItem.removed.eq(removed) : orderItem.removed.eq(false);
-    }
-
-    BooleanExpression orderRemovedEq(Boolean orderRemoved) {
-        return orderRemoved != null ? order1.removed.eq(orderRemoved) : order1.removed.eq(false);
     }
 
     BooleanExpression userIdEq(Long orderId) {

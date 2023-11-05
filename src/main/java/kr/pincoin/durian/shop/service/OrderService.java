@@ -49,7 +49,7 @@ public class OrderService {
                                   String orderUuid,
                                   String transactionId,
                                   Boolean removed) {
-        return orderRepository.findOrder(userId,
+        return orderRepository.findOrders(userId,
                                          status,
                                          paymentMethod,
                                          payment,
@@ -62,17 +62,32 @@ public class OrderService {
     }
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public List<OrderItem> getOrder(Long orderId,
+    public Optional<Order> getOrder(Long orderId,
                                     Long userId,
-                                    Boolean orderRemoved,
+                                    OrderStatus status,
+                                    PaymentMethod paymentMethod,
+                                    PaymentStatus payment,
+                                    DeliveryStatus delivery,
+                                    OrderVisibility visibility,
+                                    String fullName,
+                                    String orderUuid,
+                                    String transactionId,
                                     Boolean removed) {
-        return orderItemRepository.findOrderItems(orderId,
+        return orderRepository.findOrder(orderId,
                                          userId,
-                                         orderRemoved,
+                                         status,
+                                         paymentMethod,
+                                         payment,
+                                         delivery,
+                                         visibility,
+                                         fullName,
+                                         orderUuid,
+                                         transactionId,
                                          removed);
     }
 
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public Optional<Order>
     createOrder(OrderCreateRequest request, HttpServletRequest servletRequest) {
         Profile profile = profileRepository.findMember(request.getUserId(), UserStatus.NORMAL)

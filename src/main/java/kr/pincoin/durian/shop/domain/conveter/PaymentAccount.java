@@ -10,4 +10,6 @@ public enum PaymentAccount {
     WOORI,
     IBK,
     PAYPAL,
+    CREDIT_CARD,
+    PHONE_BILL,
 }
