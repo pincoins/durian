@@ -8,7 +8,5 @@ public enum PaymentMethod {
     ESCROW,
     PAYPAL,
     CREDIT_CARD,
-    BANK_TRANSFER_PG,
-    VIRTUAL_ACCOUNT,
     PHONE_BILL,
 }
