@@ -75,6 +75,16 @@ public class OrderItem extends BaseDateTime {
         return this;
     }
 
+    public void addVoucher(OrderItemVoucher orderItemVoucher) {
+        if (!vouchers.contains(orderItemVoucher)) {
+            vouchers.add(orderItemVoucher);
+        }
+
+        if (orderItemVoucher.getOrderItem() != this) {
+            orderItemVoucher.makeOrderItem(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

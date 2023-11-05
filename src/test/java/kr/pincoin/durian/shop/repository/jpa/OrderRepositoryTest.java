@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -42,11 +43,85 @@ class OrderRepositoryTest {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
     @PersistenceContext
     private EntityManager em;
 
     @Test
-    void createNewOrder() {
+    void findOrder() {
+        init();
+
+        List<Order> orders = orderRepository.findOrders(null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null);
+
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findOrderWithPayments() {
+        init();
+
+        Order order = orderRepository.findOrders(null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null).get(0);
+
+        Optional<Order> order1 = orderRepository.findOrderWithPayments(order.getId(),
+                                                                      order.getUser().getId(),
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null);
+
+        order1.get().getPayments().forEach(p -> log.info("{} {} {}", p.getAmount(), p.getAccount(), p.getCreated()));
+    }
+
+    @Test
+    void findOrderItemsWithVouchers() {
+        init();
+
+        Order order = orderRepository.findOrders(null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null).get(0);
+
+        List<OrderItem> items = orderItemRepository.findOrderItemsWithVouchers(order.getId(),
+                                                                       order.getUser().getId(),
+                                                                       null,
+                                                                       null,
+                                                                       null);
+
+        items.forEach(i -> i.getVouchers().forEach(v -> log.info("{} {}", v.getCode(), v.getRemarks())));
+    }
+
+    private void init() {
         User user = User.builder("username",
                                  "password",
                                  "john",
@@ -110,6 +185,16 @@ class OrderRepositoryTest {
                                                  product2.getPrice(),
                                                  3).build();
 
+        OrderItemVoucher orderItemVoucher1 = OrderItemVoucher.builder("1111", "").build();
+        OrderItemVoucher orderItemVoucher2 = OrderItemVoucher.builder("2222", "").build();
+        OrderItemVoucher orderItemVoucher3 = OrderItemVoucher.builder("3333", "").build();
+        OrderItemVoucher orderItemVoucher4 = OrderItemVoucher.builder("4444", "").build();
+
+        Arrays.asList(orderItemVoucher1, orderItemVoucher2)
+                .forEach(orderItem1::addVoucher);
+        Arrays.asList(orderItemVoucher3, orderItemVoucher4)
+                .forEach(orderItem1::addVoucher);
+
         Order order = Order.builder(mock(OrderCreateRequest.class), profile, mock(HttpServletRequest.class)).build();
 
         Arrays.asList(orderItem1, orderItem2).forEach(order::addOrderItem);
@@ -136,18 +221,5 @@ class OrderRepositoryTest {
 
         em.flush();
         em.clear();
-
-        List<Order> orders = orderRepository.findOrders(null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null);
-
-        assertThat(orders.size()).isEqualTo(1);
     }
 }
