@@ -14,6 +14,11 @@ public interface ProductRepositoryQuery {
                                ProductStockStatus stock,
                                Boolean removed);
 
+    List<Product> findProducts(List<Long> ids,
+                               ProductStatus status,
+                               ProductStockStatus stock,
+                               Boolean removed);
+
     Optional<Product> findProduct(Long id,
                                   Long categoryId,
                                   String slug,

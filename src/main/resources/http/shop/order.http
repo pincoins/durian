@@ -14,10 +14,25 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "29"
+  "userId": "29",
+  "paymentMethod": "BANK_TRANSFER",
+  "items": [
+    {
+      "productId": 5,
+      "quantity": 2
+    },
+    {
+      "productId": 7,
+      "quantity": 3
+    },
+    {
+      "productId": 25,
+      "quantity": 4
+    }
+  ]
 }
 
 ### Order Delete
-DELETE http://localhost:8080/orders/{{orderId}}
+DELETE http://localhost:8080/orders/{{orderId}}/users/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

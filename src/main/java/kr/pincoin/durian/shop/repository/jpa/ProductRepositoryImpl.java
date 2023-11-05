@@ -38,6 +38,24 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
     }
 
     @Override
+    public List<Product> findProducts(List<Long> ids,
+                                      ProductStatus status,
+                                      ProductStockStatus stock,
+                                      Boolean removed) {
+        JPAQuery<Product> contentQuery = queryFactory
+                .select(product)
+                .from(product)
+                .innerJoin(product.category)
+                .fetchJoin()
+                .where(product.id.in(ids),
+                       statusEq(status),
+                       stockEq(stock),
+                       removedEq(removed));
+
+        return contentQuery.fetch();
+    }
+
+    @Override
     public Optional<Product> findProduct(Long id,
                                          Long categoryId,
                                          String slug,
