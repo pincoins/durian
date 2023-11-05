@@ -11,6 +11,7 @@ import kr.pincoin.durian.shop.domain.Order;
 import kr.pincoin.durian.shop.domain.OrderItem;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.conveter.*;
+import kr.pincoin.durian.shop.repository.jpa.OrderItemRepository;
 import kr.pincoin.durian.shop.repository.jpa.OrderRepository;
 import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,8 @@ public class OrderService {
     private final ProfileRepository profileRepository;
 
     private final OrderRepository orderRepository;
+
+    private final OrderItemRepository orderItemRepository;
 
     private final ProductRepository productRepository;
 
@@ -59,27 +62,13 @@ public class OrderService {
     }
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public Optional<Order> getOrder(Long orderId,
+    public List<OrderItem> getOrder(Long orderId,
                                     Long userId,
-                                    OrderStatus status,
-                                    PaymentMethod paymentMethod,
-                                    PaymentStatus payment,
-                                    DeliveryStatus delivery,
-                                    OrderVisibility visibility,
-                                    String fullName,
-                                    String orderUuid,
-                                    String transactionId,
+                                    Boolean orderRemoved,
                                     Boolean removed) {
-        return orderRepository.findOrder(orderId,
+        return orderItemRepository.findOrderItems(orderId,
                                          userId,
-                                         status,
-                                         paymentMethod,
-                                         payment,
-                                         delivery,
-                                         visibility,
-                                         fullName,
-                                         orderUuid,
-                                         transactionId,
+                                         orderRemoved,
                                          removed);
     }
 

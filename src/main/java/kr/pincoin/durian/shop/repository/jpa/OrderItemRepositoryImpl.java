@@ -23,7 +23,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
         JPAQuery<OrderItem> contentQuery = queryFactory
                 .select(orderItem)
                 .from(orderItem)
-                .innerJoin(orderItem.order)
+                .innerJoin(orderItem.order, order1)
                 .fetchJoin()
                 .where(order1.id.eq(orderId),
                        userIdEq(userId),

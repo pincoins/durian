@@ -4,9 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.service.IdentityService;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.OrderAdminResponse;
-import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
-import kr.pincoin.durian.shop.controller.dto.OrderResponse;
+import kr.pincoin.durian.shop.controller.dto.*;
+import kr.pincoin.durian.shop.domain.OrderItem;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import kr.pincoin.durian.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +42,8 @@ public class OrderController {
               @RequestParam(name = "removed", required = false) Boolean removed,
               @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
-                .ok().
-                body(orderService.listOrders(userId,
+                .ok()
+                .body(orderService.listOrders(userId,
                                              status,
                                              paymentMethod,
                                              payment,
@@ -62,37 +61,19 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse>
+    public ResponseEntity<OrderItemResponse>
     orderDetail(@PathVariable Long orderId,
                 @RequestParam(name = "userId", required = false) Long userId,
-                @RequestParam(name = "status", required = false) OrderStatus status,
-                @RequestParam(name = "paymentMethod", required = false) PaymentMethod paymentMethod,
-                @RequestParam(name = "payment", required = false) PaymentStatus payment,
-                @RequestParam(name = "delivery", required = false) DeliveryStatus delivery,
-                @RequestParam(name = "visibility", required = false) OrderVisibility visibility,
-                @RequestParam(name = "fullName", required = false) String fullName,
-                @RequestParam(name = "orderUuid", required = false) String orderUuid,
-                @RequestParam(name = "transactionId", required = false) String transactionId,
+                @RequestParam(name = "orderRemoved", required = false) Boolean orderRemoved,
                 @RequestParam(name = "removed", required = false) Boolean removed,
                 @AuthenticationPrincipal UserDetails userDetails) {
-        return orderService.getOrder(orderId,
-                                     userId,
-                                     status,
-                                     paymentMethod,
-                                     payment,
-                                     delivery,
-                                     visibility,
-                                     fullName,
-                                     orderUuid,
-                                     transactionId,
-                                     removed)
-                .map(order -> ResponseEntity.ok()
-                        .body(identityService.isAdmin(userDetails)
-                                      ? new OrderAdminResponse(order)
-                                      : new OrderResponse(order)))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Order not found",
-                                                    List.of("Order does not exist to retrieve.")));
+        List<OrderItem> orderItems = orderService.getOrder(orderId, userId, orderRemoved, removed);
+
+        OrderItemResponse response = identityService.isAdmin(userDetails)
+                ? new OrderItemAdminResponse(orderItems)
+                : new OrderItemResponse(orderItems);
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("")
