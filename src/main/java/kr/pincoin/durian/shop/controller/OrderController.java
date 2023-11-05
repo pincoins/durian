@@ -7,7 +7,6 @@ import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.*;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import kr.pincoin.durian.shop.service.OrderItemService;
-import kr.pincoin.durian.shop.service.OrderItemVoucherService;
 import kr.pincoin.durian.shop.service.OrderPaymentService;
 import kr.pincoin.durian.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,6 @@ public class OrderController {
     private final OrderItemService orderItemService;
 
     private final OrderPaymentService orderPaymentService;
-
-    private final OrderItemVoucherService orderItemVoucherService;
 
     private final IdentityService identityService;
 
@@ -69,7 +66,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse>
+    public ResponseEntity<? extends OrderResponse>
     orderDetail(@PathVariable Long orderId,
                 @RequestParam(name = "userId", required = false) Long userId,
                 @RequestParam(name = "status", required = false) OrderStatus status,
@@ -96,8 +93,8 @@ public class OrderController {
                 .map(order -> ResponseEntity
                         .ok()
                         .body(identityService.isAdmin(userDetails)
-                                      ? new OrderAdminResponse(order)
-                                      : new OrderResponse(order)))
+                                      ? new OrderItemPaymentAdminResponse(order)
+                                      : new OrderItemPaymentResponse(order)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Order not found",
                                                     List.of("Order does not exist to retrieve.")));
@@ -127,10 +124,11 @@ public class OrderController {
     @GetMapping("/{orderId}/users/{userId}/payments")
     public ResponseEntity<List<OrderPaymentResponse>>
     orderListPayments(@PathVariable Long orderId,
-                      @PathVariable Long userId) {
+                      @PathVariable Long userId,
+                      @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
                 .ok()
-                .body(orderPaymentService.listOrderPayments(orderId, userId)
+                .body(orderPaymentService.listOrderPayments(orderId, userId, userDetails)
                               .stream()
                               .map(OrderPaymentResponse::new)
                               .toList());
@@ -139,10 +137,11 @@ public class OrderController {
     @GetMapping("/{orderId}/users/{userId}/items")
     public ResponseEntity<List<OrderItemResponse>>
     orderListItems(@PathVariable Long orderId,
-                   @PathVariable Long userId) {
+                   @PathVariable Long userId,
+                   @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
                 .ok()
-                .body(orderItemService.listOrderItems(orderId, userId, false)
+                .body(orderItemService.listOrderItems(orderId, userId, userDetails)
                               .stream()
                               .map(OrderItemResponse::new)
                               .toList());
@@ -152,7 +151,8 @@ public class OrderController {
     public ResponseEntity<List<OrderItemVoucherResponse>>
     orderListItemVouchers(@PathVariable Long orderId,
                           @PathVariable Long userId,
-                          @PathVariable Long itemId) {
+                          @PathVariable Long itemId,
+                          @AuthenticationPrincipal UserDetails userDetails) {
         return null;
     }
 }

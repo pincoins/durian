@@ -21,9 +21,6 @@ public class OrderItem extends BaseDateTime {
     @Column(name = "order_item_id")
     private Long id;
 
-    @Column(name = "is_removed")
-    private boolean removed;
-
     @Column(name = "name")
     private String name;
 
@@ -61,8 +58,7 @@ public class OrderItem extends BaseDateTime {
                 .subtitle(subtitle)
                 .slug(slug)
                 .price(price)
-                .quantity(quantity)
-                .removed(false);
+                .quantity(quantity);
     }
 
     public OrderItem makeOrder(Order order) {
@@ -96,15 +92,4 @@ public class OrderItem extends BaseDateTime {
         this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
         return this;
     }
-
-    public OrderItem remove() {
-        this.removed = true;
-        return this;
-    }
-
-    public OrderItem restore() {
-        this.removed = false;
-        return this;
-    }
-
 }

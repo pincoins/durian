@@ -11,11 +11,11 @@ import kr.pincoin.durian.shop.domain.Order;
 import kr.pincoin.durian.shop.domain.OrderItem;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.conveter.*;
-import kr.pincoin.durian.shop.repository.jpa.OrderItemRepository;
 import kr.pincoin.durian.shop.repository.jpa.OrderRepository;
 import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -33,8 +33,6 @@ public class OrderService {
     private final ProfileRepository profileRepository;
 
     private final OrderRepository orderRepository;
-
-    private final OrderItemRepository orderItemRepository;
 
     private final ProductRepository productRepository;
 
@@ -73,17 +71,25 @@ public class OrderService {
                                     String orderUuid,
                                     String transactionId,
                                     Boolean removed) {
-        return orderRepository.findOrder(orderId,
-                                         userId,
-                                         status,
-                                         paymentMethod,
-                                         payment,
-                                         delivery,
-                                         visibility,
-                                         fullName,
-                                         orderUuid,
-                                         transactionId,
-                                         removed);
+        Order order = orderRepository.findOrder(orderId,
+                                                userId,
+                                                status,
+                                                paymentMethod,
+                                                payment,
+                                                delivery,
+                                                visibility,
+                                                fullName,
+                                                orderUuid,
+                                                transactionId,
+                                                removed)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                    "Order not found",
+                                                    List.of("Order does not exist to retrieve.")));
+
+        Hibernate.initialize(order.getPayments());
+        Hibernate.initialize(order.getItems());
+
+        return Optional.of(order);
     }
 
     @Transactional
@@ -106,8 +112,7 @@ public class OrderService {
 
         Order order = Order.builder(request,
                                     profile,
-                                    servletRequest)
-                .build();
+                                    servletRequest).build();
 
         request.getItems().forEach(cartItemNested -> {
             Product product = products
@@ -118,13 +123,11 @@ public class OrderService {
                                                         String.format("productId: %s N/A", cartItemNested.getProductId()),
                                                         List.of("Your cart item is currently out of stock.")));
 
-            OrderItem orderItem = OrderItem
-                    .builder(product.getName(),
-                             product.getSubtitle(),
-                             product.getSlug(),
-                             product.getPrice(),
-                             cartItemNested.getQuantity())
-                    .build();
+            OrderItem orderItem = OrderItem.builder(product.getName(),
+                                                    product.getSubtitle(),
+                                                    product.getSlug(),
+                                                    product.getPrice(),
+                                                    cartItemNested.getQuantity()).build();
 
             order.addOrderItem(orderItem);
         });
