@@ -127,8 +127,6 @@ public class Order extends BaseDateTime {
                 .userAgent(userAgent)
                 .acceptLanguage(acceptLanguage)
                 .ipAddress(ipAddress)
-                .totalListPrice(profile.getTotalListPrice())
-                .totalSellingPrice(profile.getTotalSellingPrice())
                 .removed(false);
     }
 
@@ -144,7 +142,7 @@ public class Order extends BaseDateTime {
         return this;
     }
 
-    public void addOrderPayment(OrderPayment orderPayment) {
+    public Order addOrderPayment(OrderPayment orderPayment) {
         if (!payments.contains(orderPayment)) {
             payments.add(orderPayment);
         }
@@ -152,5 +150,14 @@ public class Order extends BaseDateTime {
         if (orderPayment.getOrder() != this) {
             orderPayment.makeOrder(this);
         }
+
+        return this;
+    }
+
+    public Order savePrice(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
+        this.totalListPrice = totalListPrice;
+        this.totalSellingPrice = totalSellingPrice;
+
+        return this;
     }
 }

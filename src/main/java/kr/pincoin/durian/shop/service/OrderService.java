@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -105,20 +106,21 @@ public class OrderService {
                                    List.of("Some items are out of stock."));
         }
 
-        List<OrderItem> orderItems = products.stream().map(product -> {
-            CartItemNested cartItemNested = request.getItems()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getProductId(), product.getId()))
-                    .toList()
-                    .get(0);
+        List<OrderItem> orderItems = request.getItems()
+                .stream()
+                .map(cartItemNested -> {
+                    Product product = products.stream()
+                            .filter(p -> Objects.equals(p.getId(), cartItemNested.getProductId()))
+                            .toList()
+                            .get(0);
 
-            return OrderItem.builder(product.getName(),
-                                     product.getSubtitle(),
-                                     product.getSlug(),
-                                     product.getPrice(),
-                                     cartItemNested.getQuantity())
+                    return OrderItem.builder(product.getName(),
+                                             product.getSubtitle(),
+                                             product.getSlug(),
+                                             product.getPrice(),
+                                             cartItemNested.getQuantity())
                     .build();
-        }).toList();
+                }).toList();
 
         Order order = Order.builder(PaymentMethod.BANK_TRANSFER, profile, servletRequest).build();
 
