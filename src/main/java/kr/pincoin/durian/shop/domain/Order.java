@@ -68,10 +68,12 @@ public class Order extends BaseDateTime {
     private OrderVisibility visible;
 
     @Column(name = "total_list_price")
-    private BigDecimal totalListPrice;
+    @Builder.Default
+    private BigDecimal totalListPrice = BigDecimal.ZERO;
 
     @Column(name = "total_selling_price")
-    private BigDecimal totalSellingPrice;
+    @Builder.Default
+    private BigDecimal totalSellingPrice = BigDecimal.ZERO;
 
     @Column(name = "message")
     private String message;
@@ -132,6 +134,14 @@ public class Order extends BaseDateTime {
 
     public Order addOrderItem(OrderItem orderItem) {
         if (!items.contains(orderItem)) {
+            totalListPrice = totalListPrice
+                    .add((orderItem.getPrice().getListPrice()
+                            .multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+
+            totalSellingPrice = totalSellingPrice
+                    .add((orderItem.getPrice().getSellingPrice()
+                            .multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+
             items.add(orderItem);
         }
 
