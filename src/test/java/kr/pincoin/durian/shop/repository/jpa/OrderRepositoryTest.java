@@ -12,6 +12,7 @@ import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.*;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
+import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,19 @@ class OrderRepositoryTest {
                 .build();
 
         Arrays.asList(orderItem1, orderItem2).forEach(order::addOrderItem);
+
+
+        OrderPayment orderPayment1 = OrderPayment.builder(PaymentAccount.KB,
+                                                          order.getTotalSellingPrice().divide(BigDecimal.valueOf(2)),
+                                                          BigDecimal.ZERO)
+                .build();
+
+        OrderPayment orderPayment2 = OrderPayment.builder(PaymentAccount.KB,
+                                                          order.getTotalSellingPrice().divide(BigDecimal.valueOf(2)),
+                                                          BigDecimal.ZERO)
+                .build();
+
+        Arrays.asList(orderPayment1, orderPayment2).forEach(order::addOrderPayment);
 
         orderRepository.save(order);
         assertThat(order.getOrderUuid()).isNotBlank();

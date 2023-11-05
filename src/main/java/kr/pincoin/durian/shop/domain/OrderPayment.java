@@ -40,13 +40,11 @@ public class OrderPayment extends BaseDateTime {
 
     public static OrderPaymentBuilder builder(PaymentAccount account,
                                               BigDecimal amount,
-                                              BigDecimal balance,
-                                              Order order) {
+                                              BigDecimal balance) {
         return new OrderPaymentBuilder()
                 .account(account)
                 .amount(amount)
                 .balance(balance)
-                .order(order)
                 .received(LocalDateTime.now());
     }
 
