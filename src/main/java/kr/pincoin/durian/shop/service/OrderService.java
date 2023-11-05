@@ -108,16 +108,20 @@ public class OrderService {
         Order order = Order.builder(PaymentMethod.BANK_TRANSFER, profile, servletRequest).build();
 
         request.getItems().forEach(cartItemNested -> {
-                    Product product = products.stream()
-                            .filter(p -> Objects.equals(p.getId(), cartItemNested.getProductId()))
-                            .toList()
-                            .get(0);
+            Product product = products
+                    .stream()
+                    .filter(p -> Objects.equals(p.getId(), cartItemNested.getProductId()))
+                    .findAny()
+                    .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                        cartItemNested.getProductId() + "N/A",
+                                                        List.of("Item is out of stock.")));
 
-            OrderItem orderItem = OrderItem.builder(product.getName(),
-                                                    product.getSubtitle(),
-                                                    product.getSlug(),
-                                                    product.getPrice(),
-                                                    cartItemNested.getQuantity())
+            OrderItem orderItem = OrderItem
+                    .builder(product.getName(),
+                             product.getSubtitle(),
+                             product.getSlug(),
+                             product.getPrice(),
+                             cartItemNested.getQuantity())
                     .build();
 
             order.addOrderItem(orderItem);
@@ -130,8 +134,18 @@ public class OrderService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
-    public boolean deleteOrder(Long orderId) {
-        return orderRepository.findById(orderId)
+    public boolean deleteOrder(Long orderId, Long userId) {
+        return orderRepository.findOrder(orderId,
+                                         userId,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         true)
                 .map(order -> {
                     orderRepository.delete(order);
                     return true;
@@ -139,6 +153,4 @@ public class OrderService {
                                                       "Soft removed order not found",
                                                       List.of("Order does not exist to delete.")));
     }
-
-
 }

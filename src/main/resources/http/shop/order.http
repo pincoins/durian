@@ -32,6 +32,6 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Order Delete
-DELETE http://localhost:8080/orders/{{orderId}}
+DELETE http://localhost:8080/orders/{{orderId}}/users/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

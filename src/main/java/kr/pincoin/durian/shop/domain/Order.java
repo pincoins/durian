@@ -111,7 +111,7 @@ public class Order extends BaseDateTime {
                 .orElse(request.getRemoteAddr());
 
         String userAgent = Optional.ofNullable(request.getHeader("User-Agent"))
-                .orElse("User-Agent missing");
+                .orElse("No user-agent set");
 
         String acceptLanguage = Optional.ofNullable(request.getHeader("Accept-Language"))
                 .orElse("No language set");

@@ -106,10 +106,11 @@ public class OrderController {
                                                     List.of("Failed to create a new order.")));
     }
 
-    @DeleteMapping("/{orderId}")
+    @DeleteMapping("/{orderId}/users/{userId}")
     public ResponseEntity<Object>
-    orderDelete(@PathVariable Long orderId) {
-        if (orderService.deleteOrder(orderId)) {
+    orderDelete(@PathVariable Long orderId,
+                @PathVariable Long userId) {
+        if (orderService.deleteOrder(orderId, userId)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
