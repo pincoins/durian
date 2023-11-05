@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.common.domain.BaseDateTime;
+import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import lombok.*;
 
@@ -104,31 +105,31 @@ public class Order extends BaseDateTime {
     @Builder.Default
     private List<OrderPayment> payments = new ArrayList<>();
 
-    public static OrderBuilder builder(PaymentMethod paymentMethod,
+    public static OrderBuilder builder(OrderCreateRequest request,
                                        Profile profile,
-                                       HttpServletRequest request) {
-        String ipAddress = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
-                .orElse(request.getRemoteAddr());
+                                       HttpServletRequest httpServletRequest) {
+        String ipAddress = Optional.ofNullable(httpServletRequest.getHeader("X-Forwarded-For"))
+                .orElse(httpServletRequest.getRemoteAddr());
 
-        String userAgent = Optional.ofNullable(request.getHeader("User-Agent"))
+        String userAgent = Optional.ofNullable(httpServletRequest.getHeader("User-Agent"))
                 .orElse("No user-agent set");
 
-        String acceptLanguage = Optional.ofNullable(request.getHeader("Accept-Language"))
+        String acceptLanguage = Optional.ofNullable(httpServletRequest.getHeader("Accept-Language"))
                 .orElse("No language set");
 
         return new OrderBuilder()
-                .paymentMethod(paymentMethod)
+                .paymentMethod(request.getPaymentMethod())
                 .orderUuid(UUID.randomUUID().toString())
                 .status(OrderStatus.ORDERED)
                 .payment(PaymentStatus.UNPAID)
                 .delivery(DeliveryStatus.NOT_SENT)
                 .visible(OrderVisibility.VISIBLE)
-                .suspicious(false)
                 .user(profile.getUser())
                 .fullName(profile.getUser().getFullName())
                 .userAgent(userAgent)
                 .acceptLanguage(acceptLanguage)
                 .ipAddress(ipAddress)
+                .suspicious(false)
                 .removed(false);
     }
 

@@ -91,21 +91,19 @@ public class OrderService {
                                                     "Invalid profile",
                                                     List.of("Normal profile does not exist.")));
 
-        List<Product> products = productRepository.findProducts(request.getItems()
-                                                                        .stream()
-                                                                        .map(CartItemNested::getProductId)
-                                                                        .toList(),
-                                                                ProductStatus.ENABLED,
-                                                                ProductStockStatus.IN_STOCK,
-                                                                false);
+        List<Product> products = productRepository
+                .findProducts(request.getItems()
+                                      .stream()
+                                      .map(CartItemNested::getProductId)
+                                      .toList(),
+                              ProductStatus.ENABLED,
+                              ProductStockStatus.IN_STOCK,
+                              false);
 
-        if (products.size() != request.getItems().size()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST,
-                                   "Sold out items",
-                                   List.of("Some items are out of stock."));
-        }
-
-        Order order = Order.builder(PaymentMethod.BANK_TRANSFER, profile, servletRequest).build();
+        Order order = Order.builder(request,
+                                    profile,
+                                    servletRequest)
+                .build();
 
         request.getItems().forEach(cartItemNested -> {
             Product product = products
@@ -113,8 +111,8 @@ public class OrderService {
                     .filter(p -> Objects.equals(p.getId(), cartItemNested.getProductId()))
                     .findAny()
                     .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
-                                                        cartItemNested.getProductId() + "N/A",
-                                                        List.of("Item is out of stock.")));
+                                                        String.format("productId: %s N/A", cartItemNested.getProductId()),
+                                                        List.of("Your cart item is currently out of stock.")));
 
             OrderItem orderItem = OrderItem
                     .builder(product.getName(),

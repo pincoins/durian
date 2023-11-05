@@ -2,6 +2,7 @@ package kr.pincoin.durian.shop.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import kr.pincoin.durian.shop.domain.conveter.PaymentMethod;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,10 @@ public class OrderCreateRequest {
     @JsonProperty("userId")
     @NotNull
     private Long userId;
+
+    @JsonProperty("paymentMethod")
+    @NotNull
+    private PaymentMethod paymentMethod;
 
     @JsonProperty("items")
     @NotNull

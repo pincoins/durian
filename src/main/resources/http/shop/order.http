@@ -15,6 +15,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "userId": "29",
+  "paymentMethod": "BANK_TRANSFER",
   "items": [
     {
       "productId": 5,
@@ -25,7 +26,7 @@ Authorization: Bearer {{accessToken}}
       "quantity": 3
     },
     {
-      "productId": 6,
+      "productId": 25,
       "quantity": 4
     }
   ]
