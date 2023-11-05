@@ -35,14 +35,24 @@ public class OrderItemVoucher extends BaseDateTime {
     private Voucher voucher;
 
     public static OrderItemVoucherBuilder builder(String code,
-                                                  String remarks,
-                                                  OrderItem orderItem,
-                                                  Voucher voucher) {
+                                                  String remarks) {
         return new OrderItemVoucherBuilder()
                 .code(code)
                 .remarks(remarks)
-                .orderItem(orderItem)
-                .voucher(voucher)
                 .revoked(false);
+    }
+
+    public OrderItemVoucher makeOrderItem(OrderItem orderItem) {
+        if (this.orderItem != null) {
+            this.orderItem.getVouchers().remove(this);
+        }
+
+        this.orderItem = orderItem;
+
+        if (!orderItem.getVouchers().contains(this)) {
+            orderItem.getVouchers().add(this);
+        }
+
+        return this;
     }
 }

@@ -43,6 +43,9 @@ class OrderRepositoryTest {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -91,9 +94,31 @@ class OrderRepositoryTest {
                                                                       null,
                                                                       null);
 
-        order1.get().getPayments().forEach(p -> {
-            log.info("{} {} {}", p.getAmount(), p.getAccount(), p.getCreated());
-        });
+        order1.get().getPayments().forEach(p -> log.info("{} {} {}", p.getAmount(), p.getAccount(), p.getCreated()));
+    }
+
+    @Test
+    void findOrderItemsWithVouchers() {
+        init();
+
+        Order order = orderRepository.findOrders(null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null).get(0);
+
+        List<OrderItem> items = orderItemRepository.findOrderItemsWithVouchers(order.getId(),
+                                                                       order.getUser().getId(),
+                                                                       null,
+                                                                       null,
+                                                                       null);
+
+        items.forEach(i -> i.getVouchers().forEach(v -> log.info("{} {}", v.getCode(), v.getRemarks())));
     }
 
     private void init() {
@@ -159,6 +184,16 @@ class OrderRepositoryTest {
                                                  product2.getSlug(),
                                                  product2.getPrice(),
                                                  3).build();
+
+        OrderItemVoucher orderItemVoucher1 = OrderItemVoucher.builder("1111", "").build();
+        OrderItemVoucher orderItemVoucher2 = OrderItemVoucher.builder("2222", "").build();
+        OrderItemVoucher orderItemVoucher3 = OrderItemVoucher.builder("3333", "").build();
+        OrderItemVoucher orderItemVoucher4 = OrderItemVoucher.builder("4444", "").build();
+
+        Arrays.asList(orderItemVoucher1, orderItemVoucher2)
+                .forEach(orderItem1::addVoucher);
+        Arrays.asList(orderItemVoucher3, orderItemVoucher4)
+                .forEach(orderItem1::addVoucher);
 
         Order order = Order.builder(mock(OrderCreateRequest.class), profile, mock(HttpServletRequest.class)).build();
 

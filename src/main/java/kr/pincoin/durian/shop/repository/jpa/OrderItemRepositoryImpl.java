@@ -37,6 +37,26 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
         return contentQuery.fetch();
     }
 
+    @Override
+    public List<OrderItem> findOrderItemsWithVouchers(Long orderId,
+                                                      Long userId,
+                                                      OrderStatus status,
+                                                      OrderVisibility visibility,
+                                                      Boolean removed) {
+        JPAQuery<OrderItem> contentQuery = queryFactory
+                .select(orderItem)
+                .from(orderItem)
+                .innerJoin(orderItem.order, order1)
+                .innerJoin(orderItem.vouchers)
+                .where(orderItem.order.id.eq(orderId),
+                       userIdEq(userId),
+                       statusEq(status),
+                       visibilityEq(visibility),
+                       removedEq(removed));
+
+        return contentQuery.fetch();
+    }
+
     BooleanExpression userIdEq(Long orderId) {
         return orderId != null ? order1.user.id.eq(orderId) : null;
     }

@@ -12,4 +12,10 @@ public interface OrderItemRepositoryQuery {
                                    OrderStatus status,
                                    OrderVisibility visibility,
                                    Boolean removed);
+
+    List<OrderItem> findOrderItemsWithVouchers(Long orderId,
+                                               Long userId,
+                                               OrderStatus status,
+                                               OrderVisibility visibility,
+                                               Boolean removed);
 }
