@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -46,7 +47,56 @@ class OrderRepositoryTest {
     private EntityManager em;
 
     @Test
-    void createNewOrder() {
+    void findOrder() {
+        init();
+
+        List<Order> orders = orderRepository.findOrders(null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        null);
+
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findOrderWithPayments() {
+        init();
+
+        Order order = orderRepository.findOrders(null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  null).get(0);
+
+        Optional<Order> order1 = orderRepository.findOrderWithPayments(order.getId(),
+                                                                      order.getUser().getId(),
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+                                                                      null);
+
+        order1.get().getPayments().forEach(p -> {
+            log.info("{} {} {}", p.getAmount(), p.getAccount(), p.getCreated());
+        });
+    }
+
+    private void init() {
         User user = User.builder("username",
                                  "password",
                                  "john",
@@ -136,18 +186,5 @@ class OrderRepositoryTest {
 
         em.flush();
         em.clear();
-
-        List<Order> orders = orderRepository.findOrders(null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null,
-                                                        null);
-
-        assertThat(orders.size()).isEqualTo(1);
     }
 }

@@ -46,23 +46,23 @@ public class OrderController {
               @RequestParam(name = "transactionId", required = false) String transactionId,
               @RequestParam(name = "removed", required = false) Boolean removed,
               @AuthenticationPrincipal UserDetails userDetails) {
+        // order list does not have to list items, payments and sent vouchers.
         return ResponseEntity
                 .ok()
                 .body(orderService.listOrders(userId,
-                                             status,
-                                             paymentMethod,
-                                             payment,
-                                             delivery,
-                                             visibility,
-                                             fullName,
-                                             orderUuid,
-                                             transactionId,
-                                             removed)
-                             .stream()
-                             .map(order -> identityService.isAdmin(userDetails)
-                                     ? new OrderAdminResponse(order)
-                                     : new OrderResponse(order))
-                             .toList());
+                                              status,
+                                              paymentMethod, payment,
+                                              delivery,
+                                              visibility,
+                                              fullName,
+                                              orderUuid,
+                                              transactionId,
+                                              removed)
+                              .stream()
+                              .map(order -> identityService.isAdmin(userDetails)
+                                      ? new OrderAdminResponse(order)
+                                      : new OrderResponse(order))
+                              .toList());
     }
 
     @GetMapping("/{orderId}")

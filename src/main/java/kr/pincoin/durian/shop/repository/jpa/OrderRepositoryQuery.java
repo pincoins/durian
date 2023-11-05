@@ -29,4 +29,16 @@ public interface OrderRepositoryQuery {
                               String orderUuid,
                               String transactionId,
                               Boolean removed);
+
+    Optional<Order> findOrderWithPayments(Long id,
+                                          Long userId,
+                                          OrderStatus status,
+                                          PaymentMethod paymentMethod,
+                                          PaymentStatus payment,
+                                          DeliveryStatus delivery,
+                                          OrderVisibility visibility,
+                                          String fullName,
+                                          String orderUuid,
+                                          String transactionId,
+                                          Boolean removed);
 }
