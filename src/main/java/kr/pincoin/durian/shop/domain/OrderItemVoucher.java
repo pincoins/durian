@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "shop_order_item_voucher")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +42,19 @@ public class OrderItemVoucher extends BaseDateTime {
                 .code(code)
                 .remarks(remarks)
                 .revoked(false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItemVoucher that = (OrderItemVoucher) o;
+        return id != null && Objects.equals(id, that.id) && Objects.equals(code, that.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code);
     }
 
     public OrderItemVoucher belongsTo(OrderItem orderItem) {

@@ -1,12 +1,15 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
+import kr.pincoin.durian.shop.domain.conveter.PaymentAccountConverter;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "shop_order_payment")
@@ -21,7 +24,8 @@ public class OrderPayment extends BaseDateTime {
     private Long id;
 
     @Column(name = "account")
-    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    @Convert(converter = PaymentAccountConverter.class)
     private PaymentAccount account;
 
     @Column(name = "amount")
@@ -46,6 +50,19 @@ public class OrderPayment extends BaseDateTime {
                 .amount(amount)
                 .balance(balance)
                 .received(LocalDateTime.now());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderPayment that = (OrderPayment) o;
+        return id != null && Objects.equals(id, that.id) && Objects.equals(order, that.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public OrderPayment belongsTo(Order order) {

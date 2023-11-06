@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "auth_profile")
@@ -93,6 +94,19 @@ public class Profile extends BaseDateTime {
                 .emailVerification(emailVerification)
                 .phoneVerification(phoneVerification)
                 .documentVerification(documentVerification);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return id != null && Objects.equals(id, profile.id) && Objects.equals(user, profile.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user);
     }
 
     public Profile belongsTo(User user) {

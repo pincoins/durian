@@ -89,14 +89,17 @@ public class Product extends BaseAuditor {
                 .removed(false);
     }
 
-    public void add(Voucher voucher) {
-        if (!vouchers.contains(voucher)) {
-            this.vouchers.add(voucher);
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id != null && Objects.equals(id, product.id) && Objects.equals(slug, product.slug);
+    }
 
-        if (voucher.getProduct() != this) {
-            voucher.belongsTo(this);
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, slug);
     }
 
     public Product belongsTo(Category category) {
@@ -113,17 +116,33 @@ public class Product extends BaseAuditor {
         return this;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id != null && Objects.equals(id, product.id) && Objects.equals(slug, product.slug);
+    public void add(Voucher voucher) {
+        if (!vouchers.contains(voucher)) {
+            this.vouchers.add(voucher);
+        }
+
+        if (voucher.getProduct() != this) {
+            voucher.belongsTo(this);
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, slug);
+    public Product update(ProductUpdateRequest request) {
+        this.slug = request.getSlug();
+        this.name = request.getName();
+        this.subtitle = request.getSubtitle();
+        this.description = request.getDescription();
+        this.position = request.getPosition();
+        return this;
+    }
+
+    public Product changePrice(ProductChangePriceRequest request) {
+        this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
+        return this;
+    }
+
+    public Product changeStockLevel(ProductChangeStockLevelRequest request) {
+        this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
+        return this;
     }
 
     public Product enable() {
@@ -153,25 +172,6 @@ public class Product extends BaseAuditor {
 
     public Product restore() {
         this.removed = false;
-        return this;
-    }
-
-    public Product changePrice(ProductChangePriceRequest request) {
-        this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
-        return this;
-    }
-
-    public Product changeStockLevel(ProductChangeStockLevelRequest request) {
-        this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
-        return this;
-    }
-
-    public Product update(ProductUpdateRequest request) {
-        this.slug = request.getSlug();
-        this.name = request.getName();
-        this.subtitle = request.getSubtitle();
-        this.description = request.getDescription();
-        this.position = request.getPosition();
         return this;
     }
 }

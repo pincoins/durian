@@ -61,6 +61,19 @@ public class OrderItem extends BaseDateTime {
                 .quantity(quantity);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return id != null && Objects.equals(id, orderItem.id) && Objects.equals(order, orderItem.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order);
+    }
+
     public OrderItem belongsTo(Order order) {
         if (this.order != null) {
             this.order.getItems().remove(this);
@@ -84,20 +97,7 @@ public class OrderItem extends BaseDateTime {
             orderItemVoucher.belongsTo(this);
         }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderItem orderItem = (OrderItem) o;
-        return id != null && Objects.equals(id, orderItem.id) && Objects.equals(order, orderItem.order);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, order);
-    }
-
+    
     public OrderItem changePrice(ProductChangePriceRequest request) {
         this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
         return this;
