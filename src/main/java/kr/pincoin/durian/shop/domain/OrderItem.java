@@ -61,7 +61,7 @@ public class OrderItem extends BaseDateTime {
                 .quantity(quantity);
     }
 
-    public OrderItem makeOrder(Order order) {
+    public OrderItem belongsTo(Order order) {
         if (this.order != null) {
             this.order.getItems().remove(this);
         }
@@ -75,13 +75,13 @@ public class OrderItem extends BaseDateTime {
         return this;
     }
 
-    public void addVoucher(OrderItemVoucher orderItemVoucher) {
+    public void add(OrderItemVoucher orderItemVoucher) {
         if (!vouchers.contains(orderItemVoucher)) {
             vouchers.add(orderItemVoucher);
         }
 
         if (orderItemVoucher.getOrderItem() != this) {
-            orderItemVoucher.makeOrderItem(this);
+            orderItemVoucher.belongsTo(this);
         }
     }
 
@@ -100,6 +100,11 @@ public class OrderItem extends BaseDateTime {
 
     public OrderItem changePrice(ProductChangePriceRequest request) {
         this.price = new Price(request.getListPrice(), request.getSellingPrice(), request.getBuyingPrice());
+        return this;
+    }
+
+    public OrderItem changeQuantity(Integer quantity) {
+        this.quantity = quantity;
         return this;
     }
 }

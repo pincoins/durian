@@ -130,11 +130,12 @@ class OrderRepositoryTest {
                 .role(Role.MEMBER)
                 .build();
 
-        Profile profile = Profile.builder(user,
-                                          VerificationStatus.UNVERIFIED,
+        Profile profile = Profile.builder(VerificationStatus.UNVERIFIED,
                                           new PhoneVerification(VerificationStatus.UNVERIFIED),
                                           new DocumentVerification(VerificationStatus.UNVERIFIED))
                 .build();
+
+        profile.belongsTo(user);
 
         profileRepository.save(profile);
         assertThat(profile).isNotNull();
@@ -166,8 +167,8 @@ class OrderRepositoryTest {
                                                      BigDecimal.valueOf(46500)),
                                            new StockLevel(100, 200)).build();
 
-        category.addProduct(product1);
-        category.addProduct(product2);
+        category.add(product1);
+        category.add(product2);
         categoryRepository.save(category);
         assertThat(category.getTitle()).isEqualTo("category title");
         assertThat(product1.getPrice().getSellingPrice()).isEqualTo(BigDecimal.valueOf(9500));
@@ -191,13 +192,13 @@ class OrderRepositoryTest {
         OrderItemVoucher orderItemVoucher4 = OrderItemVoucher.builder("4444", "").build();
 
         Arrays.asList(orderItemVoucher1, orderItemVoucher2)
-                .forEach(orderItem1::addVoucher);
+                .forEach(orderItem1::add);
         Arrays.asList(orderItemVoucher3, orderItemVoucher4)
-                .forEach(orderItem1::addVoucher);
+                .forEach(orderItem1::add);
 
         Order order = Order.builder(mock(OrderCreateRequest.class), profile, mock(HttpServletRequest.class)).build();
 
-        Arrays.asList(orderItem1, orderItem2).forEach(order::addOrderItem);
+        Arrays.asList(orderItem1, orderItem2).forEach(order::add);
 
         OrderPayment orderPayment1 = OrderPayment.builder(PaymentAccount.KB,
                                                           order.getTotalSellingPrice()
@@ -211,7 +212,7 @@ class OrderRepositoryTest {
                                                                           0, RoundingMode.HALF_UP),
                                                           BigDecimal.ZERO).build();
 
-        Arrays.asList(orderPayment1, orderPayment2).forEach(order::addOrderPayment);
+        Arrays.asList(orderPayment1, orderPayment2).forEach(order::add);
 
         orderRepository.save(order);
         assertThat(order.getOrderUuid()).isNotBlank();

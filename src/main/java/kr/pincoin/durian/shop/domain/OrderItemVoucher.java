@@ -42,7 +42,7 @@ public class OrderItemVoucher extends BaseDateTime {
                 .revoked(false);
     }
 
-    public OrderItemVoucher makeOrderItem(OrderItem orderItem) {
+    public OrderItemVoucher belongsTo(OrderItem orderItem) {
         if (this.orderItem != null) {
             this.orderItem.getVouchers().remove(this);
         }

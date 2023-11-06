@@ -133,7 +133,7 @@ public class Order extends BaseDateTime {
                 .removed(false);
     }
 
-    public Order addOrderItem(OrderItem orderItem) {
+    public Order add(OrderItem orderItem) {
         if (!items.contains(orderItem)) {
             totalListPrice = totalListPrice
                     .add((orderItem.getPrice().getListPrice()
@@ -147,19 +147,19 @@ public class Order extends BaseDateTime {
         }
 
         if (orderItem.getOrder() != this) {
-            orderItem.makeOrder(this);
+            orderItem.belongsTo(this);
         }
 
         return this;
     }
 
-    public Order addOrderPayment(OrderPayment orderPayment) {
+    public Order add(OrderPayment orderPayment) {
         if (!payments.contains(orderPayment)) {
             payments.add(orderPayment);
         }
 
         if (orderPayment.getOrder() != this) {
-            orderPayment.makeOrder(this);
+            orderPayment.belongsTo(this);
         }
 
         return this;

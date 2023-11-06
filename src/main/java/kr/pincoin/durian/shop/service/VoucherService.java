@@ -155,7 +155,7 @@ public class VoucherService {
                                                     "Voucher not found",
                                                     List.of("Voucher does not exist to change product.")));
 
-        return Optional.of(voucher.changeProduct(product));
+        return Optional.of(voucher.belongsTo(product));
     }
 
     @Transactional

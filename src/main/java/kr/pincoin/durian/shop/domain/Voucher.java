@@ -47,7 +47,7 @@ public class Voucher extends BaseDateTime {
                 .removed(false);
     }
 
-    public Voucher changeProduct(Product product) {
+    public Voucher belongsTo(Product product) {
         if (this.product != null) {
             this.product.getVouchers().remove(this);
         }
