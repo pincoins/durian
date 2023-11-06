@@ -9,7 +9,7 @@ public class PaymentAccountRequestConverter implements Converter<String, Payment
     @Override
     public PaymentAccount convert(@NonNull String paymentAccount) {
         return Stream.of(PaymentAccount.values())
-                .filter(c -> c.getDescription().equals(paymentAccount))
+                .filter(c -> c.getCode().equals(paymentAccount))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Payment account not supported"));
     }

@@ -2,7 +2,6 @@ package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +20,6 @@ public class Price {
 
     @Column(name = "buying_price")
     private BigDecimal buyingPrice;
-
-    @Transient
-    private BigDecimal discountRate;
 
     public Price(BigDecimal listPrice, BigDecimal sellingPrice, BigDecimal buyingPrice) {
         this.listPrice = listPrice;

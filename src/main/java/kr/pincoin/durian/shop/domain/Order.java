@@ -171,4 +171,19 @@ public class Order extends BaseDateTime {
 
         return this;
     }
+
+    public Order changePaymentStatus(PaymentStatus payment) {
+        this.payment = payment;
+        return this;
+    }
+
+    public BigDecimal getTotalPaidAmount() {
+        return payments.stream()
+                .map(OrderPayment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public boolean isFullyPaid() {
+        return getTotalPaidAmount().compareTo(totalSellingPrice) > 0;
+    }
 }

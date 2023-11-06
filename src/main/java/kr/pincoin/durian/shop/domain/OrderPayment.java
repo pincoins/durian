@@ -1,8 +1,10 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
+import kr.pincoin.durian.shop.domain.conveter.PaymentAccountConverter;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,7 +24,8 @@ public class OrderPayment extends BaseDateTime {
     private Long id;
 
     @Column(name = "account")
-    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    @Convert(converter = PaymentAccountConverter.class)
     private PaymentAccount account;
 
     @Column(name = "amount")
