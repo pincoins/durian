@@ -55,11 +55,12 @@ public class MemberService {
                 .role(Role.MEMBER)
                 .build();
 
-        Profile profile = Profile.builder(member,
-                                          VerificationStatus.UNVERIFIED,
+        Profile profile = Profile.builder(VerificationStatus.UNVERIFIED,
                                           new PhoneVerification(VerificationStatus.UNVERIFIED),
                                           new DocumentVerification(VerificationStatus.UNVERIFIED))
                 .build();
+
+        profile.belongsTo(member);
 
         profileRepository.save(profile); // user entity is persisted in cascade.
 

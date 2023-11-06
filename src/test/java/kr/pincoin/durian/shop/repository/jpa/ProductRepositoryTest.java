@@ -46,7 +46,7 @@ class ProductRepositoryTest {
                                           new StockLevel(0, 0))
                 .build();
 
-        category.addProduct((product));
+        category.add((product));
         categoryRepository.save(category);
 
         ProductResponse productResponse = new ProductResponse(product);

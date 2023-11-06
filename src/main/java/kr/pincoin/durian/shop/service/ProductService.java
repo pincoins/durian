@@ -66,7 +66,7 @@ public class ProductService {
                                                          request.getMaximumStockLevel()))
                 .build();
 
-        category.addProduct(product);
+        category.add(product);
         productRepository.save(product);
 
         return Optional.of(product);
@@ -227,7 +227,7 @@ public class ProductService {
                                                     "Product not found",
                                                     List.of("Product does not exist to change category.")));
 
-        return Optional.of(product.changeCategory(category));
+        return Optional.of(product.belongsTo(category));
     }
 
     @Transactional

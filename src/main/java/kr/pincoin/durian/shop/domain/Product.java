@@ -89,17 +89,17 @@ public class Product extends BaseAuditor {
                 .removed(false);
     }
 
-    public void addVoucher(Voucher voucher) {
+    public void add(Voucher voucher) {
         if (!vouchers.contains(voucher)) {
             this.vouchers.add(voucher);
         }
 
         if (voucher.getProduct() != this) {
-            voucher.changeProduct(this);
+            voucher.belongsTo(this);
         }
     }
 
-    public Product changeCategory(Category category) {
+    public Product belongsTo(Category category) {
         if (this.category != null) {
             this.category.getProducts().remove(this);
         }

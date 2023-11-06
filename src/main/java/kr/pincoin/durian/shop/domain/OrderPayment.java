@@ -48,7 +48,7 @@ public class OrderPayment extends BaseDateTime {
                 .received(LocalDateTime.now());
     }
 
-    public OrderPayment makeOrder(Order order) {
+    public OrderPayment belongsTo(Order order) {
         if (this.order != null) {
             this.order.getPayments().remove(this);
         }

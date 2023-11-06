@@ -129,7 +129,7 @@ public class OrderService {
                                                     product.getPrice(),
                                                     cartItemNested.getQuantity()).build();
 
-            order.addOrderItem(orderItem);
+            order.add(orderItem);
         });
 
         orderRepository.save(order); // orderItems persisted in cascaded.

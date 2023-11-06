@@ -95,13 +95,13 @@ public class Category extends BaseAuditor {
                 .status(CategoryStatus.NORMAL);
     }
 
-    public void addProduct(Product product) {
+    public void add(Product product) {
         if (!products.contains(product)) {
             products.add(product);
         }
 
         if (product.getCategory() != this) {
-            product.changeCategory(this);
+            product.belongsTo(this);
         }
     }
 

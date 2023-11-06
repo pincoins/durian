@@ -86,14 +86,17 @@ public class Profile extends BaseDateTime {
     @NotNull
     private User user;
 
-    public static ProfileBuilder builder(User user,
-                                         VerificationStatus emailVerification,
+    public static ProfileBuilder builder(VerificationStatus emailVerification,
                                          PhoneVerification phoneVerification,
                                          DocumentVerification documentVerification) {
         return new ProfileBuilder()
-                .user(user)
                 .emailVerification(emailVerification)
                 .phoneVerification(phoneVerification)
                 .documentVerification(documentVerification);
+    }
+
+    public Profile belongsTo(User user) {
+        this.user = user;
+        return this;
     }
 }
