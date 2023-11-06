@@ -173,7 +173,7 @@ public class ProductService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Product>
-    remove(Long productId) {
+    removeProduct(Long productId) {
         Product product = productRepository
                 .findProduct(productId,
                              null,
@@ -192,7 +192,7 @@ public class ProductService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public Optional<Product>
-    restore(Long productId) {
+    restoreProduct(Long productId) {
         Product product = productRepository
                 .findProduct(productId,
                              null,

@@ -46,3 +46,8 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:8080/orders/{{orderId}}/users/{{userId}}/payments
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Order Item Voucher List
+GET http://localhost:8080/orders/{{orderId}}/users/{{userId}}/items/{{itemId}}/vouchers
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

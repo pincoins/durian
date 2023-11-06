@@ -24,9 +24,10 @@ public class OrderPaymentService {
     private final IdentityService identityService;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public List<OrderPayment> listOrderPayments(Long orderId,
-                                                Long userId,
-                                                UserDetails userDetails) {
+    public List<OrderPayment>
+    listOrderPayments(Long orderId,
+                      Long userId,
+                      UserDetails userDetails) {
         return identityService.isAdmin(userDetails)
                 ? orderPaymentRepository.findOrderPayments(orderId,
                                                            userId,

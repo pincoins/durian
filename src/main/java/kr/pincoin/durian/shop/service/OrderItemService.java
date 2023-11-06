@@ -24,11 +24,10 @@ public class OrderItemService {
     private final IdentityService identityService;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public List<OrderItem> listOrderItems(Long orderId,
-                                          Long userId,
-                                          UserDetails userDetails) {
-
-
+    public List<OrderItem>
+    listOrderItems(Long orderId,
+                   Long userId,
+                   UserDetails userDetails) {
         return identityService.isAdmin(userDetails)
                 ? orderItemRepository.findOrderItems(orderId,
                                                   userId,

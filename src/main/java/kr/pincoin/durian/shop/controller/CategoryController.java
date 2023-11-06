@@ -112,6 +112,28 @@ public class CategoryController {
                                                     List.of("Failed to show category.")));
     }
 
+    @PutMapping("{categoryId}/remove")
+    public ResponseEntity<CategoryResponse>
+    categoryRemove(@PathVariable Long categoryId) {
+        return categoryService.removeCategory(categoryId)
+                .map(category -> ResponseEntity.ok().body(
+                        new CategoryResponse(category)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Failed to remove category.")));
+    }
+
+    @PutMapping("{categoryId}/restore")
+    public ResponseEntity<CategoryResponse>
+    categoryRestore(@PathVariable Long categoryId) {
+        return categoryService.restoreCategory(categoryId)
+                .map(category -> ResponseEntity.ok().body(
+                        new CategoryResponse(category)))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Failed to restore category.")));
+    }
+
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Object>
     categoryDelete(@PathVariable Long categoryId) {

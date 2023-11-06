@@ -24,6 +24,9 @@ public class Category extends BaseAuditor {
     @Column(name = "category_id")
     private Long id;
 
+    @Column(name = "is_removed")
+    private boolean removed;
+
     @Column(name = "title")
     private String title;
 
@@ -152,6 +155,16 @@ public class Category extends BaseAuditor {
 
     public Category show() {
         this.status = CategoryStatus.NORMAL;
+        return this;
+    }
+
+    public Category remove() {
+        this.removed = true;
+        return this;
+    }
+
+    public Category restore() {
+        this.removed = false;
         return this;
     }
 }
