@@ -47,6 +47,19 @@ public class Voucher extends BaseDateTime {
                 .removed(false);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Voucher voucher = (Voucher) o;
+        return id != null && Objects.equals(id, voucher.id) && Objects.equals(code, voucher.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code);
+    }
+
     public Voucher belongsTo(Product product) {
         if (this.product != null) {
             this.product.getVouchers().remove(this);
@@ -61,17 +74,10 @@ public class Voucher extends BaseDateTime {
         return this;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Voucher voucher = (Voucher) o;
-        return id != null && Objects.equals(id, voucher.id) && Objects.equals(code, voucher.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, code);
+    public Voucher update(VoucherUpdateRequest request) {
+        this.code = request.getCode();
+        this.remarks = request.getRemarks();
+        return this;
     }
 
     public Voucher purchased() {
@@ -96,12 +102,6 @@ public class Voucher extends BaseDateTime {
 
     public Voucher restore() {
         this.removed = false;
-        return this;
-    }
-
-    public Voucher update(VoucherUpdateRequest request) {
-        this.code = request.getCode();
-        this.remarks = request.getRemarks();
         return this;
     }
 }

@@ -165,7 +165,7 @@ public class Order extends BaseDateTime {
         return this;
     }
 
-    public Order savePrice(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
+    public Order changePrice(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
         this.totalListPrice = totalListPrice;
         this.totalSellingPrice = totalSellingPrice;
 

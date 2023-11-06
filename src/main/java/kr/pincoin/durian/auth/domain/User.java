@@ -70,6 +70,8 @@ public class User extends BaseDateTime implements UserDetails {
         return Objects.hash(id, username);
     }
 
+    // No association method (OneToOne always eager loading)
+
     public User changePassword(String password) {
         this.password = password;
         return this;

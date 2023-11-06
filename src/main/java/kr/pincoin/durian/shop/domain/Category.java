@@ -95,6 +95,19 @@ public class Category extends BaseAuditor {
                 .status(CategoryStatus.NORMAL);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return id != null && Objects.equals(id, category.id) && Objects.equals(slug, category.slug);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, slug);
+    }
+
     public void add(Product product) {
         if (!products.contains(product)) {
             products.add(product);
@@ -107,22 +120,6 @@ public class Category extends BaseAuditor {
 
     // removeProduct() is not implemented.
     // products must be removed altogether because category-product has the same life-cycle.
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return id != null
-                && Objects.equals(id, category.id)
-                && Objects.equals(title, category.title)
-                && Objects.equals(slug, category.slug);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, slug);
-    }
 
     public Category update(CategoryUpdateRequest request) {
         if (request.getTitle() != null) {
