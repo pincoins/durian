@@ -7,9 +7,11 @@ import kr.pincoin.durian.shop.domain.Order;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static kr.pincoin.durian.auth.domain.QUser.user;
 import static kr.pincoin.durian.shop.domain.QOrder.order1;
 
 @RequiredArgsConstructor
@@ -106,6 +108,43 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
         return Optional.ofNullable(contentQuery.fetchOne());
     }
 
+    @Override
+    public List<Order> findDistinctOrderWithItems(Long id,
+                                                  Long userId,
+                                                  OrderStatus status,
+                                                  PaymentMethod paymentMethod,
+                                                  PaymentStatus payment,
+                                                  DeliveryStatus delivery,
+                                                  OrderVisibility visibility,
+                                                  String fullName,
+                                                  BigDecimal totalSellingPrice,
+                                                  String orderUuid,
+                                                  String transactionId,
+                                                  Boolean removed) {
+        JPAQuery<Order> contentQuery = queryFactory
+                .select(order1)
+                .distinct()
+                .from(order1)
+                .innerJoin(order1.user, user)
+                .fetchJoin()
+                .innerJoin(order1.items)
+                .fetchJoin()
+                .where(order1.id.eq(id),
+                       userIdEq(userId),
+                       statusEq(status),
+                       paymentMethodEq(paymentMethod),
+                       paymentEq(payment),
+                       deliverEq(delivery),
+                       visibilityEq(visibility),
+                       fullNameContains(fullName),
+                       totalSellingPriceLoe(totalSellingPrice),
+                       orderUuidContains(orderUuid),
+                       transactionIdContains(transactionId),
+                       removedEq(removed));
+
+        return contentQuery.fetch();
+    }
+
     BooleanExpression userIdEq(Long orderId) {
         return orderId != null ? order1.user.id.eq(orderId) : null;
     }
@@ -140,6 +179,10 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
 
     BooleanExpression transactionIdContains(String transactionId) {
         return transactionId != null && !transactionId.isBlank() ? order1.transactionId.contains(transactionId) : null;
+    }
+
+    BooleanExpression totalSellingPriceLoe(BigDecimal totalSellingPrice) {
+        return totalSellingPrice != null ? order1.totalSellingPrice.loe(totalSellingPrice) : null;
     }
 
     BooleanExpression removedEq(Boolean removed) {
