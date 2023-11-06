@@ -133,7 +133,7 @@ public class ProductController {
     @PutMapping("{productId}/remove")
     public ResponseEntity<ProductAdminResponse>
     productRemove(@PathVariable Long productId) {
-        return productService.remove(productId)
+        return productService.removeProduct(productId)
                 .map(product -> ResponseEntity.ok().body(
                         new ProductAdminResponse(product)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
@@ -144,7 +144,7 @@ public class ProductController {
     @PutMapping("{productId}/restore")
     public ResponseEntity<ProductAdminResponse>
     productRestore(@PathVariable Long productId) {
-        return productService.restore(productId)
+        return productService.restoreProduct(productId)
                 .map(product -> ResponseEntity.ok().body(
                         new ProductAdminResponse(product)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,

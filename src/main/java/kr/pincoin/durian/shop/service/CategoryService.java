@@ -148,6 +148,32 @@ public class CategoryService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Category>
+    removeCategory(Long categoryId) {
+        Category category = categoryRepository
+                .findCategory(categoryId, null, CategoryStatus.HIDDEN, null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Category does not exist to remove.")));
+
+        return Optional.of(category.remove());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    public Optional<Category>
+    restoreCategory(Long categoryId) {
+        Category category = categoryRepository
+                .findCategory(categoryId, null, CategoryStatus.HIDDEN, null)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Category not found",
+                                                    List.of("Category does not exist to restore.")));
+
+        return Optional.of(category.restore());
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public boolean
     deleteCategory(Long categoryId) {
         return categoryRepository.findCategory(categoryId, null, CategoryStatus.HIDDEN, null)
@@ -159,7 +185,8 @@ public class CategoryService {
                                                       List.of("Hidden category does not exist to delete.")));
     }
 
-    private void preventDuplicateSlug(Category category) {
+    private void
+    preventDuplicateSlug(Category category) {
         List<Category> categories = categoryRepository.findCategories(null, null, category.getSlug());
         if (!categories.isEmpty()) {
             throw new ApiException(HttpStatus.CONFLICT,
