@@ -1,0 +1,17 @@
+### Bank Callback
+POST http://localhost:8080/payments/bank-callback
+Content-Type: application/x-www-form-urlencoded
+Cache-Control: no-cache
+Authorization: Bearer {{accessToken}}
+
+account=1&received=11/02+20:48&name=홍길동&method=입금&amount=9,500&balance=12,345
+
+### PayPal Callback
+POST http://localhost:8080/payments/paypal-callback
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Billgate Callback
+POST http://localhost:8080/payments/billgate-callback
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
