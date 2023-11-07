@@ -12,3 +12,5 @@
 - throw in controller - caught in ResponseEntityExceptionHandler
 
 ## Transactions
+
+## Schedulers
