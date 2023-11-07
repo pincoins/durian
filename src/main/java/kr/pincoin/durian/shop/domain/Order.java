@@ -177,6 +177,11 @@ public class Order extends BaseDateTime {
         return this;
     }
 
+    public Order changeSendingStatus(SendingStatus sending) {
+        this.sending = sending;
+        return this;
+    }
+
     public BigDecimal getTotalPaidAmount() {
         return payments.stream()
                 .map(OrderPayment::getAmount)

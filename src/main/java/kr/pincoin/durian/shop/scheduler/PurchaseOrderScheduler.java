@@ -1,4 +1,4 @@
-package kr.pincoin.durian.scheduler;
+package kr.pincoin.durian.shop.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
-public class PendingOrderDeleteScheduler {
-    @Scheduled(cron = "${pincoin.scheduler.pending-order-delete}")
+public class PurchaseOrderScheduler {
+    @Scheduled(cron = "${pincoin.scheduler.shop.purchase-order}")
     public void run() {
-        log.warn("pending order delete: {}", LocalDateTime.now());
+        log.warn("purchase order: {}", LocalDateTime.now());
     }
 }

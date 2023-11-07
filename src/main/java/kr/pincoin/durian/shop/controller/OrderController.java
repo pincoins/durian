@@ -9,6 +9,7 @@ import kr.pincoin.durian.shop.domain.conveter.*;
 import kr.pincoin.durian.shop.service.OrderItemService;
 import kr.pincoin.durian.shop.service.OrderService;
 import kr.pincoin.durian.shop.service.PaymentService;
+import kr.pincoin.durian.shop.service.SendingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,8 @@ public class OrderController {
     private final OrderItemService orderItemService;
 
     private final PaymentService paymentService;
+
+    private final SendingService sendingService;
 
     private final IdentityService identityService;
 
@@ -134,6 +137,18 @@ public class OrderController {
                               .toList());
     }
 
+    @PostMapping("/{orderId}/users/{userId}/payments")
+    public ResponseEntity<OrderPaymentResponse>
+    paymentAdd(@PathVariable Long orderId,
+               @PathVariable Long userId,
+               @Valid @RequestBody OrderPaymentCreateRequest request) {
+        return paymentService.addPayment(orderId, userId, request)
+                .map(orderPayment -> ResponseEntity.ok().body(new OrderPaymentResponse(orderPayment)))
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
+                                                    "Payment addition failure",
+                                                    List.of("Failed to add a payment.")));
+    }
+
     @GetMapping("/{orderId}/users/{userId}/items")
     public ResponseEntity<List<OrderItemResponse>>
     orderListItems(@PathVariable Long orderId,
@@ -159,5 +174,13 @@ public class OrderController {
                               .stream()
                               .map(OrderItemVoucherResponse::new)
                               .toList());
+    }
+
+    @PostMapping("/{orderId}/users/{userId}/send")
+    public ResponseEntity<OrderItemResponse>
+    paymentAdd(@PathVariable Long orderId,
+               @PathVariable Long userId) {
+        sendingService.sendVouchers(orderId, userId);
+        return ResponseEntity.ok().body(null);
     }
 }
