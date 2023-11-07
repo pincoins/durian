@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
-public class StockAlertScheduler {
-    @Scheduled(cron = "${pincoin.scheduler.stock-alert}")
+public class PurchaseOrderScheduler {
+    @Scheduled(cron = "${pincoin.scheduler.purchase-order}")
     public void run() {
-        log.warn("stock level update & alert: {}", LocalDateTime.now());
+        log.warn("purchase order: {}", LocalDateTime.now());
     }
 }

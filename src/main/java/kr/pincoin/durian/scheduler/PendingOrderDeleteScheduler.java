@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
-public class PurchaseOrder {
-    @Scheduled(cron = "${pincoin.scheduler.purchase-order}")
+public class PendingOrderDeleteScheduler {
+    @Scheduled(cron = "${pincoin.scheduler.pending-order-delete}")
     public void run() {
-        log.warn("purchase order: {}", LocalDateTime.now());
+        log.warn("pending order delete: {}", LocalDateTime.now());
     }
 }
