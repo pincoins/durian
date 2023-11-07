@@ -32,6 +32,17 @@ public class SendingService {
 
     public boolean
     sendVouchers(Long orderId, Long userId) {
+        if (issueVouchers(orderId, userId)) {
+            // send email and sms
+            return true;
+        }
+
+        return false;
+    }
+
+    @Transactional
+    public
+    boolean issueVouchers(Long orderId, Long userId) {
         Order order = orderRepository.findOrder(orderId,
                                                 userId,
                                                 OrderStatus.ORDERED,
@@ -93,6 +104,8 @@ public class SendingService {
             log.warn("{}", alreadySent);
         }
 
+        /////////////////////// validation
+
         // 3. Mark as sent
 
         // 4. Update stock status
@@ -103,8 +116,6 @@ public class SendingService {
         // 6. Update profile
         profile.addTransaction(order.getTotalSellingPrice());
 
-        // 7. Send email and sms
-
-        return false;
+        return true;
     }
 }
