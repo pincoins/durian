@@ -55,6 +55,12 @@ pincoin:
     bank-callback: bank-callback
     paypal-callback: paypal-callback
     billgate-callback: billgate-callback
+  scheduler:
+    voucher-send: 3600000 # 3 second interval
+    stock-alert: 0 0 8-23,0 * * * # every hour between 8 am and 1 am
+    purchase-order: 0 1 10,14,18,23 * * * # every day 10, 14, 18, 23 hours
+    user-manage: 0 10 4 * * * # every day 4:10 am
+    pending-order-delete: 0 */10 * * * * # every 10 minutes
 
 auth:
   jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb

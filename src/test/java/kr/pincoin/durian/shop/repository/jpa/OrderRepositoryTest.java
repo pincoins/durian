@@ -134,8 +134,7 @@ class OrderRepositoryTest {
 
         Profile profile = Profile.builder(VerificationStatus.UNVERIFIED,
                                           new PhoneVerification(VerificationStatus.UNVERIFIED),
-                                          new DocumentVerification(VerificationStatus.UNVERIFIED))
-                .build();
+                                          new DocumentVerification(VerificationStatus.UNVERIFIED)).build();
 
         profile.belongsTo(user);
 
