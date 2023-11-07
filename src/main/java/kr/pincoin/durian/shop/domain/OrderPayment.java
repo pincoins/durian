@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccount;
 import kr.pincoin.durian.shop.domain.conveter.PaymentAccountConverter;
+import kr.pincoin.durian.shop.domain.conveter.PaymentStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -74,6 +75,10 @@ public class OrderPayment extends BaseDateTime {
 
         if (!order.getPayments().contains(this)) {
             order.getPayments().add(this);
+        }
+
+        if (order.isFullyPaid()) {
+            order.changePaymentStatus(PaymentStatus.PAID);
         }
 
         return this;

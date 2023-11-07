@@ -93,8 +93,10 @@ class OrderRepositoryTest {
                                                                       null,
                                                                       null,
                                                                       null);
-
-        order1.get().getPayments().forEach(p -> log.info("{} {} {}", p.getAmount(), p.getAccount(), p.getCreated()));
+        assertThat(order1).isPresent();
+        assertThat(order1.get().getPayments().get(0).getAmount()).isEqualTo(new BigDecimal("94250.00"));
+        assertThat(order1.get().getTotalPaidAmount().setScale(0, RoundingMode.DOWN))
+                .isEqualTo(new BigDecimal(188500));
     }
 
     @Test

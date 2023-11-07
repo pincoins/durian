@@ -51,10 +51,6 @@ public class PaymentService {
         orderPayment.belongsTo(order);
         orderPaymentRepository.save(orderPayment);
 
-        if (order.isFullyPaid()) {
-            order.changePaymentStatus(PaymentStatus.PAID);
-        }
-
         return Optional.of(orderPayment);
     }
 
@@ -174,10 +170,6 @@ public class PaymentService {
                                                                 balance).build();
                     payment.belongsTo(order);
                     orderPaymentRepository.save(payment);
-
-                    if (order.isFullyPaid()) {
-                        order.changePaymentStatus(PaymentStatus.PAID);
-                    }
                 });
 
         return true;

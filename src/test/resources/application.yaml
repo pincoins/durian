@@ -42,6 +42,12 @@ logging:
     org.hibernate.SQL: DEBUG # show sql in logger
     org.hibernate.orm.jdbc.bind: TRACE # show binding parameters (Spring boot 3+ and Hibernate 6+)
 
+pincoin:
+  request-mapping:
+    bank-callback: bank-callback
+    paypal-callback: paypal-callback
+    billgate-callback: billgate-callback
+
 auth:
   jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
 
