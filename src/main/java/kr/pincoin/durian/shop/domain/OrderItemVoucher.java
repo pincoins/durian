@@ -3,6 +3,7 @@ package kr.pincoin.durian.shop.domain;
 import jakarta.persistence.*;
 import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
+@Slf4j
 public class OrderItemVoucher extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,6 +68,20 @@ public class OrderItemVoucher extends BaseDateTime {
 
         if (!orderItem.getVouchers().contains(this)) {
             orderItem.getVouchers().add(this);
+        }
+
+        return this;
+    }
+
+    public OrderItemVoucher belongsTo(Voucher voucher) {
+        if (this.voucher != null) {
+            this.voucher.getVouchers().remove(this);
+        }
+
+        this.voucher = voucher;
+
+        if (!voucher.getVouchers().contains(this)) {
+            voucher.getVouchers().add(this);
         }
 
         return this;

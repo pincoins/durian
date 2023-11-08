@@ -1,4 +1,4 @@
-package kr.pincoin.durian.scheduler;
+package kr.pincoin.durian.auth.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Component
 @Slf4j
 public class UserManageScheduler {
-    @Scheduled(cron = "${pincoin.scheduler.user-manage}")
+    @Scheduled(cron = "${pincoin.scheduler.auth.user-manage}")
     public void run() {
         log.warn("user inactivate: {}", LocalDateTime.now());
 

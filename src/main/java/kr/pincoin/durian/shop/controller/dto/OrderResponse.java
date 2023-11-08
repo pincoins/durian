@@ -3,7 +3,7 @@ package kr.pincoin.durian.shop.controller.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.pincoin.durian.shop.domain.Order;
-import kr.pincoin.durian.shop.domain.conveter.DeliveryStatus;
+import kr.pincoin.durian.shop.domain.conveter.SendingStatus;
 import kr.pincoin.durian.shop.domain.conveter.OrderStatus;
 import kr.pincoin.durian.shop.domain.conveter.PaymentMethod;
 import kr.pincoin.durian.shop.domain.conveter.PaymentStatus;
@@ -52,8 +52,8 @@ public class OrderResponse {
     @JsonProperty("payment")
     private PaymentStatus payment;
 
-    @JsonProperty("delivery")
-    private DeliveryStatus delivery;
+    @JsonProperty("sending")
+    private SendingStatus sending;
 
     public OrderResponse(Order order) {
         this.id = order.getId();
@@ -67,6 +67,6 @@ public class OrderResponse {
         this.status = order.getStatus();
         this.paymentMethod = order.getPaymentMethod();
         this.payment = order.getPayment();
-        this.delivery = order.getDelivery();
+        this.sending = order.getSending();
     }
 }

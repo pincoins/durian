@@ -6,6 +6,8 @@ import kr.pincoin.durian.shop.controller.dto.VoucherUpdateRequest;
 import kr.pincoin.durian.shop.domain.conveter.VoucherStatus;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -37,6 +39,11 @@ public class Voucher extends BaseDateTime {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private VoucherStatus status;
+
+    @OneToMany(mappedBy = "voucher",
+            fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<OrderItemVoucher> vouchers = new ArrayList<>();
 
     public static VoucherBuilder builder(String code, String remarks, Product product) {
         return new VoucherBuilder()

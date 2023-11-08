@@ -13,14 +13,6 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderPaymentCreateRequest {
-    @JsonProperty("userId")
-    @NotNull
-    private Long userId;
-
-    @JsonProperty("orderId")
-    @NotNull
-    private Long orderId;
-
     @JsonProperty("paymentAccount")
     @NotNull
     private PaymentAccount account;

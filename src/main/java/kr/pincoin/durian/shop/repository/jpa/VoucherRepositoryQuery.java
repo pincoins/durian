@@ -13,7 +13,8 @@ public interface VoucherRepositoryQuery {
     List<Voucher> findVouchers(Long productId,
                                String code,
                                List<VoucherStatus> status,
-                               Boolean removed);
+                               Boolean removed,
+                               Integer limit);
 
     Optional<Voucher> findVoucher(Long voucherId,
                                   Long productId,

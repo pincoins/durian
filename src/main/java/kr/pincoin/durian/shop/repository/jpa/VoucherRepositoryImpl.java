@@ -73,7 +73,8 @@ public class VoucherRepositoryImpl implements VoucherRepositoryQuery {
     public List<Voucher> findVouchers(Long productId,
                                       String code,
                                       List<VoucherStatus> status,
-                                      Boolean removed) {
+                                      Boolean removed,
+                                      Integer limit) {
         JPAQuery<Voucher> contentQuery = queryFactory
                 .select(voucher)
                 .from(voucher)
@@ -82,7 +83,12 @@ public class VoucherRepositoryImpl implements VoucherRepositoryQuery {
                 .where(productIdEq(productId),
                        codeContains(code),
                        statusIn(status),
-                       removedEq(removed));
+                       removedEq(removed))
+                .orderBy(voucher.id.asc());
+
+        if (limit != null) {
+            contentQuery.limit(limit);
+        }
 
         return contentQuery.fetch();
     }

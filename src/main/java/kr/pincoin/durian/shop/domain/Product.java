@@ -49,6 +49,9 @@ public class Product extends BaseAuditor {
     @Embedded
     private StockLevel stockLevel;
 
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private ProductStatus status;
@@ -75,7 +78,8 @@ public class Product extends BaseAuditor {
                                          String description,
                                          Integer position,
                                          Price price,
-                                         StockLevel stockLevel) {
+                                         StockLevel stockLevel,
+                                         Integer stockQuantity) {
         return new ProductBuilder()
                 .slug(slug)
                 .name(name)
@@ -86,6 +90,7 @@ public class Product extends BaseAuditor {
                 .stockLevel(stockLevel)
                 .status(ProductStatus.DISABLED)
                 .stock(ProductStockStatus.IN_STOCK)
+                .stockQuantity(stockQuantity)
                 .removed(false);
     }
 
@@ -94,12 +99,26 @@ public class Product extends BaseAuditor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id != null && Objects.equals(id, product.id) && Objects.equals(slug, product.slug);
+        return id != null && removed == product.removed
+                && Objects.equals(id, product.id)
+                && Objects.equals(price, product.price)
+                && Objects.equals(name, product.name)
+                && Objects.equals(subtitle, product.subtitle)
+                && Objects.equals(description, product.description)
+                && Objects.equals(position, product.position)
+                && Objects.equals(slug, product.slug)
+                && Objects.equals(stockLevel, product.stockLevel)
+                && Objects.equals(stockQuantity, product.stockQuantity)
+                && status == product.status
+                && stock == product.stock
+                && Objects.equals(category, product.category)
+                && Objects.equals(vouchers, product.vouchers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, slug);
+        return Objects.hash(id, removed, price, name, subtitle, description, position, slug, stockLevel, stockQuantity,
+                            status, stock, category, vouchers);
     }
 
     public Product belongsTo(Category category) {
@@ -142,6 +161,16 @@ public class Product extends BaseAuditor {
 
     public Product changeStockLevel(ProductChangeStockLevelRequest request) {
         this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
+        return this;
+    }
+
+    public Product addStockQuantity(Integer stockQuantity) {
+        this.stockQuantity += stockQuantity;
+        return this;
+    }
+
+    public Product subtractStockQuantity(Integer stockQuantity) {
+        this.stockQuantity -= stockQuantity;
         return this;
     }
 

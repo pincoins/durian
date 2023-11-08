@@ -23,7 +23,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                                  OrderStatus status,
                                  PaymentMethod paymentMethod,
                                  PaymentStatus payment,
-                                 DeliveryStatus delivery,
+                                 SendingStatus sending,
                                  OrderVisibility visibility,
                                  String fullName,
                                  String orderUuid,
@@ -36,7 +36,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                        statusEq(status),
                        paymentMethodEq(paymentMethod),
                        paymentEq(payment),
-                       deliverEq(delivery),
+                       sendingEq(sending),
                        visibilityEq(visibility),
                        fullNameContains(fullName),
                        orderUuidContains(orderUuid),
@@ -52,7 +52,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                                      OrderStatus status,
                                      PaymentMethod paymentMethod,
                                      PaymentStatus payment,
-                                     DeliveryStatus delivery,
+                                     SendingStatus sending,
                                      OrderVisibility visibility,
                                      String fullName,
                                      String orderUuid,
@@ -66,7 +66,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                        statusEq(status),
                        paymentMethodEq(paymentMethod),
                        paymentEq(payment),
-                       deliverEq(delivery),
+                       sendingEq(sending),
                        visibilityEq(visibility),
                        fullNameContains(fullName),
                        orderUuidContains(orderUuid),
@@ -82,7 +82,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                                                  OrderStatus status,
                                                  PaymentMethod paymentMethod,
                                                  PaymentStatus payment,
-                                                 DeliveryStatus delivery,
+                                                 SendingStatus sending,
                                                  OrderVisibility visibility,
                                                  String fullName,
                                                  String orderUuid,
@@ -98,7 +98,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                        statusEq(status),
                        paymentMethodEq(paymentMethod),
                        paymentEq(payment),
-                       deliverEq(delivery),
+                       sendingEq(sending),
                        visibilityEq(visibility),
                        fullNameContains(fullName),
                        orderUuidContains(orderUuid),
@@ -114,7 +114,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                                                   OrderStatus status,
                                                   PaymentMethod paymentMethod,
                                                   PaymentStatus payment,
-                                                  DeliveryStatus delivery,
+                                                  SendingStatus sending,
                                                   OrderVisibility visibility,
                                                   String fullName,
                                                   BigDecimal totalSellingPrice,
@@ -134,7 +134,7 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
                        statusEq(status),
                        paymentMethodEq(paymentMethod),
                        paymentEq(payment),
-                       deliverEq(delivery),
+                       sendingEq(sending),
                        visibilityEq(visibility),
                        fullNameContains(fullName),
                        totalSellingPriceLoe(totalSellingPrice),
@@ -161,8 +161,8 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
         return payment != null ? order1.payment.eq(payment) : null;
     }
 
-    BooleanExpression deliverEq(DeliveryStatus delivery) {
-        return delivery != null ? order1.delivery.eq(delivery) : null;
+    BooleanExpression sendingEq(SendingStatus sending) {
+        return sending != null ? order1.sending.eq(sending) : null;
     }
 
     BooleanExpression visibilityEq(OrderVisibility visibility) {

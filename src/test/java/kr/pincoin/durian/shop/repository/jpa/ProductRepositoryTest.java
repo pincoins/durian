@@ -34,8 +34,7 @@ class ProductRepositoryTest {
                                              "description",
                                              "sub description",
                                              BigDecimal.ZERO,
-                                             CategoryStatus.NORMAL)
-                .build();
+                                             CategoryStatus.NORMAL).build();
 
         Product product = Product.builder("slug",
                                           "name",
@@ -43,8 +42,8 @@ class ProductRepositoryTest {
                                           "description",
                                           0,
                                           new Price(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE),
-                                          new StockLevel(0, 0))
-                .build();
+                                          new StockLevel(0, 0),
+                                          0).build();
 
         category.add((product));
         categoryRepository.save(category);

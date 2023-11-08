@@ -60,9 +60,9 @@ public class Order extends BaseDateTime {
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus payment;
 
-    @Column(name = "delivery")
+    @Column(name = "sending")
     @Enumerated(value = EnumType.STRING)
-    private DeliveryStatus delivery;
+    private SendingStatus sending;
 
     @Column(name = "visible")
     @Enumerated(value = EnumType.STRING)
@@ -122,7 +122,7 @@ public class Order extends BaseDateTime {
                 .orderUuid(UUID.randomUUID().toString())
                 .status(OrderStatus.ORDERED)
                 .payment(PaymentStatus.UNPAID)
-                .delivery(DeliveryStatus.NOT_SENT)
+                .sending(SendingStatus.NOT_SENT)
                 .visible(OrderVisibility.VISIBLE)
                 .user(profile.getUser())
                 .fullName(profile.getUser().getFullName())
@@ -174,6 +174,11 @@ public class Order extends BaseDateTime {
 
     public Order changePaymentStatus(PaymentStatus payment) {
         this.payment = payment;
+        return this;
+    }
+
+    public Order changeSendingStatus(SendingStatus sending) {
+        this.sending = sending;
         return this;
     }
 

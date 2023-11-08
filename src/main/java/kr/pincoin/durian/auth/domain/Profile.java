@@ -7,6 +7,7 @@ import kr.pincoin.durian.common.domain.BaseDateTime;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -111,6 +112,31 @@ public class Profile extends BaseDateTime {
 
     public Profile belongsTo(User user) {
         this.user = user;
+        return this;
+    }
+
+    public Profile addTransaction(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
+        lastPurchased = LocalDateTime.now();
+
+        if (firstPurchased == null) {
+            firstPurchased = LocalDateTime.now();
+        }
+
+        if (notPurchasedMonths && repurchased != null) {
+            repurchased = lastPurchased;
+        }
+
+        this.totalListPrice = this.totalListPrice.add(totalListPrice);
+        this.totalSellingPrice = this.totalSellingPrice.add(totalSellingPrice);
+        this.totalOrderCount += 1;
+
+        if (maxPrice == null || maxPrice.compareTo(totalSellingPrice) < 0) {
+            maxPrice = totalSellingPrice;
+        }
+
+        averagePrice = this.totalListPrice
+                .divide(BigDecimal.valueOf(this.totalOrderCount + 1), 0, RoundingMode.DOWN);
+
         return this;
     }
 }

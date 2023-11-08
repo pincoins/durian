@@ -52,13 +52,15 @@ public class PaymentService {
 
     @Transactional
     public Optional<OrderPayment>
-    addPayment(OrderPaymentCreateRequest request) {
-        Order order = orderRepository.findOrder(request.getOrderId(),
-                                                request.getUserId(),
+    addPayment(Long orderId,
+               Long userId,
+               OrderPaymentCreateRequest request) {
+        Order order = orderRepository.findOrder(orderId,
+                                                userId,
                                                 OrderStatus.ORDERED,
                                                 PaymentMethod.BANK_TRANSFER,
                                                 PaymentStatus.UNPAID,
-                                                DeliveryStatus.NOT_SENT,
+                                                SendingStatus.NOT_SENT,
                                                 OrderVisibility.VISIBLE,
                                                 null,
                                                 null,
@@ -80,11 +82,11 @@ public class PaymentService {
     @Transactional
     public boolean
     addPayment(String accountParam,
-                              String receivedPram,
-                              String nameParam,
-                              String methodParam,
-                              String amountParam,
-                              String balanceParam) {
+               String receivedPram,
+               String nameParam,
+               String methodParam,
+               String amountParam,
+               String balanceParam) {
         if (StringUtils.hasText(accountParam)
                 && StringUtils.hasText(receivedPram)
                 && StringUtils.hasText(nameParam)
@@ -133,7 +135,7 @@ public class PaymentService {
                                                                         OrderStatus.ORDERED,
                                                                         PaymentMethod.BANK_TRANSFER,
                                                                         PaymentStatus.UNPAID,
-                                                                        DeliveryStatus.NOT_SENT,
+                                                                        SendingStatus.NOT_SENT,
                                                                         OrderVisibility.VISIBLE,
                                                                         nameParam,
                                                                         amount,

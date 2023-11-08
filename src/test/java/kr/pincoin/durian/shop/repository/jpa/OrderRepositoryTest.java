@@ -156,7 +156,8 @@ class OrderRepositoryTest {
                                            new Price(BigDecimal.valueOf(10000),
                                                      BigDecimal.valueOf(9500),
                                                      BigDecimal.valueOf(9400)),
-                                           new StockLevel(100, 200)).build();
+                                           new StockLevel(100, 200),
+                                           0).build();
 
         Product product2 = Product.builder("product2 slug",
                                            "product2 name",
@@ -166,7 +167,8 @@ class OrderRepositoryTest {
                                            new Price(BigDecimal.valueOf(50000),
                                                      BigDecimal.valueOf(47000),
                                                      BigDecimal.valueOf(46500)),
-                                           new StockLevel(100, 200)).build();
+                                           new StockLevel(100, 200),
+                                           0).build();
 
         category.add(product1);
         category.add(product2);

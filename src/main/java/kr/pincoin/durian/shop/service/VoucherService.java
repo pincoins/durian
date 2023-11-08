@@ -36,7 +36,7 @@ public class VoucherService {
                  String code,
                  List<VoucherStatus> status,
                  Boolean removed) {
-        return voucherRepository.findVouchers(productId, code, status, removed);
+        return voucherRepository.findVouchers(productId, code, status, removed, null);
     }
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
