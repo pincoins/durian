@@ -62,12 +62,15 @@ public class SendingService {
                                                 null,
                                                 null,
                                                 false)
-                .orElseThrow();
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                    "Order not found",
+                                                    List.of("Requested order is not valid.")));
 
         Profile profile = profileRepository.findMember(userId,
                                                        UserStatus.NORMAL)
-                .orElseThrow();
-
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                    "Member not found",
+                                                    List.of("Requested member is not valid.")));
         // 2. Stock available?
 
         // Fetch Entity or DTO
@@ -109,9 +112,7 @@ public class SendingService {
             if (result.getCount() > 0) {
                 error = true;
 
-                alreadySent.add(String.format("%s: [%s]",
-                                                 result.getOrderItem().getSlug(),
-                                                 result.getCount()));
+                alreadySent.add(String.format("%s: [%s]", result.getOrderItem().getSlug(), result.getCount()));
             }
         }
 
@@ -148,17 +149,16 @@ public class SendingService {
                                            VoucherStatus.SOLD);
 
             // 5-4. Update stock status
-            productRepository.subtract(result.getProduct().getId(),
-                                       result.getOrderItem().getQuantity());
+            productRepository.updateStockQuantity(result.getProduct()
+                                                          .subtractStockQuantity(result.getOrderItem().getQuantity()));
         }
 
-        // persistence context cleared
-
         // 6. Update order status
-        order.changeSendingStatus(SendingStatus.SENT);
+        orderRepository.updateSendingStatus(order.changeSendingStatus(SendingStatus.SENT));
 
         // 7. Update profile
-        profile.addTransaction(order.getTotalSellingPrice());
+        profileRepository.updateTransaction(profile.addTransaction(order.getTotalListPrice(),
+                                                                   order.getTotalSellingPrice()));
 
         return true;
     }

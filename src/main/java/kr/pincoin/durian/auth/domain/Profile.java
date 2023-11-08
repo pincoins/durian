@@ -115,7 +115,7 @@ public class Profile extends BaseDateTime {
         return this;
     }
 
-    public Profile addTransaction(BigDecimal totalSellingPrice) {
+    public Profile addTransaction(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
         lastPurchased = LocalDateTime.now();
 
         if (firstPurchased == null) {
@@ -126,16 +126,16 @@ public class Profile extends BaseDateTime {
             repurchased = lastPurchased;
         }
 
-        if (totalSellingPrice.compareTo(maxPrice) < 0) {
+        this.totalListPrice = this.totalListPrice.add(totalListPrice);
+        this.totalSellingPrice = this.totalSellingPrice.add(totalSellingPrice);
+        this.totalOrderCount += 1;
+
+        if (maxPrice == null || maxPrice.compareTo(totalSellingPrice) < 0) {
             maxPrice = totalSellingPrice;
         }
 
-        averagePrice = averagePrice
-                .multiply(BigDecimal.valueOf(totalOrderCount))
-                .add(totalSellingPrice)
-                .divide(BigDecimal.valueOf(totalOrderCount + 1), 0, RoundingMode.DOWN);
-
-        totalOrderCount += 1;
+        averagePrice = this.totalListPrice
+                .divide(BigDecimal.valueOf(this.totalOrderCount + 1), 0, RoundingMode.DOWN);
 
         return this;
     }

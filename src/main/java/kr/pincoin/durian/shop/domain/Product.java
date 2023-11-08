@@ -99,12 +99,26 @@ public class Product extends BaseAuditor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id != null && Objects.equals(id, product.id) && Objects.equals(slug, product.slug);
+        return id != null && removed == product.removed
+                && Objects.equals(id, product.id)
+                && Objects.equals(price, product.price)
+                && Objects.equals(name, product.name)
+                && Objects.equals(subtitle, product.subtitle)
+                && Objects.equals(description, product.description)
+                && Objects.equals(position, product.position)
+                && Objects.equals(slug, product.slug)
+                && Objects.equals(stockLevel, product.stockLevel)
+                && Objects.equals(stockQuantity, product.stockQuantity)
+                && status == product.status
+                && stock == product.stock
+                && Objects.equals(category, product.category)
+                && Objects.equals(vouchers, product.vouchers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, slug);
+        return Objects.hash(id, removed, price, name, subtitle, description, position, slug, stockLevel, stockQuantity,
+                            status, stock, category, vouchers);
     }
 
     public Product belongsTo(Category category) {
