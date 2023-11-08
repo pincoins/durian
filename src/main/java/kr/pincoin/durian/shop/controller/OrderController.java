@@ -178,8 +178,8 @@ public class OrderController {
 
     @PostMapping("/{orderId}/users/{userId}/send")
     public ResponseEntity<OrderItemResponse>
-    paymentAdd(@PathVariable Long orderId,
-               @PathVariable Long userId) {
+    orderSendVouchers(@PathVariable Long orderId,
+                      @PathVariable Long userId) {
         sendingService.sendVouchers(orderId, userId);
         return ResponseEntity.ok().body(null);
     }

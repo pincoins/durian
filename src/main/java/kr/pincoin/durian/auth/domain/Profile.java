@@ -80,10 +80,8 @@ public class Profile extends BaseDateTime {
     @Column(name = "memo")
     private String memo;
 
-    @OneToOne(optional = false,
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @ManyToOne(optional = false,
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;

@@ -17,6 +17,7 @@ import kr.pincoin.durian.shop.repository.jpa.dto.OrderItemVoucherDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class SendingService {
 
     private final AligoService aligoService;
 
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public void
     sendVouchers(Long orderId, Long userId) {
         // Fetch read-only entities
@@ -57,6 +59,31 @@ public class SendingService {
         issueVouchers(order, profile, orderItemWithProducts);
 
         // Send email and sms
+    }
+
+    public void
+    sendVouchers() {
+        // Auto-send by scheduler
+        List<Order> orders = orderRepository.findOrders(OrderStatus.ORDERED,
+                                                        null,
+                                                        PaymentStatus.PAID,
+                                                        SendingStatus.NOT_SENT,
+                                                        OrderVisibility.VISIBLE,
+                                                        null,
+                                                        null,
+                                                        null,
+                                                        false);
+        orders.forEach(order -> {
+            try {
+                List<OrderItemProductResult> orderItemWithProducts
+                        = getOrderItemProductResults(order, order.getUser().getProfiles().get(0));
+
+                // Transactional write
+                issueVouchers(order, order.getUser().getProfiles().get(0), orderItemWithProducts);
+            } catch (Exception ex) {
+                log.error("Failed to send vouchers", ex);
+            }
+        });
     }
 
     @Transactional

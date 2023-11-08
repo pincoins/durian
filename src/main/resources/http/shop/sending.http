@@ -1,4 +1,9 @@
-### Voucher Send
+### Voucher Send One
 POST http://localhost:8080/orders/{{orderId}}/users/{{userId}}/send
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Voucher Send Many
+POST http://localhost:8080/orders/send
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
