@@ -35,7 +35,6 @@ public class AligoService {
         this.webClient = webClientBuilder.baseUrl("https://apis.aligo.in").build(); // for production
     }
 
-    @Transactional
     public Optional<AligoSendResponse> send(AligoSendRequest request) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 
