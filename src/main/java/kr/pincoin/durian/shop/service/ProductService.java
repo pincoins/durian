@@ -63,8 +63,8 @@ public class ProductService {
                                                     request.getSellingPrice(),
                                                     request.getBuyingPrice()),
                                           new StockLevel(request.getMinimumStockLevel(),
-                                                         request.getMaximumStockLevel()))
-                .build();
+                                                         request.getMaximumStockLevel()),
+                                          0).build();
 
         category.add(product);
         productRepository.save(product);

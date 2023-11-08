@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderItemVoucherRepository
         extends JpaRepository<OrderItemVoucher, Long>, OrderItemVoucherRepositoryQuery {
+
 }

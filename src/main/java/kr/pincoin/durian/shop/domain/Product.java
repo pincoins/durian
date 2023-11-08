@@ -49,6 +49,9 @@ public class Product extends BaseAuditor {
     @Embedded
     private StockLevel stockLevel;
 
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private ProductStatus status;
@@ -75,7 +78,8 @@ public class Product extends BaseAuditor {
                                          String description,
                                          Integer position,
                                          Price price,
-                                         StockLevel stockLevel) {
+                                         StockLevel stockLevel,
+                                         Integer stockQuantity) {
         return new ProductBuilder()
                 .slug(slug)
                 .name(name)
@@ -86,6 +90,7 @@ public class Product extends BaseAuditor {
                 .stockLevel(stockLevel)
                 .status(ProductStatus.DISABLED)
                 .stock(ProductStockStatus.IN_STOCK)
+                .stockQuantity(stockQuantity)
                 .removed(false);
     }
 
@@ -142,6 +147,16 @@ public class Product extends BaseAuditor {
 
     public Product changeStockLevel(ProductChangeStockLevelRequest request) {
         this.stockLevel = new StockLevel(request.getMinimumStockLevel(), request.getMaximumStockLevel());
+        return this;
+    }
+
+    public Product addStockQuantity(Integer stockQuantity) {
+        this.stockQuantity += stockQuantity;
+        return this;
+    }
+
+    public Product subtractStockQuantity(Integer stockQuantity) {
+        this.stockQuantity -= stockQuantity;
         return this;
     }
 

@@ -74,22 +74,11 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryQuery {
                 .innerJoin(voucher.product, product)
                 .innerJoin(orderItem)
                 .on(product.slug.eq(orderItem.slug))
-                .innerJoin(orderItem.order, order1)
                 .where(orderItem.order.id.eq(orderId),
                        voucher.status.eq(VoucherStatus.PURCHASED),
-
-                       // order
-                       userIdEq(userId),
-                       statusEq(OrderStatus.ORDERED),
-                       order1.sending.eq(SendingStatus.NOT_SENT),
-                       order1.payment.eq(PaymentStatus.PAID),
-                       visibilityEq(OrderVisibility.VISIBLE),
-
-                       // product
                        product.removed.eq(false),
                        product.status.eq(ProductStatus.ENABLED),
-                       product.stock.eq(ProductStockStatus.IN_STOCK),
-                       removedEq(false))
+                       product.stock.eq(ProductStockStatus.IN_STOCK))
                 .groupBy(product.id);
 
         return contentQuery.fetch();
