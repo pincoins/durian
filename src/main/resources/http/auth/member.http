@@ -81,3 +81,13 @@ Authorization: Bearer {{accessToken}}
 {
   "email": "{{newEmail}}"
 }
+
+### File upload
+POST http://localhost:8080/members/upload
+Content-Type: multipart/form-data; boundary=xxx
+
+--xxx
+Content-Disposition: form-data; name="file"; filename="test.png"
+
+< /Users/jonghwa/Desktop/test.png
+--xxx--
