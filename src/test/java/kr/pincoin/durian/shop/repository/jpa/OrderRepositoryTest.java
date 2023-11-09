@@ -136,8 +136,8 @@ class OrderRepositoryTest {
                                           new DocumentVerification(VerificationStatus.UNVERIFIED)).build();
 
         profile.belongsTo(user);
+        profileRepository.save(profile); // `user` entitiy is persisted in cascade.
 
-        profileRepository.save(profile);
         assertThat(profile).isNotNull();
 
         Category category = Category.builder("category title",

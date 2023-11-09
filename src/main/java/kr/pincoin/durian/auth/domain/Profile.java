@@ -81,7 +81,8 @@ public class Profile extends BaseDateTime {
     private String memo;
 
     @ManyToOne(optional = false,
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL) // `orphanRemoval` option is applicable to `User` entity.
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;
