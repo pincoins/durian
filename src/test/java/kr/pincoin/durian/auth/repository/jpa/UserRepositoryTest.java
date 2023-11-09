@@ -2,7 +2,6 @@ package kr.pincoin.durian.auth.repository.jpa;
 
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
@@ -21,7 +20,7 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @PersistenceContext
+    @Autowired
     private EntityManager em;
 
     @Test

@@ -20,20 +20,50 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
 
     @Override
     public List<Order> findOrders(Long userId,
-                                 OrderStatus status,
-                                 PaymentMethod paymentMethod,
-                                 PaymentStatus payment,
-                                 SendingStatus sending,
-                                 OrderVisibility visibility,
-                                 String fullName,
-                                 String orderUuid,
-                                 String transactionId,
-                                 Boolean removed) {
+                                  OrderStatus status,
+                                  PaymentMethod paymentMethod,
+                                  PaymentStatus payment,
+                                  SendingStatus sending,
+                                  OrderVisibility visibility,
+                                  String fullName,
+                                  String orderUuid,
+                                  String transactionId,
+                                  Boolean removed) {
         JPAQuery<Order> contentQuery = queryFactory
                 .select(order1)
                 .from(order1)
                 .where(userIdEq(userId),
                        statusEq(status),
+                       paymentMethodEq(paymentMethod),
+                       paymentEq(payment),
+                       sendingEq(sending),
+                       visibilityEq(visibility),
+                       fullNameContains(fullName),
+                       orderUuidContains(orderUuid),
+                       transactionIdContains(transactionId),
+                       removedEq(removed));
+
+        return contentQuery.fetch();
+    }
+
+    @Override
+    public List<Order> findOrders(OrderStatus status,
+                                  PaymentMethod paymentMethod,
+                                  PaymentStatus payment,
+                                  SendingStatus sending,
+                                  OrderVisibility visibility,
+                                  String fullName,
+                                  String orderUuid,
+                                  String transactionId,
+                                  Boolean removed) {
+        JPAQuery<Order> contentQuery = queryFactory
+                .select(order1)
+                .from(order1)
+                .innerJoin(order1.user)
+                .fetchJoin()
+                .innerJoin(user.profiles)
+                .fetchJoin()
+                .where(statusEq(status),
                        paymentMethodEq(paymentMethod),
                        paymentEq(payment),
                        sendingEq(sending),

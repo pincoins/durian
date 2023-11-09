@@ -9,10 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "auth_user")
@@ -46,6 +43,13 @@ public class User extends BaseDateTime implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    private List<Profile> profiles = new ArrayList<>();
+
     public static UserBuilder builder(String username,
                                       String password,
                                       String fullName,
@@ -70,7 +74,16 @@ public class User extends BaseDateTime implements UserDetails {
         return Objects.hash(id, username);
     }
 
-    // No association method (OneToOne always eager loading)
+    // OneToOne cannot be set due to eager loading.
+    public void add(Profile profile) {
+        if (!profiles.contains(profile)) {
+            this.profiles.add(profile);
+        }
+
+        if (profile.getUser() != this) {
+            profile.belongsTo(this);
+        }
+    }
 
     public User changePassword(String password) {
         this.password = password;

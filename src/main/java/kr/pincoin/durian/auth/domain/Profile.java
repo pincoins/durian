@@ -80,10 +80,9 @@ public class Profile extends BaseDateTime {
     @Column(name = "memo")
     private String memo;
 
-    @OneToOne(optional = false,
+    @ManyToOne(optional = false,
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = CascadeType.ALL) // `orphanRemoval` option is applicable to `User` entity.
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;
@@ -111,7 +110,16 @@ public class Profile extends BaseDateTime {
     }
 
     public Profile belongsTo(User user) {
+        if (this.user != null) {
+            this.user.getProfiles().remove(this);
+        }
+
         this.user = user;
+
+        if (!user.getProfiles().contains(this)) {
+            user.getProfiles().add(this);
+        }
+
         return this;
     }
 

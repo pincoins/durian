@@ -9,15 +9,25 @@ import java.util.Optional;
 
 public interface OrderRepositoryQuery {
     List<Order> findOrders(Long userId,
-                          OrderStatus status,
-                          PaymentMethod paymentMethod,
-                          PaymentStatus payment,
-                          SendingStatus sending,
-                          OrderVisibility visibility,
-                          String fullName,
-                          String orderUuid,
-                          String transactionId,
-                          Boolean removed);
+                           OrderStatus status,
+                           PaymentMethod paymentMethod,
+                           PaymentStatus payment,
+                           SendingStatus sending,
+                           OrderVisibility visibility,
+                           String fullName,
+                           String orderUuid,
+                           String transactionId,
+                           Boolean removed);
+
+    List<Order> findOrders(OrderStatus status,
+                           PaymentMethod paymentMethod,
+                           PaymentStatus payment,
+                           SendingStatus sending,
+                           OrderVisibility visibility,
+                           String fullName,
+                           String orderUuid,
+                           String transactionId,
+                           Boolean removed);
 
     Optional<Order> findOrder(Long id,
                               Long userId,

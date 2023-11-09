@@ -1,7 +1,6 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.shop.domain.Category;
 import kr.pincoin.durian.shop.domain.CategoryTreePath;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
@@ -28,7 +27,7 @@ class CategoryRepositoryTest {
     @Autowired
     private CategoryTreePathRepository categoryTreePathRepository;
 
-    @PersistenceContext
+    @Autowired
     private EntityManager em;
 
     @Test
