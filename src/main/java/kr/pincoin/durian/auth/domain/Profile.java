@@ -109,7 +109,16 @@ public class Profile extends BaseDateTime {
     }
 
     public Profile belongsTo(User user) {
+        if (this.user != null) {
+            this.user.getProfiles().remove(this);
+        }
+
         this.user = user;
+
+        if (!user.getProfiles().contains(this)) {
+            user.getProfiles().add(this);
+        }
+
         return this;
     }
 
