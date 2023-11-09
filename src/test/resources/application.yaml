@@ -21,7 +21,7 @@ spring:
         format_sql: true
         # show_sql: true # show sql in stdout
         highlight_sql: true
-        use_sql_comments: true
+        use_sql_comments: true # show JPQL (not SQL)
         default_batch_fetch_size: 500
   web.resources.add-mappings: false # resolves NoHandlerFoundException
   mvc.throw-exception-if-no-handler-found: true # resolves NoHandlerFoundException
