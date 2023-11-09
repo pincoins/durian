@@ -1,15 +1,15 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import kr.pincoin.durian.shop.domain.Category;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class CategoryTreePathRepositoryImpl implements CategoryTreePathRepositoryQuery {
-    @PersistenceContext
+    @Autowired
     private final EntityManager em;
 
     @Override

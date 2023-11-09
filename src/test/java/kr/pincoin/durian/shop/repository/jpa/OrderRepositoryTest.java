@@ -1,7 +1,6 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
@@ -46,7 +45,7 @@ class OrderRepositoryTest {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    @PersistenceContext
+    @Autowired
     private EntityManager em;
 
     @Test
