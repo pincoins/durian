@@ -64,6 +64,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security' // Spring security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // SNS login
 
+    // AWS S3 & Tika
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.3") // BOM
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
+    implementation 'org.apache.tika:tika-core:2.9.1'
+
     // Test framework
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
