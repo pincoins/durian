@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
+import kr.pincoin.durian.auth.domain.converter.ProfileTelecom;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
 import kr.pincoin.durian.auth.domain.converter.ProfileGender;
@@ -36,7 +37,7 @@ public class ProfileResponse extends UserResponse {
     private ProfileDomestic domestic;
 
     @JsonProperty("telecom")
-    private String telecom;
+    private ProfileTelecom telecom;
 
     @JsonProperty("phoneVerifiedStatus")
     private VerificationStatus phoneVerifiedStatus;

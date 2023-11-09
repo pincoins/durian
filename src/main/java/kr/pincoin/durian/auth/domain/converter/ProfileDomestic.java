@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum ProfileDomestic {
     DOMESTIC,
-    FOREIGN
+    FOREIGN,
 }

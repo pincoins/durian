@@ -7,5 +7,5 @@ public enum UserStatus {
     PENDING,
     NORMAL,
     INACTIVE,
-    UNREGISTERED
+    UNREGISTERED,
 }

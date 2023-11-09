@@ -123,6 +123,23 @@ public class Profile extends BaseDateTime {
         return this;
     }
 
+    public Profile verifyEmailAddress() {
+        this.emailVerification = VerificationStatus.VERIFIED;
+        return this;
+    }
+
+    public Profile rejectEmailAddress() {
+        this.emailVerification = VerificationStatus.UNVERIFIED;
+        return this;
+    }
+
+    public Profile revokeEmailAddress() {
+        this.emailVerification = VerificationStatus.REVOKED;
+        return this;
+    }
+
+    // PhoneVerification, DocumentVerification have verify(), reject(), revoke() methods.
+
     public Profile addTransaction(BigDecimal totalListPrice, BigDecimal totalSellingPrice) {
         lastPurchased = LocalDateTime.now();
 

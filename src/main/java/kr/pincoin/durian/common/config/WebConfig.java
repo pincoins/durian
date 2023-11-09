@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import kr.pincoin.durian.auth.domain.converter.ProfileDomesticRequestConverter;
-import kr.pincoin.durian.auth.domain.converter.ProfileGenderRequestConverter;
-import kr.pincoin.durian.auth.domain.converter.VerificationStatusRequestConverter;
+import kr.pincoin.durian.auth.domain.converter.*;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new VerificationStatusRequestConverter());
         registry.addConverter(new ProfileDomesticRequestConverter());
         registry.addConverter(new ProfileGenderRequestConverter());
+        registry.addConverter(new ProfileTelecomRequestConverter());
+        registry.addConverter(new UserStatusRequestConverter());
 
         // shop converters
         registry.addConverter(new ProductStatusRequestConverter());
@@ -37,6 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new VoucherStatusRequestConverter());
         registry.addConverter(new PaymentMethodRequestConverter());
         registry.addConverter(new OrderStatusRequestConverter());
+        registry.addConverter(new OrderVisibilityRequestConverter());
         registry.addConverter(new PaymentAccountRequestConverter());
         registry.addConverter(new CategoryStatusRequestConverter());
     }

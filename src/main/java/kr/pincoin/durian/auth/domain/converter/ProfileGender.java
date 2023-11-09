@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum ProfileGender {
     MALE,
-    FEMALE
+    FEMALE,
 }

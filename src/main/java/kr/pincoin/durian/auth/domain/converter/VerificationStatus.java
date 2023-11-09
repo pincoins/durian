@@ -6,5 +6,5 @@ import lombok.Getter;
 public enum VerificationStatus {
     UNVERIFIED,
     VERIFIED,
-    REVOKED
+    REVOKED,
 }
