@@ -5,11 +5,13 @@ import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.service.MemberService;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.AwsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ import java.util.List;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+
+    private final AwsService awsService;
 
     @GetMapping("")
     public ResponseEntity<List<ProfileResponse>>
@@ -147,15 +151,26 @@ public class MemberController {
                                                     List.of("Failed to change member email address")));
     }
 
+    // request
     // verify email
     // reject email verification
     // revoke email verification
 
+    // request
     // verify phone
     // reject phone verification
     // revoke phone verification
 
+    // request
     // verify document
     // reject document verification
     // revoke document verification
+
+    @PostMapping("/upload")
+    public ResponseEntity<String>
+    memberUploadPhotoId(@Valid @RequestPart(value = "file") MultipartFile file) {
+        String s3file = awsService.uploadFile("shop", file);
+        log.warn(s3file);
+        return ResponseEntity.ok().body("OK");
+    }
 }

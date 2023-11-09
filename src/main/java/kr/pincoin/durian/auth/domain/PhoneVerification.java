@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import kr.pincoin.durian.auth.domain.converter.ProfileDomestic;
 import kr.pincoin.durian.auth.domain.converter.ProfileGender;
+import kr.pincoin.durian.auth.domain.converter.ProfileTelecom;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,7 +37,8 @@ public class PhoneVerification {
     private ProfileDomestic domestic;
 
     @Column(name = "telecom")
-    private String telecom;
+    @Enumerated(value = EnumType.STRING)
+    private ProfileTelecom telecom;
 
     public PhoneVerification(VerificationStatus phoneVerifiedStatus) {
         this.phoneVerifiedStatus = phoneVerifiedStatus;
@@ -46,7 +48,7 @@ public class PhoneVerification {
                                     LocalDate dateOfBirth,
                                     ProfileGender gender,
                                     ProfileDomestic domestic,
-                                    String telecom) {
+                                    ProfileTelecom telecom) {
         this.phoneVerifiedStatus = VerificationStatus.VERIFIED;
 
         this.phone = phone;
