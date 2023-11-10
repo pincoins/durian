@@ -83,3 +83,9 @@ mailgun:
 
 line-notify:
   token: access-token
+
+danal:
+  cp-id: CPID
+  cp-pwd: CPPWD
+  cp-title: CPTITLE
+  target-url: http://localhost:8080/members/%s/danal

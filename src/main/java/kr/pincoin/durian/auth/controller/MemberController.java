@@ -3,6 +3,7 @@ package kr.pincoin.durian.auth.controller;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.service.DanalService;
 import kr.pincoin.durian.auth.service.MemberService;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.common.service.AwsService;
@@ -24,6 +25,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final AwsService awsService;
+
+    private final DanalService danalService;
 
     @GetMapping("")
     public ResponseEntity<List<ProfileResponse>>
@@ -166,11 +169,37 @@ public class MemberController {
     // reject document verification
     // revoke document verification
 
-    @PostMapping("/upload")
+    @PostMapping("/{userId}/upload/photo-id")
     public ResponseEntity<String>
-    memberUploadPhotoId(@Valid @RequestPart(value = "file") MultipartFile file) {
+    memberUploadPhotoId(@PathVariable Long userId,
+                        @Valid @RequestPart(value = "file") MultipartFile file) {
         String s3file = awsService.uploadFile("shop", file);
         log.warn(s3file);
         return ResponseEntity.ok().body("OK");
+    }
+
+    @PostMapping("/{userId}/upload/credit-card")
+    public ResponseEntity<String>
+    memberUploadCreditCard(@PathVariable Long userId,
+                           @Valid @RequestPart(value = "file") MultipartFile file) {
+        String s3file = awsService.uploadFile("shop", file);
+        log.warn(s3file);
+        return ResponseEntity.ok().body("OK");
+    }
+
+    @GetMapping("/{userId}/danal")
+    public ResponseEntity<String>
+    memberRequestPhoneVerification(@PathVariable Long userId) {
+        return danalService.callItemSend(userId)
+                .map(tid -> ResponseEntity.ok().body(tid))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Danal server error",
+                                                    List.of("Failed to call itemsend command.")));
+    }
+
+    @PostMapping("/{userId}/danal")
+    public ResponseEntity<String>
+    memberVerifyPhone(@PathVariable Long userId) {
+        return ResponseEntity.ok().body("hello");
     }
 }
