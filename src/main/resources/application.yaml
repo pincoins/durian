@@ -28,6 +28,8 @@ spring:
     multipart:
       max-file-size: 4MB # default: 1MB
       max-request-size: 8MB # default: 10MB
+      file-size-threshold: 0B # default: 0 (the size threshold after which files will be written to disk)
+      # location: /var/www/uploads # default: a temporary directory
   cloud:
     aws:
       s3:
