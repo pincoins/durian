@@ -145,7 +145,8 @@ class OrderRepositoryTest {
                                              "category description",
                                              "category sub description",
                                              BigDecimal.valueOf(7.25),
-                                             CategoryStatus.NORMAL).build();
+                                             CategoryStatus.NORMAL,
+                                             0).build();
 
         Product product1 = Product.builder("product1 slug",
                                            "product1 name",

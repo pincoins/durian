@@ -27,7 +27,8 @@ class CategoryTreePathRepositoryTest {
                                          "description",
                                          "sub description",
                                          BigDecimal.ZERO,
-                                         CategoryStatus.NORMAL).build();
+                                         CategoryStatus.NORMAL,
+                                         0).build();
         categoryRepository.save(root);
         categoryTreePathRepository.save(root);
     }

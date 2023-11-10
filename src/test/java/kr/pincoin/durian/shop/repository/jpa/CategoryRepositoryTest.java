@@ -37,7 +37,8 @@ class CategoryRepositoryTest {
                                               "description",
                                               "sub description",
                                               BigDecimal.ZERO,
-                                              CategoryStatus.NORMAL).build();
+                                              CategoryStatus.NORMAL,
+                                              0).build();
 
         categoryRepository.save(category1);
         em.clear();
@@ -54,28 +55,32 @@ class CategoryRepositoryTest {
                                          "description",
                                          "sub description",
                                          BigDecimal.ZERO,
-                                         CategoryStatus.NORMAL).build();
+                                         CategoryStatus.NORMAL,
+                                         0).build();
 
         Category second1 = Category.builder("second1",
                                             "second1",
                                             "description",
                                             "sub description",
                                             BigDecimal.ZERO,
-                                            CategoryStatus.NORMAL).build();
+                                            CategoryStatus.NORMAL,
+                                            1).build();
 
         Category second2 = Category.builder("second2",
                                             "second2",
                                             "description",
                                             "sub description",
                                             BigDecimal.ZERO,
-                                            CategoryStatus.NORMAL).build();
+                                            CategoryStatus.NORMAL,
+                                            2).build();
 
         Category third1 = Category.builder("third1",
                                            "third1",
                                            "description",
                                            "sub description",
                                            BigDecimal.ZERO,
-                                           CategoryStatus.NORMAL).build();
+                                           CategoryStatus.NORMAL,
+                                           3).build();
 
         categoryRepository.save(root);
         categoryTreePathRepository.save(root);

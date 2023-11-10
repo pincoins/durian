@@ -36,4 +36,8 @@ public class CategoryCreateRequest {
     @JsonProperty("discountRate")
     @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal discountRate;
+
+    @JsonProperty("position")
+    @DecimalMin(value = "0")
+    private Integer position;
 }

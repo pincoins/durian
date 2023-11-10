@@ -25,11 +25,10 @@ public class CategoryController {
 
     @GetMapping("")
     public ResponseEntity<List<CategoryResponse>>
-    categoryList(@RequestParam(name = "isRoot", required = false) Boolean isRoot,
-                 @RequestParam(name = "status", required = false) CategoryStatus status,
+    categoryList(@RequestParam(name = "status", required = false) CategoryStatus status,
                  @RequestParam(name = "slug", required = false) String slug) {
         return ResponseEntity.ok()
-                .body(categoryService.listCategories(isRoot, status, slug)
+                .body(categoryService.listCategories(status, slug)
                               .stream()
                               .map(CategoryResponse::new)
                               .toList());
@@ -52,30 +51,8 @@ public class CategoryController {
         return categoryService.createRootCategory(request)
                 .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
-                                                    "Root category creation failure",
-                                                    List.of("Failed to create a root category")));
-    }
-
-    @PostMapping("{categoryId}/add")
-    public ResponseEntity<CategoryResponse>
-    categoryAdd(@PathVariable Long categoryId,
-                @Valid @RequestBody CategoryCreateRequest request) {
-        return categoryService.addChildCategory(categoryId, request)
-                .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
-                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
-                                                    "Child category creation failure",
-                                                    List.of("Failed to add a child category")));
-    }
-
-    @PutMapping("{categoryId}/parents/{parentId}")
-    public ResponseEntity<CategoryResponse>
-    categoryMove(@PathVariable Long parentId,
-                 @PathVariable Long categoryId) {
-        return categoryService.changeParentCategory(parentId, categoryId)
-                .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
-                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
-                                                    "Child category move failure",
-                                                    List.of("Failed to change parent category")));
+                                                    "Category creation failure",
+                                                    List.of("Failed to create a category")));
     }
 
     @PutMapping("{categoryId}")

@@ -46,22 +46,8 @@ public class Category extends BaseAuditor {
     @Enumerated(value = EnumType.STRING)
     private CategoryStatus status;
 
-    @Column(name = "is_root")
-    private boolean isRoot;
-
-    @OneToMany(mappedBy = "ancestor",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    @Builder.Default
-    private List<CategoryTreePath> ancestors = new ArrayList<>();
-
-    @OneToMany(mappedBy = "descendant",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    @Builder.Default
-    private List<CategoryTreePath> descendants = new ArrayList<>();
+    @Column(name = "position")
+    private Integer position;
 
     @OneToMany(mappedBy = "category",
             fetch = FetchType.LAZY,
@@ -75,14 +61,16 @@ public class Category extends BaseAuditor {
                                           String description,
                                           String subDescription,
                                           BigDecimal discountRate,
-                                          CategoryStatus status) {
+                                          CategoryStatus status,
+                                          Integer position) {
         return new CategoryBuilder()
                 .title(title)
                 .slug(slug)
                 .description(description)
                 .subDescription(subDescription)
                 .discountRate(discountRate)
-                .status(status);
+                .status(status)
+                .position(position);
     }
 
     public static CategoryBuilder builder(CategoryCreateRequest request) {
@@ -92,7 +80,8 @@ public class Category extends BaseAuditor {
                 .description(request.getDescription())
                 .subDescription(request.getSubDescription())
                 .discountRate(request.getDiscountRate())
-                .status(CategoryStatus.NORMAL);
+                .status(CategoryStatus.NORMAL)
+                .position(request.getPosition());
     }
 
     @Override
@@ -142,6 +131,15 @@ public class Category extends BaseAuditor {
             this.discountRate = request.getDiscountRate();
         }
 
+        if (request.getPosition() != null) {
+            this.position = request.getPosition();
+        }
+
+        return this;
+    }
+
+    public Category changePosition(Integer position) {
+        this.position = position;
         return this;
     }
 
