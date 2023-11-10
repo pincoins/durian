@@ -9,7 +9,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 public class DanalTest {
@@ -45,17 +48,19 @@ public class DanalTest {
                 .bodyToMono(String.class)
                 .block();
 
-        System.out.println(result);
+        Map<String, String> map = new HashMap<>();
 
-        MultiValueMap<String, String> queryParams = UriComponentsBuilder
-                .fromUriString("https://example.com?" + result)
-                .build().getQueryParams();
+        assert result != null;
 
-        System.out.println(queryParams.get("RETURNCODE").get(0));
-        System.out.println(queryParams.get("RETURNMSG").get(0));
-        System.out.println(queryParams.get("TID").get(0));
+        Arrays.stream(result.split("&")).forEach(s -> {
+            int i = s.indexOf('=');
 
-        Assertions.assertThat(queryParams.get("RETURNCODE").get(0)).isEqualTo("9010");
+            if (i > 0) {
+                map.put(s.substring(0, i).trim(), s.substring(i + 1).trim());
+            }
+        });
+
+        Assertions.assertThat(map.get("RETURNCODE")).isEqualTo("9010");
 
         // Success
         // RETURNCODE=0000&RETURNMSG=No information&TID=202311101216453794284010
@@ -65,5 +70,22 @@ public class DanalTest {
 
         // Invalid CPPWD
         // RETURNCODE=9014&RETURNMSG=[인증실패] 업체정보에 이상이 있습니다. 해당 서비스 업체로 문의하여 주십시오.&TID=202311101215346243524010
+    }
+
+    @Test
+    void parseQueryParams() {
+        String params = "RETURNCODE=0000&RETURNMSG=No information&TID=202311101216453794284010";
+
+        Map<String, String> map = new HashMap<>();
+
+        Arrays.stream(params.split("&")).forEach(s -> {
+            int i = s.indexOf('=');
+
+            if (i > 0) {
+                map.put(s.substring(0, i).trim(), s.substring(i + 1));
+            }
+        });
+
+        System.out.println(map.get("RETURNCODE"));
     }
 }
