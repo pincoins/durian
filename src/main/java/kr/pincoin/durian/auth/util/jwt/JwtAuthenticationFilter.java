@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                      FilterChain chain) throws ServletException, IOException {
         Optional.ofNullable(tokenProvider.getBearerToken(request))
                 // 1. Retrieve access token from headers
-                .flatMap(token -> tokenProvider.validateAccessToken(token, request))
+                .flatMap(tokenProvider::validateAccessToken)
                 // 2. Retrieve user after jwt validation
                 .ifPresent(sub -> {
                     UserDetails userDetails;
