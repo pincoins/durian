@@ -4,8 +4,10 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
+import static kr.pincoin.durian.auth.util.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
+
 @Getter
-@RedisHash(value = "refreshToken", timeToLive = 60 * 60 * 24 * 14) // 14 days
+@RedisHash(value = "refreshToken", timeToLive = REFRESH_TOKEN_EXPIRES_IN)
 public class RefreshToken {
     @Id
     // Redis: org.springframework.data.annotation.Id
