@@ -18,7 +18,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint.*;
+import static kr.pincoin.durian.auth.util.jwt.JwtExceptionFilter.*;
 
 @Slf4j
 @Component
@@ -64,23 +64,20 @@ public class TokenProvider {
     }
 
     public Optional<String>
-    validateAccessToken(String token, HttpServletRequest request) {
+    validateAccessToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretSignKey));
 
         try {
             Jws<Claims> jws = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 
             return Optional.ofNullable(jws.getPayload().getSubject());
-        } catch (SignatureException | DecodingException ignored) {
-            request.setAttribute("exception", ERROR_401_INVALID_SECRET_KEY);
-        } catch (ExpiredJwtException ignored) {
-            request.setAttribute("exception", ERROR_401_EXPIRED_JWT);
-        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
-                 IllegalArgumentException ignored) {
-            request.setAttribute("exception", ERROR_401_INVALID_TOKEN);
+        } catch (SignatureException | DecodingException ex) {
+            throw new JwtException(ERROR_401_INVALID_SECRET_KEY, "Invalid secret key", ex);
+        } catch (ExpiredJwtException ex) {
+            throw new JwtException(ERROR_401_EXPIRED_JWT, "Expired token", ex);
+        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException | IllegalArgumentException ex) {
+            throw new JwtException(ERROR_401_INVALID_TOKEN, "Invalid token format", ex);
         }
-
-        return Optional.empty();
     }
 
     public String
