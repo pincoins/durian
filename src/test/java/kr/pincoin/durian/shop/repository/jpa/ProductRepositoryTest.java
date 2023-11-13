@@ -34,7 +34,8 @@ class ProductRepositoryTest {
                                              "description",
                                              "sub description",
                                              BigDecimal.ZERO,
-                                             CategoryStatus.NORMAL).build();
+                                             CategoryStatus.NORMAL,
+                                             0).build();
 
         Product product = Product.builder("slug",
                                           "name",

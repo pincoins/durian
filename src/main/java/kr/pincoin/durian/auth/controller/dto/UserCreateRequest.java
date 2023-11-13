@@ -26,19 +26,27 @@ public class UserCreateRequest {
     public static final String PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
 
     @JsonProperty("username")
+    @NotEmpty
+    @NotBlank
     @Pattern(regexp = USERNAME_PATTERN)
     private String username;
 
     @JsonProperty("fullName")
+    @NotEmpty
+    @NotBlank
     @Size(min = 2, max = 32)
     private String fullName;
 
     @JsonProperty("password")
+    @NotEmpty
+    @NotBlank
     @Size(min = 8, max = 32)
     @Pattern(regexp = PASSWORD_PATTERN)
     private String password;
 
     @JsonProperty("email")
+    @NotEmpty
+    @NotBlank
     @Email
     private String email;
 }

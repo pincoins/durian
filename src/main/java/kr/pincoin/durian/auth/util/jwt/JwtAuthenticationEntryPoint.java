@@ -13,12 +13,9 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    public static final String ERROR_401_INVALID_SECRET_KEY = "1001";
-    public static final String ERROR_401_EXPIRED_JWT = "1002";
-    public static final String ERROR_401_INVALID_TOKEN = "1003";
-    public static final String ERROR_401_USER_NOT_FOUND = "1004";
-    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1005";
-    public static final String ERROR_401_UNKNOWN = "1006";
+    public static final String ERROR_401_USER_NOT_FOUND = "1001";
+    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1002";
+    public static final String ERROR_401_UNKNOWN = "1003";
 
     @Override
     public void
@@ -37,18 +34,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 setResponse(response,
                             ERROR_401_UNKNOWN,
                             "Security config error");
-            } else if (exception.equals(ERROR_401_INVALID_SECRET_KEY)) {
-                setResponse(response,
-                            ERROR_401_INVALID_SECRET_KEY,
-                            "Invalid secret key");
-            } else if (exception.equals(ERROR_401_EXPIRED_JWT)) {
-                setResponse(response,
-                            ERROR_401_EXPIRED_JWT,
-                            "Expired token");
-            } else if (exception.equals(ERROR_401_INVALID_TOKEN)) {
-                setResponse(response,
-                            ERROR_401_INVALID_TOKEN,
-                            "Invalid token format");
             } else if (exception.equals(ERROR_401_USER_NOT_FOUND)) {
                 setResponse(response,
                             ERROR_401_USER_NOT_FOUND,

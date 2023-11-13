@@ -3,9 +3,11 @@ package kr.pincoin.durian.common.config;
 
 import kr.pincoin.durian.auth.util.jwt.JwtAccessDeniedHandler;
 import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint;
-import kr.pincoin.durian.auth.util.jwt.JwtFilter;
+import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationFilter;
+import kr.pincoin.durian.auth.util.jwt.JwtExceptionFilter;
 import kr.pincoin.durian.auth.util.password.DjangoPasswordEncoder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +32,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableMethodSecurity
 @Getter
+@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
     @Value("${security-config.content-security-policy}")
@@ -47,11 +50,9 @@ public class SecurityConfig {
     @Value("${security-config.cors.allow-credentials}")
     private boolean corsAllowCredentials;
 
-    private final JwtFilter jwtFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     // Deprecated: WebSecurityConfigurerAdapter inheritance
     // Current: @Bean
@@ -137,7 +138,9 @@ public class SecurityConfig {
                                   );
 
         // Add JWT token filter
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        // JwtAuthenticationFilter -> JwtAuthenticationFilter -> UsernamePasswordAuthenticationFilter
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }
@@ -151,7 +154,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(corsOrigins);
+        // When allowCredentials is true,
+        // allowedOrigins cannot contain the special value "*"
+        // since that cannot be set on the "Access-Control-Allow-Origin" response header.
+        // To allow credentials to a set of origins,
+        // list them explicitly or consider using "allowedOriginPatterns" instead.
+        configuration.setAllowedOriginPatterns(corsOrigins);
         configuration.addAllowedHeader(corsHeaders);
         configuration.addAllowedMethod(corsMethods);
         configuration.setAllowCredentials(corsAllowCredentials);

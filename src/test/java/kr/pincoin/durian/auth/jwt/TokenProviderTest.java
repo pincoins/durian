@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kr.pincoin.durian.auth.util.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TokenProviderTest {
@@ -41,7 +42,7 @@ public class TokenProviderTest {
                 .and()
                 .claims(claims)
                 .expiration(Date.from(LocalDateTime.now()
-                                              .plus(Duration.of(60 * 60, ChronoUnit.SECONDS))
+                                              .plus(Duration.of(ACCESS_TOKEN_EXPIRES_IN, ChronoUnit.SECONDS))
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 // .id(jti)
                 .subject(sub)

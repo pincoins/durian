@@ -22,24 +22,24 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Category> findCategories(Boolean isRoot, CategoryStatus status, String slug) {
+    public List<Category> findCategories(CategoryStatus status, String slug) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
-                .where(isRootEq(isRoot),
-                       statusEq(status),
-                       slugContains(slug));
+                .where(statusEq(status),
+                       slugContains(slug))
+                .orderBy(category.position.asc(),
+                         category.title.asc());
 
         return contentQuery.fetch();
     }
 
     @Override
-    public Optional<Category> findCategory(Long id, Boolean isRoot, CategoryStatus status, String slug) {
+    public Optional<Category> findCategory(Long id, CategoryStatus status, String slug) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
                 .where(category.id.eq(id),
-                       isRootEq(isRoot),
                        statusEq(status),
                        slugContains(slug));
 
@@ -151,10 +151,6 @@ public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
 
     BooleanExpression slugContains(String slug) {
         return slug != null && !slug.isBlank() ? category.slug.contains(slug) : null;
-    }
-
-    BooleanExpression isRootEq(Boolean isRoot) {
-        return isRoot != null ? category.isRoot.eq(isRoot) : null;
     }
 
     BooleanExpression pathLengthEq(Integer pathLength) {
