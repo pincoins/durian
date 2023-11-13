@@ -3,9 +3,10 @@ package kr.pincoin.durian.common.config;
 
 import kr.pincoin.durian.auth.util.jwt.JwtAccessDeniedHandler;
 import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint;
-import kr.pincoin.durian.auth.util.jwt.JwtFilter;
+import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationFilter;
 import kr.pincoin.durian.auth.util.password.DjangoPasswordEncoder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableMethodSecurity
 @Getter
+@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
     @Value("${security-config.content-security-policy}")
@@ -47,11 +49,7 @@ public class SecurityConfig {
     @Value("${security-config.cors.allow-credentials}")
     private boolean corsAllowCredentials;
 
-    private final JwtFilter jwtFilter;
-
-    public SecurityConfig(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // Deprecated: WebSecurityConfigurerAdapter inheritance
     // Current: @Bean
@@ -137,7 +135,7 @@ public class SecurityConfig {
                                   );
 
         // Add JWT token filter
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

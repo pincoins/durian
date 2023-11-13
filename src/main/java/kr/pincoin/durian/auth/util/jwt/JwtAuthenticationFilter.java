@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,19 +22,14 @@ import static kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint.ERROR_
 
 @Slf4j
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // OncePerRequestFilter
     // GenericFilterBean
 
     private final TokenProvider tokenProvider;
 
     private final UserDetailsService userDetailsService;
-
-    public JwtFilter(TokenProvider tokenProvider,
-                     UserDetailsService userDetailsService) {
-        this.tokenProvider = tokenProvider;
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void
