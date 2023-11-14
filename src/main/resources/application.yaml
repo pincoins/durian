@@ -44,14 +44,14 @@ spring:
 security-config:
   content-security-policy: default-src 'none'
   cors:
-    origins: "*"
+    origins: "http://localhost:3000,http://localhost:3001"
     headers: "*"
-    methods: "*"
+    methods: "*" # Allow CSP error
     allow-credentials: true
 
 logging:
-  #  file:
-  #    name: logs/spring.log
+  file:
+    name: logs/spring.log
   level:
     kr.pincoin.durian: DEBUG
     org.hibernate.SQL: DEBUG # show sql in logger
@@ -79,7 +79,11 @@ pincoin:
       purchase-order: 0 1 10,14,18,23 * * * # every day 10, 14, 18, 23 hours
 
 auth:
-  jwt-secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
+  # HS512: openssl rand -hex 48
+  jwt:
+    secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
+    access-token-expires-in: 3600 # 60 * 60 (1 hour)
+    refresh-token-expires-in: 1209600 # 60 * 60 * 24 * 14 (2 weeks)
 
 aligo:
   api-key: api-key

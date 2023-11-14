@@ -1,18 +1,20 @@
 package kr.pincoin.durian.auth.service;
 
-import kr.pincoin.durian.auth.domain.RefreshToken;
-import kr.pincoin.durian.auth.domain.User;
-import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.controller.dto.AccessTokenResponse;
 import kr.pincoin.durian.auth.controller.dto.PasswordGrantRequest;
 import kr.pincoin.durian.auth.controller.dto.RefreshTokenRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangePasswordRequest;
-import kr.pincoin.durian.auth.util.jwt.TokenProvider;
+import kr.pincoin.durian.auth.domain.RefreshToken;
+import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
+import kr.pincoin.durian.auth.util.jwt.TokenProvider;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static kr.pincoin.durian.auth.util.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
+    @Value("${auth.jwt.access-token-expires-in}")
+    private int jwtAccessTokenExpiresIn;
+
+    @Value("${auth.jwt.refresh-token-expires-in}")
+    private int jwtRefreshTokenExpiresIn;
+
     private final UserRepository userRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -39,7 +45,8 @@ public class AuthService {
 
     @Transactional
     public Optional<AccessTokenResponse>
-    authenticate(PasswordGrantRequest request) {
+    authenticate(PasswordGrantRequest request,
+                 HttpServletRequest servletRequest) {
         User user = userRepository.findUserByEmail(request.getEmail(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Authentication failed",
@@ -51,25 +58,36 @@ public class AuthService {
                                    List.of("Your email or password is not correct."));
         }
 
-        return Optional.of(getAccessTokenResponse(user));
+        return Optional.of(getAccessTokenResponse(user, servletRequest));
     }
 
     @Transactional
     public Optional<AccessTokenResponse>
-    refresh(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findById(request.getRefreshToken())
+    refresh(RefreshTokenRequest request,
+            String refreshToken,
+            HttpServletRequest servletRequest) {
+        RefreshToken refreshTokenFound = refreshTokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        User user = userRepository.findUser(refreshToken.getUserId(), UserStatus.NORMAL)
+        if (!refreshTokenFound.getIpAddress()
+                .equals(Optional.ofNullable(servletRequest.getHeader("X-Forwarded-For"))
+                                .orElse(servletRequest.getRemoteAddr()))) {
+            throw new ApiException(HttpStatus.FORBIDDEN,
+                                   "Refresh token IP address mismatch",
+                                   List.of("Your IP address was changed after token issued."));
+        }
+
+        User user = userRepository.findUser(refreshTokenFound.getUserId(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("User does not exist.")));
 
-        refreshTokenRepository.delete(refreshToken); // Prevent from reusing refresh token
+        // Refresh Token Rotation(RTR) - Prevent from reusing refresh token
+        refreshTokenRepository.delete(refreshTokenFound);
 
-        return Optional.of(getAccessTokenResponse(user));
+        return Optional.of(getAccessTokenResponse(user, servletRequest));
     }
 
     @Transactional
@@ -93,16 +111,20 @@ public class AuthService {
     }
 
     private AccessTokenResponse
-    getAccessTokenResponse(User user) {
+    getAccessTokenResponse(User user, HttpServletRequest servletRequest) {
         // 1. Access token (not saved)
         String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
 
+        String ipAddress = Optional.ofNullable(servletRequest.getHeader("X-Forwarded-For"))
+                .orElse(servletRequest.getRemoteAddr());
+
         // 2. Refresh token (Redis)
         String refreshToken = tokenProvider.createRefreshToken();
-        refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()));
+        refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId(), ipAddress)
+                                            .setTimeout((long) jwtRefreshTokenExpiresIn));
 
         return new AccessTokenResponse(accessToken,
-                                       ACCESS_TOKEN_EXPIRES_IN,
+                                       jwtAccessTokenExpiresIn,
                                        refreshToken);
     }
 }

@@ -1,7 +1,6 @@
 package kr.pincoin.durian.auth.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
@@ -19,8 +18,6 @@ public class RefreshTokenRequest {
     private String grantType;
 
     @JsonProperty("refreshToken")
-    @NotNull
-    @NotBlank
     private String refreshToken;
 
     @JsonProperty("scope")

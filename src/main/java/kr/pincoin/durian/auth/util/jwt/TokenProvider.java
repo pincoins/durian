@@ -26,11 +26,11 @@ public class TokenProvider {
     // HS256: openssl rand -hex 24
     // HS384: openssl rand -hex 32
     // HS512: openssl rand -hex 48
-    @Value("${auth.jwt-secret-key}")
+    @Value("${auth.jwt.secret-key}")
     private String jwtSecretSignKey;
 
-    public static final int ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1 hour
-    public static final int REFRESH_TOKEN_EXPIRES_IN = 60 * 60 * 24 * 14; // 2 weeks
+    @Value("${auth.jwt.access-token-expires-in}")
+    private int jwtAccessTokenExpiresIn;
 
     public static final String JWT_TYPE = "JWT";
 
@@ -99,7 +99,7 @@ public class TokenProvider {
                 .and()
                 .claims(claims)
                 .expiration(Date.from(LocalDateTime.now()
-                                              .plus(Duration.of(ACCESS_TOKEN_EXPIRES_IN,
+                                              .plus(Duration.of(jwtAccessTokenExpiresIn,
                                                                 ChronoUnit.SECONDS)) // 60 minutes
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .subject(String.valueOf(sub)) // sub
