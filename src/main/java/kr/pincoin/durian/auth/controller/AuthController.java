@@ -1,5 +1,6 @@
 package kr.pincoin.durian.auth.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.AccessTokenResponse;
 import kr.pincoin.durian.auth.controller.dto.PasswordGrantRequest;
@@ -32,8 +33,9 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
-    authenticate(@Valid @RequestBody PasswordGrantRequest request) {
-        return authService.authenticate(request)
+    authenticate(@Valid @RequestBody PasswordGrantRequest request,
+                 HttpServletRequest servletRequest) {
+        return authService.authenticate(request, servletRequest)
                 .map(response -> {
                     HttpHeaders responseHeaders = getHttpHeaders(response);
 
@@ -47,8 +49,9 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
     refreshToken(@Valid @RequestBody RefreshTokenRequest request,
-                 @CookieValue("refreshToken") String refreshToken) {
-        return authService.refresh(request, refreshToken)
+                 @CookieValue("refreshToken") String refreshToken,
+                 HttpServletRequest servletRequest) {
+        return authService.refresh(request, refreshToken, servletRequest)
                 .map(response -> {
                     HttpHeaders responseHeaders = getHttpHeaders(response);
 
