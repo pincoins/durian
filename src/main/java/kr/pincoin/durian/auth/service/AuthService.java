@@ -32,6 +32,9 @@ public class AuthService {
     @Value("${auth.jwt.access-token-expires-in}")
     private int jwtAccessTokenExpiresIn;
 
+    @Value("${auth.jwt.refresh-token-expires-in}")
+    private int jwtRefreshTokenExpiresIn;
+
     private final UserRepository userRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -117,7 +120,8 @@ public class AuthService {
 
         // 2. Refresh token (Redis)
         String refreshToken = tokenProvider.createRefreshToken();
-        refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId(), ipAddress));
+        refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId(), ipAddress)
+                                            .setTimeout((long) jwtRefreshTokenExpiresIn));
 
         return new AccessTokenResponse(accessToken,
                                        jwtAccessTokenExpiresIn,
