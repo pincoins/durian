@@ -13,6 +13,7 @@ import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static kr.pincoin.durian.auth.util.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
+    @Value("${auth.jwt.access-token-expires-in}")
+    private int jwtAccessTokenExpiresIn;
+
     private final UserRepository userRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -102,7 +104,7 @@ public class AuthService {
         refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()));
 
         return new AccessTokenResponse(accessToken,
-                                       ACCESS_TOKEN_EXPIRES_IN,
+                                       jwtAccessTokenExpiresIn,
                                        refreshToken);
     }
 }

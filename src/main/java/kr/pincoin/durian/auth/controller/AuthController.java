@@ -9,12 +9,15 @@ import kr.pincoin.durian.auth.service.AuthService;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -22,6 +25,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
+    @Value("${auth.jwt.refresh-token-expires-in}")
+    private int jwtRefreshTokenExpiresIn;
+
     private final AuthService authService;
 
     @PostMapping("/authenticate")
@@ -29,8 +35,8 @@ public class AuthController {
     authenticate(@Valid @RequestBody PasswordGrantRequest request) {
         return authService.authenticate(request)
                 .map(response -> {
-                    HttpHeaders responseHeaders = new HttpHeaders();
-                    responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+                    HttpHeaders responseHeaders = getHttpHeaders(response);
+
                     return ResponseEntity.ok().headers(responseHeaders).body(response);
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
@@ -40,11 +46,14 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
-    refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    refreshToken(@Valid @RequestBody RefreshTokenRequest request,
+                 @CookieValue("refreshToken") String refreshToken) {
+        log.warn("refresh token from cookie: {}", refreshToken);
+
         return authService.refresh(request)
                 .map(response -> {
-                    HttpHeaders responseHeaders = new HttpHeaders();
-                    responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+                    HttpHeaders responseHeaders = getHttpHeaders(response);
+
                     return ResponseEntity.ok().headers(responseHeaders).body(response);
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
@@ -57,5 +66,20 @@ public class AuthController {
     userPasswordChange(@Valid @RequestBody UserChangePasswordRequest request) {
         boolean result = authService.changePassword(request.getUserId(), request);
         return ResponseEntity.ok().body(result);
+    }
+
+    private HttpHeaders getHttpHeaders(AccessTokenResponse response) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", response.getRefreshToken())
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("None")
+                .maxAge(jwtRefreshTokenExpiresIn)
+                .path("/").build();
+
+        responseHeaders.add("Set-Cookie", cookie.toString());
+        return responseHeaders;
     }
 }

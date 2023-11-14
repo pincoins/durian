@@ -1,14 +1,17 @@
 package kr.pincoin.durian.auth.domain;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-
-import static kr.pincoin.durian.auth.util.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
-@RedisHash(value = "refreshToken", timeToLive = REFRESH_TOKEN_EXPIRES_IN)
+@RedisHash(value = "refreshToken")
 public class RefreshToken {
+    @Value("${auth.jwt.refresh-token-expires-in}")
+    private int jwtRefreshTokenExpiresIn;
+
     @Id
     // Redis: org.springframework.data.annotation.Id
     // JPA: javax.persistence.Id;
@@ -20,5 +23,10 @@ public class RefreshToken {
     public RefreshToken(final String refreshToken, final Long userId) {
         this.refreshToken = refreshToken;
         this.userId = userId;
+    }
+
+    @TimeToLive
+    public Long getTimeToLive() {
+        return (long) jwtRefreshTokenExpiresIn;
     }
 }

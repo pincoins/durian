@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -16,10 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kr.pincoin.durian.auth.util.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TokenProviderTest {
+    @Value("${auth.jwt.access-token-expires-in}")
+    private int jwtAccessTokenExpiresIn;
 
     @Test
     void tokenTest() {
@@ -42,7 +45,7 @@ public class TokenProviderTest {
                 .and()
                 .claims(claims)
                 .expiration(Date.from(LocalDateTime.now()
-                                              .plus(Duration.of(ACCESS_TOKEN_EXPIRES_IN, ChronoUnit.SECONDS))
+                                              .plus(Duration.of(jwtAccessTokenExpiresIn, ChronoUnit.SECONDS))
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 // .id(jti)
                 .subject(sub)
