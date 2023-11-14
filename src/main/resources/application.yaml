@@ -44,9 +44,9 @@ spring:
 security-config:
   content-security-policy: default-src 'none'
   cors:
-    origins: "*"
+    origins: "http://localhost:3000,http://localhost:3001"
     headers: "*"
-    methods: "*"
+    methods: "*" # Allow CSP error
     allow-credentials: true
 
 logging:
