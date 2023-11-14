@@ -58,18 +58,19 @@ public class AuthService {
 
     @Transactional
     public Optional<AccessTokenResponse>
-    refresh(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findById(request.getRefreshToken())
+    refresh(RefreshTokenRequest request, String refreshToken) {
+        RefreshToken refreshTokenFound = refreshTokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        User user = userRepository.findUser(refreshToken.getUserId(), UserStatus.NORMAL)
+        User user = userRepository.findUser(refreshTokenFound.getUserId(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "User not found",
                                                     List.of("User does not exist.")));
 
-        refreshTokenRepository.delete(refreshToken); // Prevent from reusing refresh token
+        // Refresh Token Rotation(RTR) - Prevent from reusing refresh token
+        refreshTokenRepository.delete(refreshTokenFound);
 
         return Optional.of(getAccessTokenResponse(user));
     }

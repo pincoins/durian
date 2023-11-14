@@ -48,9 +48,7 @@ public class AuthController {
     public ResponseEntity<AccessTokenResponse>
     refreshToken(@Valid @RequestBody RefreshTokenRequest request,
                  @CookieValue("refreshToken") String refreshToken) {
-        log.warn("refresh token from cookie: {}", refreshToken);
-
-        return authService.refresh(request)
+        return authService.refresh(request, refreshToken)
                 .map(response -> {
                     HttpHeaders responseHeaders = getHttpHeaders(response);
 

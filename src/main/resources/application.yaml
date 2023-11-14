@@ -50,8 +50,8 @@ security-config:
     allow-credentials: true
 
 logging:
-  #  file:
-  #    name: logs/spring.log
+  file:
+    name: logs/spring.log
   level:
     kr.pincoin.durian: DEBUG
     org.hibernate.SQL: DEBUG # show sql in logger
