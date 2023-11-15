@@ -113,13 +113,14 @@ public class AuthService {
     private AccessTokenResponse
     getAccessTokenResponse(User user, HttpServletRequest servletRequest) {
         // 1. Access token (not saved)
-        String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
+        String accessToken = tokenProvider.createAccessToken(user);
+
+        // 2. Refresh token (Redis)
+        String refreshToken = tokenProvider.createRefreshToken();
 
         String ipAddress = Optional.ofNullable(servletRequest.getHeader("X-Forwarded-For"))
                 .orElse(servletRequest.getRemoteAddr());
 
-        // 2. Refresh token (Redis)
-        String refreshToken = tokenProvider.createRefreshToken();
         refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId(), ipAddress)
                                             .setTimeout((long) jwtRefreshTokenExpiresIn));
 

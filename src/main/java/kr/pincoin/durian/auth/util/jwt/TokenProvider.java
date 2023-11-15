@@ -6,6 +6,7 @@ import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import kr.pincoin.durian.auth.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -81,7 +82,7 @@ public class TokenProvider {
     }
 
     public String
-    createAccessToken(String username, Long sub) {
+    createAccessToken(User user) {
         // access token can contain personal information such as username
         // access token is not saved in RDBMS or NoSQL
 
@@ -92,7 +93,8 @@ public class TokenProvider {
         headers.put("alg", JWT_ALGORITHM);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
+        claims.put("username", user.getUsername());
+        claims.put("role", user.getRole());
 
         return Jwts.builder()
                 .header().add(headers)
@@ -102,7 +104,7 @@ public class TokenProvider {
                                               .plus(Duration.of(jwtAccessTokenExpiresIn,
                                                                 ChronoUnit.SECONDS)) // 60 minutes
                                               .atZone(ZoneId.systemDefault()).toInstant())) // exp
-                .subject(String.valueOf(sub)) // sub
+                .subject(String.valueOf(user.getId())) // sub
                 .signWith(key)
                 .compact();
     }
