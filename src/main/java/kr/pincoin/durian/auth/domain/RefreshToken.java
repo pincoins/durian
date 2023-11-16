@@ -1,12 +1,14 @@
 package kr.pincoin.durian.auth.domain;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @RedisHash(value = "refreshToken")
+@Slf4j
 public class RefreshToken {
     @Id
     // Redis: org.springframework.data.annotation.Id
@@ -40,6 +42,8 @@ public class RefreshToken {
         this.refreshToken = refreshToken;
         this.userId = userId;
         this.ipAddress = ipAddress;
+
+        log.warn(ipAddress);
     }
 
     public RefreshToken setTimeout(Long timeout) {
