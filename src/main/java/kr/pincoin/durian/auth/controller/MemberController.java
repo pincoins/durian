@@ -154,6 +154,13 @@ public class MemberController {
                                                     List.of("Failed to change member email address")));
     }
 
+    @GetMapping("/exists")
+    public ResponseEntity<ExistenceResponse>
+    memberExists(@RequestParam(name = "username", required = false) String username,
+                 @RequestParam(name = "email", required = false) String email) {
+        return ResponseEntity.ok().body(new ExistenceResponse(memberService.exists(username, email)));
+    }
+
     // request
     // verify email
     // reject email verification

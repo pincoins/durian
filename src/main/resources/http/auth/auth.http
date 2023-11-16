@@ -37,3 +37,7 @@ Authorization: Bearer {{accessToken}}
   "oldPassword": "{{password}}",
   "newPassword": "{{password}}"
 }
+
+### Exists
+GET http://localhost:8080/members/exists?email=admin@example.com
+Content-Type: application/json

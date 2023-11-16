@@ -9,6 +9,7 @@ import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
+import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ import java.util.Optional;
 @Slf4j
 public class MemberService {
     private final ProfileRepository profileRepository;
+
+    private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -193,5 +196,10 @@ public class MemberService {
                                                     List.of("Member does not exist to change email.")));
         profile.getUser().changeEmail(request.getEmail());
         return Optional.of(profile);
+    }
+
+    public Boolean
+    exists(String username, String email) {
+        return userRepository.exists(username, email);
     }
 }
