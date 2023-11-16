@@ -1,7 +1,6 @@
 package kr.pincoin.durian.shop.repository.jpa;
 
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.DocumentVerification;
 import kr.pincoin.durian.auth.domain.PhoneVerification;
 import kr.pincoin.durian.auth.domain.Profile;
@@ -199,7 +198,8 @@ class OrderRepositoryTest {
         Arrays.asList(orderItemVoucher3, orderItemVoucher4)
                 .forEach(orderItem1::add);
 
-        Order order = Order.builder(mock(OrderCreateRequest.class), profile, mock(HttpServletRequest.class)).build();
+        Order order = Order.builder(mock(OrderCreateRequest.class), profile, "127.0.0.1", "user-agent", "ko-KR")
+                .build();
 
         Arrays.asList(orderItem1, orderItem2).forEach(order::add);
 

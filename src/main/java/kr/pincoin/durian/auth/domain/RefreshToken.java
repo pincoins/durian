@@ -42,8 +42,6 @@ public class RefreshToken {
         this.refreshToken = refreshToken;
         this.userId = userId;
         this.ipAddress = ipAddress;
-
-        log.warn(ipAddress);
     }
 
     public RefreshToken setTimeout(Long timeout) {
