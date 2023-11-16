@@ -12,7 +12,7 @@ import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.auth.util.jwt.TokenProvider;
 import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.common.util.RequestHeader;
+import kr.pincoin.durian.common.util.RequestHeaderParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +44,8 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RequestHeaderParser requestHeaderParser;
+
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request,
@@ -72,7 +74,7 @@ public class AuthService {
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
-        if (!refreshTokenFound.getIpAddress().equals(RequestHeader.getIpAddress(servletRequest))) {
+        if (!refreshTokenFound.getIpAddress().equals(requestHeaderParser.changeHttpServletRequest(servletRequest).getIpAddress())) {
             throw new ApiException(HttpStatus.FORBIDDEN,
                                    "Refresh token IP address mismatch",
                                    List.of("Your IP address was changed after token issued."));
@@ -117,7 +119,7 @@ public class AuthService {
         // 2. Refresh token (Redis)
         String refreshToken = tokenProvider.createRefreshToken();
 
-        String ipAddress = RequestHeader.getIpAddress(servletRequest);
+        String ipAddress = requestHeaderParser.changeHttpServletRequest(servletRequest).getIpAddress();
 
         refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId(), ipAddress)
                                             .setTimeout((long) jwtRefreshTokenExpiresIn));

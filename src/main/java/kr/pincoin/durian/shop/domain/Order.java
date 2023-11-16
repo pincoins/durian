@@ -1,11 +1,9 @@
 package kr.pincoin.durian.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.common.domain.BaseDateTime;
-import kr.pincoin.durian.common.util.RequestHeader;
 import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import lombok.*;
@@ -13,7 +11,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -108,14 +105,9 @@ public class Order extends BaseDateTime {
 
     public static OrderBuilder builder(OrderCreateRequest request,
                                        Profile profile,
-                                       HttpServletRequest httpServletRequest) {
-        String ipAddress = RequestHeader.getIpAddress(httpServletRequest);
-
-        String userAgent = Optional.ofNullable(httpServletRequest.getHeader("User-Agent"))
-                .orElse("No user-agent set");
-
-        String acceptLanguage = Optional.ofNullable(httpServletRequest.getHeader("Accept-Language"))
-                .orElse("No language set");
+                                       String ipAddress,
+                                       String userAgent,
+                                       String acceptLanguage) {
 
         return new OrderBuilder()
                 .paymentMethod(request.getPaymentMethod())

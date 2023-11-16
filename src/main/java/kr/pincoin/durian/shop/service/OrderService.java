@@ -5,6 +5,7 @@ import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.util.RequestHeaderParser;
 import kr.pincoin.durian.shop.controller.dto.CartItemNested;
 import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.Order;
@@ -35,6 +36,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     private final ProductRepository productRepository;
+
+    private final RequestHeaderParser requestHeaderParser;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public List<Order> listOrders(Long userId,
@@ -110,9 +113,13 @@ public class OrderService {
                               ProductStockStatus.IN_STOCK,
                               false);
 
+        RequestHeaderParser requestHeaderParser = this.requestHeaderParser.changeHttpServletRequest(servletRequest);
+
         Order order = Order.builder(request,
                                     profile,
-                                    servletRequest).build();
+                                    requestHeaderParser.getIpAddress(),
+                                    requestHeaderParser.getUserAgent(),
+                                    requestHeaderParser.getAcceptLanguage()).build();
 
         request.getItems().forEach(cartItemNested -> {
             Product product = products
