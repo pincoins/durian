@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.domain.Profile;
 import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.common.domain.BaseDateTime;
+import kr.pincoin.durian.common.util.RequestHeader;
 import kr.pincoin.durian.shop.controller.dto.OrderCreateRequest;
 import kr.pincoin.durian.shop.domain.conveter.*;
 import lombok.*;
@@ -108,8 +109,7 @@ public class Order extends BaseDateTime {
     public static OrderBuilder builder(OrderCreateRequest request,
                                        Profile profile,
                                        HttpServletRequest httpServletRequest) {
-        String ipAddress = Optional.ofNullable(httpServletRequest.getHeader("X-Forwarded-For"))
-                .orElse(httpServletRequest.getRemoteAddr());
+        String ipAddress = RequestHeader.getIpAddress(httpServletRequest);
 
         String userAgent = Optional.ofNullable(httpServletRequest.getHeader("User-Agent"))
                 .orElse("No user-agent set");
