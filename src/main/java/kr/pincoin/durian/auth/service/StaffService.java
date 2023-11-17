@@ -44,8 +44,7 @@ public class StaffService {
     createStaff(UserCreateRequest request) {
         User staff = User.builder(request.getUsername(),
                                   passwordEncoder.encode(request.getPassword()),
-                                  request.getFullName(),
-                                  request.getEmail())
+                                  request.getFullName())
                 .status(UserStatus.NORMAL)
                 .role(Role.STAFF)
                 .build();
@@ -103,16 +102,5 @@ public class StaffService {
                                                     "Staff not found",
                                                     List.of("Staff does not exist to change full name.")));
 
-    }
-
-    @Transactional
-    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
-    public Optional<User>
-    changeEmail(Long userId, UserChangeEmailRequest request) {
-        return userRepository.findStaff(userId, UserStatus.NORMAL)
-                .map(staff -> Optional.of(staff.changeEmail(request.getEmail())))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Staff not found",
-                                                    List.of("Staff does not exist to change email address.")));
     }
 }

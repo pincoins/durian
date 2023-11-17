@@ -52,8 +52,7 @@ public class MemberService {
     createMember(UserCreateRequest request) {
         User member = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
-                                   request.getFullName(),
-                                   request.getEmail())
+                                   request.getFullName())
                 .status(UserStatus.PENDING)
                 .role(Role.MEMBER)
                 .build();
@@ -159,7 +158,8 @@ public class MemberService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<Profile> changeUsername(Long userId, UserChangeUsernameRequest request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
@@ -185,21 +185,8 @@ public class MemberService {
         return Optional.of(profile);
     }
 
-    @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<Profile> changeEmail(Long userId, UserChangeEmailRequest request) {
-        Profile profile = profileRepository
-                .findMember(userId, UserStatus.NORMAL)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Member does not exist to change email.")));
-        profile.getUser().changeEmail(request.getEmail());
-        return Optional.of(profile);
-    }
-
     public boolean
-    exists(String username, String email) {
-        return userRepository.exists(username, email);
+    exists(String username) {
+        return userRepository.exists(username);
     }
 }

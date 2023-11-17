@@ -50,7 +50,7 @@ public class AuthService {
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request,
                  HttpServletRequest servletRequest) {
-        User user = userRepository.findUserByEmail(request.getEmail(), UserStatus.NORMAL)
+        User user = userRepository.findUserByUsername(request.getUsername(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Authentication failed",
                                                     List.of("Your email or password is not correct.")));

@@ -20,17 +20,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<User> findUserByEmail(String email, UserStatus status) {
-        JPAQuery<User> contentQuery = queryFactory
-                .select(user)
-                .from(user)
-                .where(emailEq(email),
-                       statusEq(status));
-
-        return Optional.ofNullable(contentQuery.fetchOne());
-    }
-
-    @Override
     public Optional<User> findUserByUsername(String username, UserStatus status) {
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
@@ -73,12 +62,11 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public boolean exists(String username, String email) {
+    public boolean exists(String username) {
         return queryFactory
                 .select(user)
                 .from(user)
-                .where(usernameEq(username),
-                       emailEq(email))
+                .where(usernameEq(username))
                 .fetchFirst() != null;
     }
 
@@ -105,10 +93,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
 
     BooleanExpression usernameEq(String username) {
         return username != null ? user.username.eq(username) : null;
-    }
-
-    BooleanExpression emailEq(String email) {
-        return email != null ? user.email.eq(email) : null;
     }
 
     BooleanExpression idEq(Long id) {

@@ -1,6 +1,5 @@
 package kr.pincoin.durian.auth.service;
 
-import kr.pincoin.durian.auth.controller.dto.UserChangeEmailRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangeFullNameRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangeUsernameRequest;
 import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
@@ -47,8 +46,7 @@ public class AdminService {
     createAdmin(UserCreateRequest request) {
         User admin = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
-                                   request.getFullName(),
-                                   request.getEmail())
+                                   request.getFullName())
                 .status(UserStatus.NORMAL)
                 .role(Role.SYSADMIN)
                 .build();
@@ -91,16 +89,5 @@ public class AdminService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Admin not found",
                                                     List.of("Admin does not exist to change full name.")));
-    }
-
-    @Transactional
-    @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
-    public Optional<User>
-    changeEmail(Long userId, UserChangeEmailRequest request) {
-        return userRepository.findAdmin(userId, UserStatus.NORMAL)
-                .map(admin -> Optional.of(admin.changeEmail(request.getEmail())))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Admin not found",
-                                                    List.of("Admin does not exist to change email address.")));
     }
 }

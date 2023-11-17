@@ -23,14 +23,11 @@ public class User extends BaseDateTime implements UserDetails {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username") // email address as a username
     private String username;
 
     @Column(name = "password")
     private String password;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "full_name")
     private String fullName;
@@ -52,13 +49,11 @@ public class User extends BaseDateTime implements UserDetails {
 
     public static UserBuilder builder(String username,
                                       String password,
-                                      String fullName,
-                                      String email) {
+                                      String fullName) {
         return new UserBuilder()
                 .username(username)
                 .password(password)
-                .fullName(fullName)
-                .email(email);
+                .fullName(fullName);
     }
 
     @Override
@@ -100,11 +95,6 @@ public class User extends BaseDateTime implements UserDetails {
         return this;
     }
 
-    public User changeEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
     public User approve() {
         this.status = UserStatus.NORMAL;
         return this;
@@ -125,7 +115,6 @@ public class User extends BaseDateTime implements UserDetails {
         this.username = uuid;
         this.password = "";
         this.fullName = uuid;
-        this.email = uuid;
         this.status = UserStatus.UNREGISTERED;
         return this;
     }
