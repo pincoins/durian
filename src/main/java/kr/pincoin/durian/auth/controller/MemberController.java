@@ -101,12 +101,12 @@ public class MemberController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Object>
+    public ResponseEntity<Void>
     memberDelete(@PathVariable Long userId) {
         if (memberService.deleteMember(userId)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/{userId}/reset-password")

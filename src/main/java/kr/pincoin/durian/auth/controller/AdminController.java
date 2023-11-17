@@ -50,12 +50,12 @@ public class AdminController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Object>
+    public ResponseEntity<Void>
     adminDelete(@PathVariable Long userId) {
         if (adminService.deleteAdmin(userId)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/{userId}/change-username")

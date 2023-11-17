@@ -21,5 +21,5 @@ public interface UserRepositoryQuery {
 
     List<User> findStaffs(UserStatus status);
 
-    Boolean exists(String username, String email);
+    boolean exists(String username, String email);
 }

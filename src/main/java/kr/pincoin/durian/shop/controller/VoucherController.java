@@ -136,11 +136,11 @@ public class VoucherController {
     }
 
     @DeleteMapping("/{voucherId}")
-    public ResponseEntity<Object> voucherDelete(@PathVariable Long voucherId) {
+    public ResponseEntity<Void> voucherDelete(@PathVariable Long voucherId) {
         if (voucherService.deleteVoucher(voucherId)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/bulk-create")
