@@ -14,12 +14,16 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestControllerAdvice // REST API only
 @Slf4j
@@ -79,13 +83,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({AccessDeniedException.class})
-    public ResponseEntity<Object>
+    public ResponseEntity<ApiErrorResponse>
     handleAccessDeniedException(AccessDeniedException ignored) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(new ApiErrorResponse(HttpStatus.FORBIDDEN,
+        // @PreAuthorize evaluation can fail if token does not exist.
+        // @PreAuthorize evaluation can fail if token is valid but role is not valid.
+
+        return Optional.ofNullable(((ServletRequestAttributes)
+                        Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+                                           .getRequest()
+                                           .getHeader("Authorization"))
+                .map(i -> ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiErrorResponse(HttpStatus.FORBIDDEN,
                                            "Resource access denied",
-                                           new ArrayList<>()));
+                                                   new ArrayList<>())))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
+                                                           "Access token is invalid or not sent",
+                                                           new ArrayList<>())));
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
