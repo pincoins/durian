@@ -73,7 +73,7 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
     }
 
     @Override
-    public Boolean exists(String username, String email) {
+    public boolean exists(String username, String email) {
         return queryFactory
                 .select(user)
                 .from(user)

@@ -91,6 +91,11 @@ public class AuthService {
         return Optional.of(getAccessTokenResponse(user, servletRequest));
     }
 
+    public void
+    deleteRefreshToken(String refreshToken) {
+        refreshTokenRepository.findById(refreshToken).ifPresent(refreshTokenRepository::delete);
+    }
+
     @Transactional
     @PreAuthorize("isAuthenticated() and @identity.isOwner(#userId)")
     public boolean

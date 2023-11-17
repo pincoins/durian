@@ -115,13 +115,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}/users/{userId}")
-    public ResponseEntity<Object>
+    public ResponseEntity<Void>
     orderDelete(@PathVariable Long orderId,
                 @PathVariable Long userId) {
         if (orderService.deleteOrder(orderId, userId)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/{orderId}/users/{userId}/payments")

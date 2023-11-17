@@ -112,11 +112,11 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Object>
+    public ResponseEntity<Void>
     categoryDelete(@PathVariable Long categoryId) {
         if (categoryService.deleteCategory(categoryId)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 }

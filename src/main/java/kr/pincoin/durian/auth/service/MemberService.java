@@ -198,7 +198,7 @@ public class MemberService {
         return Optional.of(profile);
     }
 
-    public Boolean
+    public boolean
     exists(String username, String email) {
         return userRepository.exists(username, email);
     }

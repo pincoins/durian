@@ -48,9 +48,9 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
-    refreshToken(@Valid @RequestBody RefreshTokenRequest request,
-                 @CookieValue("refreshToken") String refreshToken,
-                 HttpServletRequest servletRequest) {
+    refresh(@Valid @RequestBody RefreshTokenRequest request,
+            @CookieValue("refreshToken") String refreshToken,
+            HttpServletRequest servletRequest) {
         return authService.refresh(request, refreshToken, servletRequest)
                 .map(response -> {
                     HttpHeaders responseHeaders = getHttpHeaders(response);
@@ -62,6 +62,24 @@ public class AuthController {
                                                     List.of("Your refresh token is invalid or expired.")));
     }
 
+    @DeleteMapping("/refresh")
+    public ResponseEntity<Void>
+    refreshTokenDelete(@CookieValue("refreshToken") String refreshToken) {
+        authService.deleteRefreshToken(refreshToken);
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", "expired")
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("None")
+                .maxAge(0)
+                .path("/").build();
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Set-Cookie", cookie.toString());
+
+        return ResponseEntity.noContent().headers(responseHeaders).build();
+    }
+
     @PutMapping("/change-password")
     public ResponseEntity<Boolean>
     userPasswordChange(@Valid @RequestBody UserChangePasswordRequest request) {
@@ -69,7 +87,8 @@ public class AuthController {
         return ResponseEntity.ok().body(result);
     }
 
-    private HttpHeaders getHttpHeaders(AccessTokenResponse response) {
+    private HttpHeaders
+    getHttpHeaders(AccessTokenResponse response) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
 
