@@ -46,11 +46,6 @@ public class GoogleRecaptchaService {
                 .bodyToMono(GoogleRecaptchaResult.class)
                 .block();
 
-        if (result != null && result.getSuccess()) {
-            log.debug("google recaptcha code verified: {} {}", result.getChallengeTs(), result.getHostname());
-            return false;
-        }
-
-        return true;
+        return result == null || !result.getSuccess();
     }
 }

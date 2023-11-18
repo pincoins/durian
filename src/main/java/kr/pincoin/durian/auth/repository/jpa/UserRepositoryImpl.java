@@ -61,15 +61,6 @@ public class UserRepositoryImpl implements UserRepositoryQuery {
         return getUsers(Role.STAFF, status);
     }
 
-    @Override
-    public boolean exists(String username) {
-        return queryFactory
-                .select(user)
-                .from(user)
-                .where(usernameEq(username))
-                .fetchFirst() != null;
-    }
-
     private Optional<User> getUser(Long id, Role role, UserStatus status) {
         JPAQuery<User> contentQuery = queryFactory
                 .select(user)
