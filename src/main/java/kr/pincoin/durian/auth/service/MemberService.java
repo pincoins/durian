@@ -11,6 +11,7 @@ import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final GoogleRecaptchaService googleRecaptchaService;
+
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<Profile>
     listMembers(UserStatus status) {
@@ -50,6 +53,12 @@ public class MemberService {
     @Transactional
     public Profile
     createMember(UserCreateRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
         User member = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
                                    request.getFullName())

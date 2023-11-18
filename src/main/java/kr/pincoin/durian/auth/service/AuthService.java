@@ -53,7 +53,7 @@ public class AuthService {
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request,
                  HttpServletRequest servletRequest) {
-        if (!googleRecaptchaService.verify(request.getCaptcha())) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
             throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Google reCAPTCHA code not verified",
                                    List.of("Your Google reCAPTCHA code is invalid."));

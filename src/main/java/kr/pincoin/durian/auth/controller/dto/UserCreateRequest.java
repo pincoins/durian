@@ -35,4 +35,9 @@ public class UserCreateRequest {
     @Size(min = 8, max = 32)
     @Pattern(regexp = PASSWORD_PATTERN)
     private String password;
+
+    @JsonProperty("captcha")
+    @NotNull
+    @NotBlank
+    private String captcha;
 }

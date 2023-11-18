@@ -16,14 +16,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 public class GoogleRecaptchaService {
     private final WebClient webClient;
+
     @Value("${google-recaptcha.secret-key}")
     private String secretKey;
+
+    @Value("${google-recaptcha.enabled}")
+    private Boolean enabled;
 
     public GoogleRecaptchaService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://www.google.com/recaptcha/api").build();
     }
 
-    public boolean verify(@NonNull @NotBlank String captcha) {
+    public boolean isUnverified(@NonNull @NotBlank String captcha) {
+        if (!enabled) {
+            return true;
+        }
+
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 
         formData.add("secret", secretKey);
@@ -40,9 +48,9 @@ public class GoogleRecaptchaService {
 
         if (result != null && result.getSuccess()) {
             log.debug("google recaptcha code verified: {} {}", result.getChallengeTs(), result.getHostname());
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
