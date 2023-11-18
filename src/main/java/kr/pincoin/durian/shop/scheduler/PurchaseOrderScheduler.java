@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 public class PurchaseOrderScheduler {
     @Scheduled(cron = "${pincoin.scheduler.shop.purchase-order}")
     public void run() {
-        log.warn("purchase order: {}", LocalDateTime.now());
+        log.info("purchase order: {}", LocalDateTime.now());
     }
 }

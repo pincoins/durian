@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryQuery {
-    Optional<User> findUserByEmail(String email, UserStatus status);
-
     Optional<User> findUserByUsername(String username, UserStatus status);
 
     Optional<User> findUser(Long id, UserStatus status);
@@ -21,5 +19,5 @@ public interface UserRepositoryQuery {
 
     List<User> findStaffs(UserStatus status);
 
-    boolean exists(String username, String email);
+    boolean exists(String username);
 }

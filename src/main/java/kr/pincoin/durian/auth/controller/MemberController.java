@@ -143,22 +143,10 @@ public class MemberController {
                                                     List.of("Failed to change member full name")));
     }
 
-    @PutMapping("/{userId}/change-email")
-    public ResponseEntity<ProfileResponse>
-    memberChangeEmail(@PathVariable Long userId,
-                      @Valid @RequestBody UserChangeEmailRequest request) {
-        return memberService.changeEmail(userId, request)
-                .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Failed to change member email address")));
-    }
-
     @GetMapping("/exists")
     public ResponseEntity<ExistenceResponse>
-    memberExists(@RequestParam(name = "username", required = false) String username,
-                 @RequestParam(name = "email", required = false) String email) {
-        return ResponseEntity.ok().body(new ExistenceResponse(memberService.exists(username, email)));
+    memberExists(@RequestParam(name = "username", required = false) String username) {
+        return ResponseEntity.ok().body(new ExistenceResponse(memberService.exists(username)));
     }
 
     // request
@@ -181,7 +169,7 @@ public class MemberController {
     memberUploadPhotoId(@PathVariable Long userId,
                         @Valid @RequestPart(value = "file") MultipartFile file) {
         String s3file = awsService.uploadFile("shop", file);
-        log.warn(s3file);
+        log.debug(s3file);
         return ResponseEntity.ok().body("OK");
     }
 
@@ -190,7 +178,7 @@ public class MemberController {
     memberUploadCreditCard(@PathVariable Long userId,
                            @Valid @RequestPart(value = "file") MultipartFile file) {
         String s3file = awsService.uploadFile("shop", file);
-        log.warn(s3file);
+        log.debug(s3file);
         return ResponseEntity.ok().body("OK");
     }
 

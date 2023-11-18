@@ -6,6 +6,7 @@ import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,8 @@ public class StaffService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final GoogleRecaptchaService googleRecaptchaService;
+
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<User>
     listStaffs(UserStatus status) {
@@ -42,10 +45,15 @@ public class StaffService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public User
     createStaff(UserCreateRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
         User staff = User.builder(request.getUsername(),
                                   passwordEncoder.encode(request.getPassword()),
-                                  request.getFullName(),
-                                  request.getEmail())
+                                  request.getFullName())
                 .status(UserStatus.NORMAL)
                 .role(Role.STAFF)
                 .build();
@@ -103,16 +111,5 @@ public class StaffService {
                                                     "Staff not found",
                                                     List.of("Staff does not exist to change full name.")));
 
-    }
-
-    @Transactional
-    @PreAuthorize("hasRole('SYSADMIN') or hasRole('STAFF') and @identity.isOwner(#userId)")
-    public Optional<User>
-    changeEmail(Long userId, UserChangeEmailRequest request) {
-        return userRepository.findStaff(userId, UserStatus.NORMAL)
-                .map(staff -> Optional.of(staff.changeEmail(request.getEmail())))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Staff not found",
-                                                    List.of("Staff does not exist to change email address.")));
     }
 }

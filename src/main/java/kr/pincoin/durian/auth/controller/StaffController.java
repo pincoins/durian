@@ -92,15 +92,4 @@ public class StaffController {
                                                     "Staff not found",
                                                     List.of("Failed to change staff full name")));
     }
-
-    @PutMapping("/{userId}/change-email")
-    public ResponseEntity<UserResponse>
-    adminChangeEmail(@PathVariable Long userId,
-                     @Valid @RequestBody UserChangeEmailRequest request) {
-        return staffService.changeEmail(userId, request)
-                .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Staff not found",
-                                                    List.of("Failed to change staff email address")));
-    }
 }

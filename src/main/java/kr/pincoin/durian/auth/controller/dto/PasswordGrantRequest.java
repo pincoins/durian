@@ -18,15 +18,20 @@ public class PasswordGrantRequest {
     @Pattern(regexp = "password", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Invalid grant type")
     private String grantType;
 
-    @JsonProperty("email")
+    @JsonProperty("username")
     @NotNull
     @NotBlank
-    private String email;
+    private String username;
 
     @JsonProperty("password")
     @NotNull
     @NotBlank
     private String password;
+
+    @JsonProperty("captcha")
+    @NotNull
+    @NotBlank
+    private String captcha;
 
     @JsonProperty("scope")
     private String scope;

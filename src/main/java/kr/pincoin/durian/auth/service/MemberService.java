@@ -11,6 +11,7 @@ import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final GoogleRecaptchaService googleRecaptchaService;
+
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<Profile>
     listMembers(UserStatus status) {
@@ -50,10 +53,15 @@ public class MemberService {
     @Transactional
     public Profile
     createMember(UserCreateRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
         User member = User.builder(request.getUsername(),
                                    passwordEncoder.encode(request.getPassword()),
-                                   request.getFullName(),
-                                   request.getEmail())
+                                   request.getFullName())
                 .status(UserStatus.PENDING)
                 .role(Role.MEMBER)
                 .build();
@@ -159,7 +167,8 @@ public class MemberService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('USER') and @identity.isOwner(#userId)")
     public Optional<Profile> changeUsername(Long userId, UserChangeUsernameRequest request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
@@ -185,21 +194,8 @@ public class MemberService {
         return Optional.of(profile);
     }
 
-    @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
-    public Optional<Profile> changeEmail(Long userId, UserChangeEmailRequest request) {
-        Profile profile = profileRepository
-                .findMember(userId, UserStatus.NORMAL)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Member does not exist to change email.")));
-        profile.getUser().changeEmail(request.getEmail());
-        return Optional.of(profile);
-    }
-
     public boolean
-    exists(String username, String email) {
-        return userRepository.exists(username, email);
+    exists(String username) {
+        return userRepository.exists(username);
     }
 }

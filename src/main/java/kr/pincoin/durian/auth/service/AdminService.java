@@ -1,6 +1,5 @@
 package kr.pincoin.durian.auth.service;
 
-import kr.pincoin.durian.auth.controller.dto.UserChangeEmailRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangeFullNameRequest;
 import kr.pincoin.durian.auth.controller.dto.UserChangeUsernameRequest;
 import kr.pincoin.durian.auth.controller.dto.UserCreateRequest;
@@ -9,6 +8,7 @@ import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +29,8 @@ public class AdminService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final GoogleRecaptchaService googleRecaptchaService;
+
     @PreAuthorize("hasRole('SYSADMIN')")
     public List<User>
     listAdmins(UserStatus status) {
@@ -45,10 +47,15 @@ public class AdminService {
     @PreAuthorize("hasRole('SYSADMIN')")
     public User
     createAdmin(UserCreateRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
         User admin = User.builder(request.getUsername(),
-                                   passwordEncoder.encode(request.getPassword()),
-                                   request.getFullName(),
-                                   request.getEmail())
+                                  passwordEncoder.encode(request.getPassword()),
+                                  request.getFullName())
                 .status(UserStatus.NORMAL)
                 .role(Role.SYSADMIN)
                 .build();
@@ -91,16 +98,5 @@ public class AdminService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Admin not found",
                                                     List.of("Admin does not exist to change full name.")));
-    }
-
-    @Transactional
-    @PreAuthorize("hasRole('SYSADMIN') and @identity.isOwner(#userId)")
-    public Optional<User>
-    changeEmail(Long userId, UserChangeEmailRequest request) {
-        return userRepository.findAdmin(userId, UserStatus.NORMAL)
-                .map(admin -> Optional.of(admin.changeEmail(request.getEmail())))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Admin not found",
-                                                    List.of("Admin does not exist to change email address.")));
     }
 }

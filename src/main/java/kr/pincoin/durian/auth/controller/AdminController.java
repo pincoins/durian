@@ -79,15 +79,4 @@ public class AdminController {
                                                     "Admin not found",
                                                     List.of("Failed to change admin full name")));
     }
-
-    @PutMapping("/{userId}/change-email")
-    public ResponseEntity<UserResponse>
-    adminChangeEmail(@PathVariable Long userId,
-                     @Valid @RequestBody UserChangeEmailRequest request) {
-        return adminService.changeEmail(userId, request)
-                .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Admin not found",
-                                                    List.of("Failed to change admin email address")));
-    }
 }

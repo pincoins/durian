@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 public class PendingOrderDeleteScheduler {
     @Scheduled(cron = "${pincoin.scheduler.shop.pending-order-delete}")
     public void run() {
-        log.warn("pending order delete: {}", LocalDateTime.now());
+        log.info("pending order delete: {}", LocalDateTime.now());
     }
 }

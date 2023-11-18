@@ -12,6 +12,7 @@ import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.auth.repository.redis.RefreshTokenRepository;
 import kr.pincoin.durian.auth.util.jwt.TokenProvider;
 import kr.pincoin.durian.common.exception.ApiException;
+import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import kr.pincoin.durian.common.util.RequestHeaderParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +47,19 @@ public class AuthService {
 
     private final RequestHeaderParser requestHeaderParser;
 
+    private final GoogleRecaptchaService googleRecaptchaService;
+
     @Transactional
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request,
                  HttpServletRequest servletRequest) {
-        User user = userRepository.findUserByEmail(request.getEmail(), UserStatus.NORMAL)
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
+        User user = userRepository.findUserByUsername(request.getUsername(), UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
                                                     "Authentication failed",
                                                     List.of("Your email or password is not correct.")));
