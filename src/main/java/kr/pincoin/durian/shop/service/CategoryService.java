@@ -23,7 +23,6 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    @PreAuthorize("hasAnyRole('SYSADMIN')")
     public List<Category> listCategories(CategoryStatus status, String slug) {
         return categoryRepository.findCategories(status, slug);
     }

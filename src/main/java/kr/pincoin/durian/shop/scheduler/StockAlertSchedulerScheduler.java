@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 public class StockAlertSchedulerScheduler {
     @Scheduled(cron = "${pincoin.scheduler.shop.stock-alert}")
     public void run() {
-        log.warn("stock level update & alert: {}", LocalDateTime.now());
+        log.info("stock level update & alert: {}", LocalDateTime.now());
     }
 }

@@ -94,3 +94,6 @@ danal:
   cp-pwd: CPPWD
   cp-title: CPTITLE
   target-url: http://localhost:8080/members/%s/danal
+
+google-recaptcha:
+  secret-key: google-recaptcha-secret-key

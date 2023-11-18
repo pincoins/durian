@@ -13,6 +13,6 @@ public class VoucherSendScheduler {
 
     @Scheduled(fixedRateString = "${pincoin.scheduler.shop.voucher-send}", initialDelay = 3 * 1000) // autostart
     public void run() {
-        log.warn("send vouchers: {}", LocalDateTime.now());
+        log.info("send vouchers: {}", LocalDateTime.now());
     }
 }

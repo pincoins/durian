@@ -169,7 +169,7 @@ public class MemberController {
     memberUploadPhotoId(@PathVariable Long userId,
                         @Valid @RequestPart(value = "file") MultipartFile file) {
         String s3file = awsService.uploadFile("shop", file);
-        log.warn(s3file);
+        log.debug(s3file);
         return ResponseEntity.ok().body("OK");
     }
 
@@ -178,7 +178,7 @@ public class MemberController {
     memberUploadCreditCard(@PathVariable Long userId,
                            @Valid @RequestPart(value = "file") MultipartFile file) {
         String s3file = awsService.uploadFile("shop", file);
-        log.warn(s3file);
+        log.debug(s3file);
         return ResponseEntity.ok().body("OK");
     }
 

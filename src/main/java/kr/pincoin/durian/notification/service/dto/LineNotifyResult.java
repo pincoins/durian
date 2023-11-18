@@ -13,9 +13,4 @@ public class LineNotifyResult {
 
     @JsonProperty("message")
     private String message;
-
-    public LineNotifyResult(String status, String message) {
-        this.status = status;
-        this.message = message;
-    }
 }

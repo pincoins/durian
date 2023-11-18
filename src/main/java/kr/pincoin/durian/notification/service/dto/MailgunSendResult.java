@@ -13,9 +13,4 @@ public class MailgunSendResult {
 
     @JsonProperty("message")
     private String message;
-
-    public MailgunSendResult(String id, String message) {
-        this.id = id;
-        this.message = message;
-    }
 }

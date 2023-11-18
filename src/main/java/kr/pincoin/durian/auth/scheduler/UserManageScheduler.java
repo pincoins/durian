@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class UserManageScheduler {
     @Scheduled(cron = "${pincoin.scheduler.auth.user-manage}")
     public void run() {
-        log.warn("user inactivate: {}", LocalDateTime.now());
+        log.info("user inactivate: {}", LocalDateTime.now());
 
         // 1. limit customers who stopped buying
 
