@@ -24,6 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
              AuthenticationException authException) throws IOException {
         // 401 Unauthorized
         String exception = (String) (request.getAttribute("exception"));
+        log.warn(authException.getLocalizedMessage());
 
         try {
             if (authException instanceof InsufficientAuthenticationException) {
@@ -43,8 +44,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             throw new RuntimeException(e);
         }
 
-        // Do not send error for ApiErrorResponse
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        // Do not send error for custom response
+        // {
+        //	"message": "Insufficient authentication",
+        //	"code": "1002"
+        // }
+        // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private void

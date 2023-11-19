@@ -60,12 +60,12 @@ public class AuthService {
         }
 
         User user = userRepository.findUserByUsername(request.getUsername(), UserStatus.NORMAL)
-                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Authentication failed",
                                                     List.of("Your email or password is not correct.")));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ApiException(HttpStatus.FORBIDDEN,
+            throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Authentication failed",
                                    List.of("Your email or password is not correct."));
         }
@@ -79,18 +79,18 @@ public class AuthService {
             String refreshToken,
             HttpServletRequest servletRequest) {
         RefreshToken refreshTokenFound = refreshTokenRepository.findById(refreshToken)
-                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Refresh token not found",
                                                     List.of("Refresh token is invalid or expired.")));
 
         if (!refreshTokenFound.getIpAddress().equals(requestHeaderParser.changeHttpServletRequest(servletRequest).getIpAddress())) {
-            throw new ApiException(HttpStatus.FORBIDDEN,
+            throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Refresh token IP address mismatch",
                                    List.of("Your IP address was changed after token issued."));
         }
 
         User user = userRepository.findUser(refreshTokenFound.getUserId(), UserStatus.NORMAL)
-                .orElseThrow(() -> new ApiException(HttpStatus.FORBIDDEN,
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "User not found",
                                                     List.of("User does not exist.")));
 
@@ -117,7 +117,7 @@ public class AuthService {
                                                     List.of("User not found to change password.")));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new ApiException(HttpStatus.FORBIDDEN,
+            throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Password mismatch",
                                    List.of("Your old password is not correct."));
         }
