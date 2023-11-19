@@ -1,5 +1,6 @@
 package kr.pincoin.durian.auth.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
@@ -145,9 +146,10 @@ public class MemberController {
 
     @PostMapping("/send-email-verification")
     public ResponseEntity<EmailVerificationSentResponse>
-    memberSendEmailVerification(@Valid @RequestBody EmailVerificationRequest request) {
+    memberSendEmailVerification(@Valid @RequestBody EmailVerificationRequest request,
+                                HttpServletRequest servletRequest) {
         return ResponseEntity.ok()
-                .body(new EmailVerificationSentResponse(memberService.sendVerificationEmail(request)));
+                .body(new EmailVerificationSentResponse(memberService.sendVerificationEmail(request, servletRequest)));
     }
 
     // request
