@@ -4,7 +4,6 @@ package kr.pincoin.durian.common.config;
 import kr.pincoin.durian.auth.util.jwt.JwtAccessDeniedHandler;
 import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint;
 import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationFilter;
-import kr.pincoin.durian.auth.util.jwt.JwtExceptionFilter;
 import kr.pincoin.durian.auth.util.password.DjangoPasswordEncoder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +50,6 @@ public class SecurityConfig {
     private boolean corsAllowCredentials;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    private final JwtExceptionFilter jwtExceptionFilter;
 
     // Deprecated: WebSecurityConfigurerAdapter inheritance
     // Current: @Bean
@@ -138,9 +135,7 @@ public class SecurityConfig {
                                   );
 
         // Add JWT token filter
-        // JwtExceptionFilter -> JwtAuthenticationFilter -> UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

@@ -19,11 +19,15 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static kr.pincoin.durian.auth.util.jwt.JwtExceptionFilter.*;
-
 @Slf4j
 @Component
 public class TokenProvider {
+    public static final String ERROR_401_INVALID_SECRET_KEY = "2001";
+
+    public static final String ERROR_401_EXPIRED_JWT = "2002";
+
+    public static final String ERROR_401_INVALID_TOKEN = "2003";
+
     // HS256: openssl rand -hex 24
     // HS384: openssl rand -hex 32
     // HS512: openssl rand -hex 48
