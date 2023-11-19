@@ -29,6 +29,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         } catch (JwtException ex) {
             try {
                 setResponse(response, ex.getCode(), ex.getMessage());
+                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
