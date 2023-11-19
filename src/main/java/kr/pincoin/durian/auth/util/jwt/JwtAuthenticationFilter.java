@@ -20,8 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
-import static kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint.ERROR_401_USER_NOT_FOUND;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,6 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+    public static final String ERROR_401_USER_NOT_FOUND = "2001";
+
+    public static final String ERROR_401_INVALID_SECRET_KEY = "2002";
+
+    public static final String ERROR_401_EXPIRED_JWT = "2003";
+
+    public static final String ERROR_401_INVALID_TOKEN = "2004";
+
     @Override
     protected void
     doFilterInternal(@NonNull HttpServletRequest request,
@@ -41,6 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             Optional.ofNullable(tokenProvider.getBearerToken(request))
                     // 1. Retrieve access token from headers
+                    //  - throws JwtException
+                    //  - ERROR_401_INVALID_SECRET_KEY, ERROR_401_EXPIRED_JWT, ERROR_401_INVALID_TOKEN)
                     .flatMap(tokenProvider::validateAccessToken)
                     // 2. Retrieve user after jwt validation
                     .ifPresent(sub -> {

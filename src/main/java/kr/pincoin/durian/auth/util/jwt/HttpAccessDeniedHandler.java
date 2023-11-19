@@ -11,7 +11,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.io.IOException;
 
 @Slf4j
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class HttpAccessDeniedHandler implements AccessDeniedHandler {
     public static final String ERROR_403_FORBIDDEN = "3001";
 
     @Override

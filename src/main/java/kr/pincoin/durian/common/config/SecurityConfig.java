@@ -1,8 +1,8 @@
 package kr.pincoin.durian.common.config;
 
 
-import kr.pincoin.durian.auth.util.jwt.JwtAccessDeniedHandler;
-import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationEntryPoint;
+import kr.pincoin.durian.auth.util.jwt.HttpAccessDeniedHandler;
+import kr.pincoin.durian.auth.util.jwt.HttpAuthenticationEntryPoint;
 import kr.pincoin.durian.auth.util.jwt.JwtAuthenticationFilter;
 import kr.pincoin.durian.auth.util.password.DjangoPasswordEncoder;
 import lombok.Getter;
@@ -77,8 +77,8 @@ public class SecurityConfig {
 
         // Exception handling
         http.exceptionHandling(config -> {
-            config.authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 401 Unauthorized: login failure
-                    .accessDeniedHandler(new JwtAccessDeniedHandler()); // 403 Forbidden: no permission
+            config.authenticationEntryPoint(new HttpAuthenticationEntryPoint()) // 401 Unauthorized: login failure
+                    .accessDeniedHandler(new HttpAccessDeniedHandler()); // 403 Forbidden: no permission
         });
 
         // HTTP protocol headers

@@ -12,10 +12,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 
 @Slf4j
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    public static final String ERROR_401_USER_NOT_FOUND = "1001";
-    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1002";
-    public static final String ERROR_401_UNKNOWN = "1003";
+public class HttpAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    public static final String ERROR_401_INSUFFICIENT_AUTHENTICATION = "1001";
+    public static final String ERROR_401_UNKNOWN = "1002";
 
     @Override
     public void
@@ -24,32 +23,22 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
              AuthenticationException authException) throws IOException {
         // 401 Unauthorized
         String exception = (String) (request.getAttribute("exception"));
-        log.warn(authException.getLocalizedMessage());
 
         try {
             if (authException instanceof InsufficientAuthenticationException) {
                 setResponse(response,
                             ERROR_401_INSUFFICIENT_AUTHENTICATION,
                             "Insufficient authentication");
+                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             } else if (exception == null) {
                 setResponse(response,
                             ERROR_401_UNKNOWN,
                             "Security config error");
-            } else if (exception.equals(ERROR_401_USER_NOT_FOUND)) {
-                setResponse(response,
-                            ERROR_401_USER_NOT_FOUND,
-                            "User not found");
+                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        // Do not send error for custom response
-        // {
-        //	"message": "Insufficient authentication",
-        //	"code": "1002"
-        // }
-        // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private void
