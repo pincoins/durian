@@ -28,9 +28,9 @@ public class GoogleRecaptchaService {
     }
 
     public boolean isUnverified(@NonNull @NotBlank String captcha) {
-        if (!enabled) {
-            return true;
-        }
+       if (!enabled) {
+           return false;
+       }
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 
