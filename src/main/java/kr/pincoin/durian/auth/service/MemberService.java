@@ -1,22 +1,23 @@
 package kr.pincoin.durian.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.controller.dto.*;
-import kr.pincoin.durian.auth.domain.DocumentVerification;
-import kr.pincoin.durian.auth.domain.PhoneVerification;
-import kr.pincoin.durian.auth.domain.Profile;
-import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.*;
 import kr.pincoin.durian.auth.domain.converter.Role;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.domain.converter.VerificationStatus;
 import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
+import kr.pincoin.durian.auth.repository.redis.EmailVerificationRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.common.service.GoogleRecaptchaService;
 import kr.pincoin.durian.common.util.RandomString;
+import kr.pincoin.durian.common.util.RequestHeaderParser;
 import kr.pincoin.durian.notification.controller.dto.MailgunSendRequest;
 import kr.pincoin.durian.notification.service.MailgunService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,11 +38,24 @@ public class MemberService {
 
     private final UserRepository userRepository;
 
+    private final EmailVerificationRepository emailVerificationRepository;
+
     private final PasswordEncoder passwordEncoder;
+
+    private final RequestHeaderParser requestHeaderParser;
 
     private final GoogleRecaptchaService googleRecaptchaService;
 
     private final MailgunService mailgunService;
+
+    @Value("${auth.verification.email.timeout}")
+    private long emailVerificationTimeout;
+
+    @Value("${auth.verification.email.from}")
+    private String emailVerificationFrom;
+
+    @Value("${auth.verification.email.subject}")
+    private String emailVerificationSubject;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<Profile>
@@ -202,33 +216,46 @@ public class MemberService {
 
     @Transactional
     public boolean
-    sendVerificationEmail(EmailVerificationRequest request) {
+    sendVerificationEmail(EmailVerificationRequest request, HttpServletRequest servletRequest) {
         if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
             throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Google reCAPTCHA code not verified",
                                    List.of("Your Google reCAPTCHA code is invalid."));
         }
 
-        userRepository.findUserByUsername(request.getUsername(), null)
+        userRepository
+                .findUserByUsername(request.getUsername(), null)
                 .ifPresent(u -> {
                     throw new ApiException(HttpStatus.CONFLICT,
                                            "Duplicated email address",
                                            List.of("Your email address is already registered."));
                 });
 
-        // TODO: do not send email again if sent within 180 seconds
+        RequestHeaderParser headerParser = requestHeaderParser.changeHttpServletRequest(servletRequest);
+
+        String ipAddressAndEmail = String.format("%s|%s", headerParser.getIpAddress(), request.getUsername());
+
+        emailVerificationRepository
+                .findById(ipAddressAndEmail)
+                .ifPresent(emailVerification -> {
+                    throw new ApiException(HttpStatus.BAD_REQUEST,
+                                           "Email already sent",
+                                           List.of("Please, check your mailbox."));
+                });
 
         String code = new RandomString(RandomString.Type.NUMERIC, 6).randomString();
 
         try {
-            mailgunService.send(new MailgunSendRequest("no-reply@pincoin.co.kr",
+            mailgunService.send(new MailgunSendRequest(emailVerificationFrom,
                                                        request.getUsername(),
-                                                       "email verification",
+                                                       emailVerificationSubject,
                                                        code))
-                    .ifPresentOrElse(result -> {
-                        // TODO: add a redis record (ip, user-agent, code, expiration)
-                        log.warn(result.getMessage());
-                    }, () -> {
+                    .ifPresentOrElse(result -> emailVerificationRepository
+                                             .save(new EmailVerification(ipAddressAndEmail,
+                                                                         headerParser.getUserAgent(),
+                                                                         code)
+                                                           .setTimeout(emailVerificationTimeout)),
+                                     () -> {
                         throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
                                                "Failed to send email",
                                                List.of("Your email address is invalid."));

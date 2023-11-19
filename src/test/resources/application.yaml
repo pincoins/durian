@@ -77,6 +77,11 @@ auth:
     secret-key: 0da12e06858fcb6b659d497437455ab16b3628b5391e392081660265e8e23044c66f9f7fade5932f77b6cd3438f1b4eb
     access-token-expires-in: 3600 # 60 * 60 (1 hour)
     refresh-token-expires-in: 1209600 # 60 * 60 * 24 * 14 (2 weeks)
+  verification:
+    email:
+      timeout: 300
+      from: no-reply@pincoin.co.kr
+      subject: email verification
 
 aligo:
   api-key: api-key
