@@ -45,8 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 2. Retrieve user after jwt validation
                     .ifPresent(sub -> {
                         UserDetails userDetails;
-
-                        try {
                             // 3. Lookup user in databases
                             userDetails = userDetailsService.loadUserByUsername(sub);
 
@@ -66,32 +64,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                             // 7. Save user in context
                             SecurityContextHolder.getContext().setAuthentication(authentication);
-                        } catch (UsernameNotFoundException ignored) {
-                            request.setAttribute("exception", ERROR_401_USER_NOT_FOUND);
-                            log.warn("{} is not found.", sub);
-                        }
                     });
 
             // 8. Execute filter chain
             chain.doFilter(request, response);
         } catch (JwtException ex) {
-            try {
-                setResponse(response, ex.getCode(), ex.getMessage());
-                // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            setResponse(response, ex.getCode(), ex.getMessage());
+            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (UsernameNotFoundException ignored) {
+            setResponse(response, ERROR_401_USER_NOT_FOUND, "User not found");
+            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
     private void
     setResponse(HttpServletResponse response,
                 String errorCode,
-                String errorMessage) throws IOException, JSONException {
+                String errorMessage) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().print(new JSONObject()
-                                           .put("message", errorMessage)
-                                           .put("code", errorCode));
+
+        try {
+            response.getWriter().print(new JSONObject()
+                                               .put("message", errorMessage)
+                                               .put("code", errorCode));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
