@@ -43,8 +43,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             throw new RuntimeException(e);
         }
 
-        // does no send error for custom response
-        // response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        // Do not send error for ApiErrorResponse
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private void

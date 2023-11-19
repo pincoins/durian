@@ -143,10 +143,11 @@ public class MemberController {
                                                     List.of("Failed to change member full name")));
     }
 
-    @GetMapping("/exists")
-    public ResponseEntity<ExistenceResponse>
-    memberExists(@RequestParam(name = "username", required = false) String username) {
-        return ResponseEntity.ok().body(new ExistenceResponse(memberService.exists(username)));
+    @PostMapping("/send-email-verification")
+    public ResponseEntity<EmailVerificationSentResponse>
+    memberSendEmailVerification(@Valid @RequestBody EmailVerificationRequest request) {
+        return ResponseEntity.ok()
+                .body(new EmailVerificationSentResponse(memberService.sendVerificationEmail(request)));
     }
 
     // request

@@ -18,6 +18,4 @@ public interface UserRepositoryQuery {
     List<User> findAdmins(UserStatus status);
 
     List<User> findStaffs(UserStatus status);
-
-    boolean exists(String username);
 }

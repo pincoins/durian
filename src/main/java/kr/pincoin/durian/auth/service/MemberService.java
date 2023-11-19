@@ -12,6 +12,9 @@ import kr.pincoin.durian.auth.repository.jpa.ProfileRepository;
 import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.common.service.GoogleRecaptchaService;
+import kr.pincoin.durian.common.util.RandomString;
+import kr.pincoin.durian.notification.controller.dto.MailgunSendRequest;
+import kr.pincoin.durian.notification.service.MailgunService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +40,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final GoogleRecaptchaService googleRecaptchaService;
+
+    private final MailgunService mailgunService;
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public List<Profile>
@@ -194,8 +200,45 @@ public class MemberService {
         return Optional.of(profile);
     }
 
+    @Transactional
     public boolean
-    exists(String username) {
-        return userRepository.exists(username);
+    sendVerificationEmail(EmailVerificationRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Google reCAPTCHA code not verified",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
+        userRepository.findUserByUsername(request.getUsername(), null)
+                .ifPresent(u -> {
+                    throw new ApiException(HttpStatus.CONFLICT,
+                                           "Duplicated email address",
+                                           List.of("Your email address is already registered."));
+                });
+
+        // TODO: do not send email again if sent within 180 seconds
+
+        String code = new RandomString(RandomString.Type.NUMERIC, 6).randomString();
+
+        try {
+            mailgunService.send(new MailgunSendRequest("no-reply@pincoin.co.kr",
+                                                       request.getUsername(),
+                                                       "email verification",
+                                                       code))
+                    .ifPresentOrElse(result -> {
+                        // TODO: add a redis record (ip, user-agent, code, expiration)
+                        log.warn(result.getMessage());
+                    }, () -> {
+                        throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                               "Failed to send email",
+                                               List.of("Your email address is invalid."));
+                    });
+        } catch (WebClientResponseException ex) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                   "Failed to send email",
+                                   List.of("Email server was not configured correctly."));
+        }
+
+        return true;
     }
 }
