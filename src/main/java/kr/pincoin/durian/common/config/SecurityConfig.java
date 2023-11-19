@@ -138,7 +138,7 @@ public class SecurityConfig {
                                   );
 
         // Add JWT token filter
-        // JwtAuthenticationFilter -> JwtAuthenticationFilter -> UsernamePasswordAuthenticationFilter
+        // JwtExceptionFilter -> JwtAuthenticationFilter -> UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 

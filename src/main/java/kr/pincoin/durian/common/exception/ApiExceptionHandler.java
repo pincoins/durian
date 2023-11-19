@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -39,7 +40,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     // 503 handleAsyncRequestTimeoutException
     // 500 handleConversionNotSupported
     // 400 handleTypeMismatch
-    // 400 handleHttpMessageNotReadable
     // 500 handleHttpMessageNotWritable
 
     @Override
@@ -78,6 +78,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
                                                          "Invalid parameters",
                                                          errors);
+
+        return handleExceptionInternal(ex, response, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object>
+    handleHttpMessageNotReadable(@NonNull HttpMessageNotReadableException ex,
+                                 @NonNull HttpHeaders headers,
+                                 @NonNull HttpStatusCode status,
+                                 @NonNull WebRequest request) {
+        log.error(ex.getLocalizedMessage());
+
+        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                                         "Request body JSON parse error",
+                                                         new ArrayList<>());
 
         return handleExceptionInternal(ex, response, headers, status, request);
     }
