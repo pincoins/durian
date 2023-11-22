@@ -52,8 +52,8 @@ public class MemberController {
 
     @PostMapping("")
     public ResponseEntity<ProfileResponse>
-    memberCreate(@Valid @RequestBody UserCreateRequest request) {
-        ProfileResponse response = new ProfileResponse(memberService.createMember(request));
+    memberCreate(@Valid @RequestBody UserCreateRequest request, HttpServletRequest servletRequest) {
+        ProfileResponse response = new ProfileResponse(memberService.createMember(request, servletRequest));
         return ResponseEntity.ok().body(response);
     }
 
