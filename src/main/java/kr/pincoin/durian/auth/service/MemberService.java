@@ -72,30 +72,46 @@ public class MemberService {
 
     @Transactional
     public Profile
-    createMember(UserCreateRequest request) {
+    createMember(UserCreateRequest request, HttpServletRequest servletRequest) {
         if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
             throw new ApiException(HttpStatus.BAD_REQUEST,
                                    "Google reCAPTCHA code not verified",
                                    List.of("Your Google reCAPTCHA code is invalid."));
         }
 
-        User member = User.builder(request.getUsername(),
-                                   passwordEncoder.encode(request.getPassword()),
-                                   request.getFullName())
-                .status(UserStatus.PENDING)
-                .role(Role.MEMBER)
-                .build();
+        RequestHeaderParser headerParser = requestHeaderParser.changeHttpServletRequest(servletRequest);
 
-        Profile profile = Profile.builder(VerificationStatus.UNVERIFIED,
-                                          new PhoneVerification(VerificationStatus.UNVERIFIED),
-                                          new DocumentVerification(VerificationStatus.UNVERIFIED))
-                .build();
+        String ipAddressAndEmail = String.format("%s|%s", headerParser.getIpAddress(), request.getUsername());
 
-        profile.belongsTo(member);
+        return emailVerificationRepository
+                .findById(ipAddressAndEmail)
+                .map(emailVerification -> {
+                    if (emailVerification.isVerified()) {
+                        User member = User.builder(request.getUsername(),
+                                                   passwordEncoder.encode(request.getPassword()),
+                                                   request.getFullName())
+                                .status(UserStatus.NORMAL)
+                                .role(Role.MEMBER)
+                                .build();
 
-        profileRepository.save(profile); // user entity is persisted in cascade.
+                        Profile profile = Profile.builder(VerificationStatus.VERIFIED,
+                                                          new PhoneVerification(VerificationStatus.UNVERIFIED),
+                                                          new DocumentVerification(VerificationStatus.UNVERIFIED))
+                                .build();
 
-        return profile;
+                        profile.belongsTo(member);
+
+                        profileRepository.save(profile); // user entity is persisted in cascade.
+
+                        return profile;
+                    } else {
+                        throw new ApiException(HttpStatus.BAD_REQUEST,
+                                               "Email is not verified",
+                                               List.of("Please, verify your email address."));
+                    }
+                }).orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                      "Email is not verified",
+                                                      List.of("Your email verification could be expired.")));
     }
 
     @Transactional
