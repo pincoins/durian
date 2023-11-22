@@ -145,17 +145,20 @@ public class MemberController {
     }
 
     @PostMapping("/send-email-verification")
-    public ResponseEntity<EmailVerificationSentResponse>
+    public ResponseEntity<EmailVerificationResponse>
     memberSendEmailVerification(@Valid @RequestBody EmailVerificationRequest request,
                                 HttpServletRequest servletRequest) {
         return ResponseEntity.ok()
-                .body(new EmailVerificationSentResponse(memberService.sendVerificationEmail(request, servletRequest)));
+                .body(new EmailVerificationResponse(memberService.sendVerificationEmail(request, servletRequest)));
     }
 
-    // request
-    // verify email
-    // reject email verification
-    // revoke email verification
+    @PostMapping("/send-email-code")
+    public ResponseEntity<EmailVerificationResponse>
+    memberSendEmailCode(@Valid @RequestBody EmailCodeRequest request,
+                        HttpServletRequest servletRequest) {
+        return ResponseEntity.ok()
+                .body(new EmailVerificationResponse(memberService.sendEmailCode(request, servletRequest)));
+    }
 
     // request
     // verify phone
