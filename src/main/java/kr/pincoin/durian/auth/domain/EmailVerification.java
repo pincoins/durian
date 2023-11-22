@@ -22,11 +22,23 @@ public class EmailVerification {
 
     private final String code;
 
+    private boolean verified;
+
     @TimeToLive
     private Long timeout;
 
     public EmailVerification setTimeout(Long timeout) {
         this.timeout = timeout;
+        return this;
+    }
+
+    public EmailVerification verified() {
+        this.verified = true;
+        return this;
+    }
+
+    public EmailVerification unverified() {
+        this.verified = false;
         return this;
     }
 }

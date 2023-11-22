@@ -217,19 +217,7 @@ public class MemberService {
     @Transactional
     public boolean
     sendVerificationEmail(EmailVerificationRequest request, HttpServletRequest servletRequest) {
-        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
-            throw new ApiException(HttpStatus.BAD_REQUEST,
-                                   "Google reCAPTCHA code not verified",
-                                   List.of("Your Google reCAPTCHA code is invalid."));
-        }
-
-        userRepository
-                .findUserByUsername(request.getUsername(), null)
-                .ifPresent(u -> {
-                    throw new ApiException(HttpStatus.CONFLICT,
-                                           "Duplicated email address",
-                                           List.of("Your email address is already registered."));
-                });
+        validateGoogleCaptchaAndUser(request);
 
         RequestHeaderParser headerParser = requestHeaderParser.changeHttpServletRequest(servletRequest);
 
@@ -254,6 +242,7 @@ public class MemberService {
                                              .save(new EmailVerification(ipAddressAndEmail,
                                                                          headerParser.getUserAgent(),
                                                                          code)
+                                                           .unverified()
                                                            .setTimeout(emailVerificationTimeout)),
                                      () -> {
                         throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -267,5 +256,45 @@ public class MemberService {
         }
 
         return true;
+    }
+
+    @Transactional
+    public boolean
+    sendEmailCode(EmailCodeRequest request, HttpServletRequest servletRequest) {
+        validateGoogleCaptchaAndUser(request);
+
+        RequestHeaderParser headerParser = requestHeaderParser.changeHttpServletRequest(servletRequest);
+
+        String ipAddressAndEmail = String.format("%s|%s", headerParser.getIpAddress(), request.getUsername());
+
+        return emailVerificationRepository
+                .findById(ipAddressAndEmail)
+                .map(emailVerification -> {
+                    if (emailVerification.getCode().equals(request.getCode())) {
+                        emailVerificationRepository.save(emailVerification
+                                                                 .verified()
+                                                                 .setTimeout(emailVerificationTimeout));
+                        return true;
+                    }
+                    return false;
+                }).orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                      "Email verification not in process",
+                                                      List.of("Email server was not configured correctly.")));
+    }
+
+    private void validateGoogleCaptchaAndUser(EmailVerificationRequest request) {
+        if (googleRecaptchaService.isUnverified(request.getCaptcha())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                                   "Invalid reCAPTCHA",
+                                   List.of("Your Google reCAPTCHA code is invalid."));
+        }
+
+        userRepository
+                .findUserByUsername(request.getUsername(), null)
+                .ifPresent(u -> {
+                    throw new ApiException(HttpStatus.CONFLICT,
+                                           "Duplicated email address",
+                                           List.of("Your email address is already registered."));
+                });
     }
 }
