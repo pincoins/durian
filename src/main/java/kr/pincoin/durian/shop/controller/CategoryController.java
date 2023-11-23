@@ -52,7 +52,7 @@ public class CategoryController {
                 .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
                                                     "Category creation failure",
-                                                    List.of("Failed to create a category")));
+                                                    List.of("Failed to create a category.")));
     }
 
     @PutMapping("{categoryId}")

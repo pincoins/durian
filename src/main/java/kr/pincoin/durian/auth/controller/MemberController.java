@@ -130,7 +130,7 @@ public class MemberController {
                 .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
-                                                    List.of("Failed to change member username")));
+                                                    List.of("Failed to change member username.")));
     }
 
     @PutMapping("/{userId}/change-full-name")
@@ -141,7 +141,7 @@ public class MemberController {
                 .map(member -> ResponseEntity.ok().body(new ProfileResponse(member)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
-                                                    List.of("Failed to change member full name")));
+                                                    List.of("Failed to change member full name.")));
     }
 
     @PostMapping("/send-email-verification")

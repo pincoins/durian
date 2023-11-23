@@ -79,7 +79,7 @@ public class StaffController {
                 .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Staff not found",
-                                                    List.of("Failed to change staff username")));
+                                                    List.of("Failed to change staff username.")));
     }
 
     @PutMapping("/{userId}/change-full-name")
@@ -90,6 +90,6 @@ public class StaffController {
                 .map(staff -> ResponseEntity.ok().body(new UserResponse(staff)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Staff not found",
-                                                    List.of("Failed to change staff full name")));
+                                                    List.of("Failed to change staff full name.")));
     }
 }
