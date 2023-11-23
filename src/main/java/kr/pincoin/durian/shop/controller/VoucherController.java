@@ -67,7 +67,7 @@ public class VoucherController {
                         new VoucherResponse(voucher)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Voucher not found",
-                                                    List.of("Failed to mark as purchased")));
+                                                    List.of("Failed to mark as purchased.")));
     }
 
     @PutMapping("/{voucherId}/sell")
@@ -78,7 +78,7 @@ public class VoucherController {
                         new VoucherResponse(voucher)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Voucher not found",
-                                                    List.of("Failed to mark as sold")));
+                                                    List.of("Failed to mark as sold.")));
     }
 
     @PutMapping("/{voucherId}/revoke")

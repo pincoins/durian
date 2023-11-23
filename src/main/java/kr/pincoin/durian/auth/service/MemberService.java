@@ -120,8 +120,8 @@ public class MemberService {
     public boolean
     deleteMember(Long userId) {
         return profileRepository.findMember(userId, Arrays.asList(UserStatus.PENDING,
-                                                               UserStatus.INACTIVE,
-                                                               UserStatus.UNREGISTERED))
+                                                                  UserStatus.INACTIVE,
+                                                                  UserStatus.UNREGISTERED))
                 .map(profile -> {
                     profileRepository.delete(profile); // user entity is deleted in cascade.
                     return true;
@@ -294,8 +294,8 @@ public class MemberService {
                     }
                     return false;
                 }).orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
-                                                      "Email verification not in process",
-                                                      List.of("Email server was not configured correctly.")));
+                                                      "Access denied",
+                                                      List.of("Email verification process has not begun.")));
     }
 
     private void validateGoogleCaptchaAndUser(EmailVerificationRequest request) {

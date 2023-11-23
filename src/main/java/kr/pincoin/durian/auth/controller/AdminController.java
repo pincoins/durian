@@ -66,7 +66,7 @@ public class AdminController {
                 .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Admin not found",
-                                                    List.of("Failed to change admin username")));
+                                                    List.of("Failed to change admin username.")));
     }
 
     @PutMapping("/{userId}/change-full-name")
@@ -77,6 +77,6 @@ public class AdminController {
                 .map(admin -> ResponseEntity.ok().body(new UserResponse(admin)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Admin not found",
-                                                    List.of("Failed to change admin full name")));
+                                                    List.of("Failed to change admin full name.")));
     }
 }
