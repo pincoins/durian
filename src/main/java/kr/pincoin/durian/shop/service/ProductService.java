@@ -35,11 +35,12 @@ public class ProductService {
 
     public List<Product>
     listProducts(Long categoryId,
+                 String categorySlug,
                  String slug,
                  ProductStatus status,
                  ProductStockStatus stock,
                  Boolean removed) {
-        return productRepository.findProducts(categoryId, slug, status, stock, removed);
+        return productRepository.findProducts(categoryId, categorySlug, slug, status, stock, removed);
     }
 
     @Transactional
