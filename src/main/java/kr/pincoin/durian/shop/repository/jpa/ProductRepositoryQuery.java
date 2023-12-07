@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface ProductRepositoryQuery {
     List<Product> findProducts(Long categoryId,
+                               String categorySlug,
                                String slug,
                                ProductStatus status,
                                ProductStockStatus stock,

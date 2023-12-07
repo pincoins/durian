@@ -19,6 +19,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
 
     @Override
     public List<Product> findProducts(Long categoryId,
+                                      String categorySlug,
                                       String slug,
                                       ProductStatus status,
                                       ProductStockStatus stock,
@@ -29,6 +30,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
                 .innerJoin(product.category)
                 .fetchJoin()
                 .where(categoryIdEq(categoryId),
+                       categorySlugContains(categorySlug),
                        slugContains(slug),
                        statusEq(status),
                        stockEq(stock),
@@ -79,6 +81,10 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
 
     BooleanExpression categoryIdEq(Long categoryId) {
         return categoryId != null ? product.category.id.eq(categoryId) : null;
+    }
+
+    BooleanExpression categorySlugContains(String slug) {
+        return slug != null && !slug.isBlank() ? product.category.slug.contains(slug) : null;
     }
 
     BooleanExpression slugContains(String slug) {

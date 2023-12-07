@@ -30,6 +30,7 @@ public class ProductController {
     @GetMapping("")
     public ResponseEntity<List<? extends ProductResponse>>
     productList(@RequestParam(name = "categoryId", required = false) Long categoryId,
+                @RequestParam(name = "categorySlug", required = false) String categorySlug,
                 @RequestParam(name = "slug", required = false) String slug,
                 @RequestParam(name = "status", required = false) ProductStatus status,
                 @RequestParam(name = "stock", required = false) ProductStockStatus stock,
@@ -37,7 +38,7 @@ public class ProductController {
                 @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity
                 .ok()
-                .body(productService.listProducts(categoryId, slug, status, stock, removed)
+                .body(productService.listProducts(categoryId, categorySlug, slug, status, stock, removed)
                               .stream()
                               .map(product -> identityService.isAdmin(userDetails)
                                       ? new ProductAdminResponse(product)
