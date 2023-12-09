@@ -175,8 +175,8 @@ public class OrderRepositoryImpl implements OrderRepositoryQuery {
         return contentQuery.fetch();
     }
 
-    BooleanExpression userIdEq(Long orderId) {
-        return orderId != null ? order1.user.id.eq(orderId) : null;
+    BooleanExpression userIdEq(Long userId) {
+        return userId != null ? order1.user.id.eq(userId) : null;
     }
 
     BooleanExpression statusEq(OrderStatus status) {
