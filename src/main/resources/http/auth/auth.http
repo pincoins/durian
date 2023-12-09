@@ -5,7 +5,8 @@ Content-Type: application/json
 {
   "grantType": "password",
   "username": "{{email}}",
-  "password": "{{password}}"
+  "password": "{{password}}",
+  "captcha": "google-captcha-test"
 }
 
 > {%
