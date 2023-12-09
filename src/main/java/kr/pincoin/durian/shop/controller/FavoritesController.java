@@ -34,8 +34,8 @@ public class FavoritesController {
 
     @PostMapping("")
     public ResponseEntity<ProductResponse>
-    favoritesCreate(@Valid @RequestBody FavoritesRequest request) {
-        return favoritesService.createFavoriteItem(request.getUserId(), request.getProductId())
+    favoritesAdd(@Valid @RequestBody FavoritesRequest request) {
+        return favoritesService.addFavoriteItem(request.getUserId(), request.getProductId())
                 .map(product -> ResponseEntity.ok().body(new ProductResponse(product)))
                 .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
                                                     "Favorite item addition failure",

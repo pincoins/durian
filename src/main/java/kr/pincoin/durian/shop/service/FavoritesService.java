@@ -39,11 +39,11 @@ public class FavoritesService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Product>
-    createFavoriteItem(Long userId, Long productId) {
+    addFavoriteItem(Long userId, Long productId) {
         Profile profile = profileRepository.findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Invalid profile",
-                                                    List.of("Normal profile does not exist.")));
+                                                    List.of("Normal member profile does not exist.")));
 
         Product product = productRepository.findProduct(productId,
                                                         null,
