@@ -18,7 +18,7 @@ import static kr.pincoin.durian.shop.domain.QCategory.category;
 import static kr.pincoin.durian.shop.domain.QCategoryTreePath.categoryTreePath;
 
 @RequiredArgsConstructor
-public class CategoryRepositoryImpl implements  CategoryRepositoryQuery {
+public class CategoryRepositoryImpl implements CategoryRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
