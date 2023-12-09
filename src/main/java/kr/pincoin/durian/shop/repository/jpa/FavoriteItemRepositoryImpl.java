@@ -3,6 +3,7 @@ package kr.pincoin.durian.shop.repository.jpa;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.pincoin.durian.shop.domain.FavoriteItem;
 import kr.pincoin.durian.shop.domain.Product;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class FavoriteItemRepositoryImpl implements FavoriteItemRepositoryQuery {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Product> findItems(Long userId) {
+    public List<Product> findProducts(Long userId) {
         JPAQuery<Product> contentQuery = queryFactory
                 .select(product)
                 .from(favoriteItem)
@@ -32,9 +33,9 @@ public class FavoriteItemRepositoryImpl implements FavoriteItemRepositoryQuery {
     }
 
     @Override
-    public Optional<Product> findItem(Long userId, Long productId) {
-        JPAQuery<Product> contentQuery = queryFactory
-                .select(product)
+    public Optional<FavoriteItem> findItem(Long userId, Long productId) {
+        JPAQuery<FavoriteItem> contentQuery = queryFactory
+                .select(favoriteItem)
                 .from(favoriteItem)
                 .innerJoin(favoriteItem.product, product)
                 .where(userIdEq(userId),

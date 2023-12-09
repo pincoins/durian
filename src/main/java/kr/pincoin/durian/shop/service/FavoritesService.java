@@ -33,7 +33,7 @@ public class FavoritesService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public List<Product>
     listFavoriteItems(Long userId) {
-        return favoriteItemRepository.findItems(userId);
+        return favoriteItemRepository.findProducts(userId);
     }
 
     @Transactional
@@ -65,6 +65,12 @@ public class FavoritesService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public boolean removeFavoriteItem(Long userId, Long productId) {
-        return favoriteItemRepository.delete(userId, productId) > 0;
+        return favoriteItemRepository.findItem(userId, productId)
+                .map(item -> {
+                    favoriteItemRepository.delete(item);
+                    return true;
+                }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                      "Favorite item not found",
+                                                      List.of("Favorite item does not exist to delete.")));
     }
 }
