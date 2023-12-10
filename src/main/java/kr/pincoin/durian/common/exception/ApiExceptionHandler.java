@@ -106,7 +106,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                            .getHeader("Authorization"))
                 .map(i -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ApiErrorResponse(HttpStatus.FORBIDDEN,
-                                                   "Resource access denied",
+                                                   "Invalid role",
                                                    List.of("Access token exists but role is not valid"))))
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                 .body(new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
