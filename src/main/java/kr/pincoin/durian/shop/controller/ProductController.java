@@ -1,6 +1,7 @@
 package kr.pincoin.durian.shop.controller;
 
 import jakarta.validation.Valid;
+import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.service.IdentityService;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.*;
@@ -193,6 +194,43 @@ public class ProductController {
     public ResponseEntity<Void>
     productDelete(@PathVariable Long productId) {
         if (productService.deleteProduct(productId)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/{productId}/add-to-favorites")
+    public ResponseEntity<ProductResponse>
+    favoritesAdd(@PathVariable Long productId,
+                 @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED,
+                                   "Not authorized",
+                                   List.of("Login user may add product to favorites."));
+        }
+
+        return productService.addFavoriteItem(user.getId(), productId)
+                .map(product -> ResponseEntity.ok().body(new ProductResponse(product)))
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
+                                                    "Favorite item addition failure",
+                                                    List.of("Failed to create a new favorite item.")));
+    }
+
+    @DeleteMapping("/{productId}/remove-from-favorites")
+    public ResponseEntity<ProductResponse>
+    favoritesRemove(@PathVariable Long productId,
+                    @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED,
+                                   "Not authorized",
+                                   List.of("Login user may add product to favorites."));
+        }
+
+        if (productService.removeFavoriteItem(user.getId(), productId)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.badRequest().build();

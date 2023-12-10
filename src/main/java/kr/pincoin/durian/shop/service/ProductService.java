@@ -1,18 +1,19 @@
 package kr.pincoin.durian.shop.service;
 
+import kr.pincoin.durian.auth.domain.User;
+import kr.pincoin.durian.auth.domain.converter.UserStatus;
+import kr.pincoin.durian.auth.repository.jpa.UserRepository;
 import kr.pincoin.durian.common.exception.ApiException;
 import kr.pincoin.durian.shop.controller.dto.ProductChangePriceRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductChangeStockLevelRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductCreateRequest;
 import kr.pincoin.durian.shop.controller.dto.ProductUpdateRequest;
-import kr.pincoin.durian.shop.domain.Category;
-import kr.pincoin.durian.shop.domain.Price;
-import kr.pincoin.durian.shop.domain.Product;
-import kr.pincoin.durian.shop.domain.StockLevel;
+import kr.pincoin.durian.shop.domain.*;
 import kr.pincoin.durian.shop.domain.conveter.CategoryStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStatus;
 import kr.pincoin.durian.shop.domain.conveter.ProductStockStatus;
 import kr.pincoin.durian.shop.repository.jpa.CategoryRepository;
+import kr.pincoin.durian.shop.repository.jpa.FavoriteItemRepository;
 import kr.pincoin.durian.shop.repository.jpa.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,10 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final CategoryRepository categoryRepository;
+
+    private final UserRepository userRepository;
+
+    private final FavoriteItemRepository favoriteItemRepository;
 
     public List<Product>
     listProducts(Long categoryId,
@@ -281,5 +286,49 @@ public class ProductService {
                 }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                       "Soft removed product not found",
                                                       List.of("Product does not exist to delete.")));
+    }
+
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
+    public List<Product>
+    listFavoriteItems(Long userId) {
+        return favoriteItemRepository.findProducts(userId);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
+    public Optional<Product>
+    addFavoriteItem(Long userId, Long productId) {
+        User user = userRepository.findUser(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                    "Invalid profile",
+                                                    List.of("Normal user does not exist.")));
+
+        Product product = productRepository.findProduct(productId,
+                                                        null,
+                                                        null,
+                                                        ProductStatus.ENABLED,
+                                                        null,
+                                                        false)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
+                                                    "Invalid product",
+                                                    List.of("Normal product does not exist.")));
+
+        FavoriteItem favoriteItem = FavoriteItem.builder(user, product).build();
+
+        favoriteItemRepository.save(favoriteItem);
+
+        return Optional.of(product);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF') or hasRole('MEMBER') and @identity.isOwner(#userId)")
+    public boolean removeFavoriteItem(Long userId, Long productId) {
+        return favoriteItemRepository.findItem(userId, productId)
+                .map(item -> {
+                    favoriteItemRepository.delete(item);
+                    return true;
+                }).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                      "Favorite item not found",
+                                                      List.of("Favorite item does not exist to delete.")));
     }
 }

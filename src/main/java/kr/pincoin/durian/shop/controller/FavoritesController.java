@@ -1,15 +1,17 @@
 package kr.pincoin.durian.shop.controller;
 
-import jakarta.validation.Valid;
-import kr.pincoin.durian.common.exception.ApiException;
-import kr.pincoin.durian.shop.controller.dto.FavoritesRequest;
+import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.shop.controller.dto.ProductResponse;
-import kr.pincoin.durian.shop.service.FavoritesService;
+import kr.pincoin.durian.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -19,35 +21,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class FavoritesController {
-    private final FavoritesService favoritesService;
+    private final ProductService productService;
 
     @GetMapping("")
     public ResponseEntity<List<ProductResponse>>
-    favoritesList(@RequestParam(name = "userId") Long userId) {
+    favoritesList(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            return ResponseEntity.ok().body(List.of());
+        }
+
         return ResponseEntity
                 .ok()
-                .body(favoritesService.listFavoriteItems(userId)
+                .body(productService.listFavoriteItems(user.getId())
                               .stream()
                               .map(ProductResponse::new)
                               .toList());
-    }
-
-    @PostMapping("")
-    public ResponseEntity<ProductResponse>
-    favoritesAdd(@Valid @RequestBody FavoritesRequest request) {
-        return favoritesService.addFavoriteItem(request.getUserId(), request.getProductId())
-                .map(product -> ResponseEntity.ok().body(new ProductResponse(product)))
-                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT,
-                                                    "Favorite item addition failure",
-                                                    List.of("Failed to create a new favorite item.")));
-    }
-
-    @DeleteMapping("")
-    public ResponseEntity<ProductResponse>
-    favoritesRemove(@Valid @RequestBody FavoritesRequest request) {
-        if (favoritesService.removeFavoriteItem(request.getUserId(), request.getProductId())) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.badRequest().build();
     }
 }
