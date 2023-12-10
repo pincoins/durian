@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.*;
+import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.service.DanalService;
 import kr.pincoin.durian.auth.service.MemberService;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -208,13 +211,20 @@ public class MemberController {
 
     @GetMapping("/{userId}/favorites")
     public ResponseEntity<Favorites>
-    memberFetchFavorites(@PathVariable Long userId) {
+    memberFetchFavorites(@PathVariable Long userId,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            return ResponseEntity.ok().body(Favorites.builder().build());
+        }
+
         return memberService.getMember(userId, UserStatus.NORMAL)
                 .map(result -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
                         return ResponseEntity.ok().body(mapper.readValue(result.getFavorites(), Favorites.class));
-                    } catch (JsonProcessingException e) {
+                    } catch (JsonProcessingException ignored) {
                         throw new ApiException(HttpStatus.CONFLICT,
                                                "Favorites JSON parse error",
                                                List.of("Favorites json format is invalid."));
@@ -238,13 +248,20 @@ public class MemberController {
 
     @GetMapping("/{userId}/cart")
     public ResponseEntity<Cart>
-    memberFetchCart(@PathVariable Long userId) {
+    memberFetchCart(@PathVariable Long userId,
+                    @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            return ResponseEntity.ok().body(Cart.builder().build());
+        }
+
         return memberService.getMember(userId, UserStatus.NORMAL)
                 .map(result -> {
                     try {
                         ObjectMapper mapper = new ObjectMapper();
                         return ResponseEntity.ok().body(mapper.readValue(result.getCart(), Cart.class));
-                    } catch (JsonProcessingException e) {
+                    } catch (JsonProcessingException ignored) {
                         throw new ApiException(HttpStatus.CONFLICT,
                                                "Cart JSON parse error",
                                                List.of("Cart json format is invalid."));
