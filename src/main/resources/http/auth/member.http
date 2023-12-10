@@ -97,7 +97,6 @@ GET http://localhost:8080/members/{{memberId}}/favorites
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-
 ### Member Update Favorites
 POST http://localhost:8080/members/{{memberId}}/favorites
 Content-Type: application/json
@@ -114,6 +113,39 @@ Authorization: Bearer {{accessToken}}
       "id": 2,
       "title": "title2",
       "slug": "slug2"
+    }
+  ]
+}
+
+### Member Fetch Cart
+GET http://localhost:8080/members/{{memberId}}/cart
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Member Update Cart
+POST http://localhost:8080/members/{{memberId}}/cart
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "items": [
+    {
+      "id": 1,
+      "slug": "slug1",
+      "name": "name1",
+      "subtitle": "subtitle1",
+      "listPrice": 100,
+      "sellingPrice": 50,
+      "quantity": 3
+    },
+    {
+      "id": 2,
+      "slug": "slug2",
+      "name": "name2",
+      "subtitle": "subtitle2",
+      "listPrice": 500,
+      "sellingPrice": 450,
+      "quantity": 2
     }
   ]
 }

@@ -237,14 +237,32 @@ public class MemberController {
     }
 
     @GetMapping("/{userId}/cart")
-    public ResponseEntity<String>
+    public ResponseEntity<Cart>
     memberFetchCart(@PathVariable Long userId) {
-        return null;
+        return memberService.getMember(userId, UserStatus.NORMAL)
+                .map(result -> {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return ResponseEntity.ok().body(mapper.readValue(result.getCart(), Cart.class));
+                    } catch (JsonProcessingException e) {
+                        throw new ApiException(HttpStatus.CONFLICT,
+                                               "Cart JSON parse error",
+                                               List.of("Cart json format is invalid."));
+                    }
+                })
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to retrieve.")));
     }
 
     @PostMapping("/{userId}/cart")
-    public ResponseEntity<String>
-    memberUpdateCart(@PathVariable Long userId) {
-        return null;
+    public ResponseEntity<Cart>
+    memberUpdateCart(@PathVariable Long userId,
+                     @Valid @RequestBody Cart request) {
+        return memberService.updateCart(userId, request)
+                .map(member -> ResponseEntity.ok().body(request))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to update favorites.")));
     }
 }
