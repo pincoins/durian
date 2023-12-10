@@ -1,5 +1,7 @@
 package kr.pincoin.durian.auth.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.pincoin.durian.auth.controller.dto.*;
 import kr.pincoin.durian.auth.domain.*;
@@ -64,9 +66,10 @@ public class MemberService {
     }
 
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Profile>
     getMember(Long userId, UserStatus status) {
+        log.warn("userId: {}", userId);
         return profileRepository.findMember(userId, status);
     }
 
@@ -116,7 +119,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public boolean
     deleteMember(Long userId) {
         return profileRepository.findMember(userId, Arrays.asList(UserStatus.PENDING,
@@ -159,7 +162,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Profile>
     activateMember(Long userId) {
         Profile profile = profileRepository
@@ -174,7 +177,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Profile>
     unregisterMember(Long userId) {
         Profile profile = profileRepository
@@ -204,7 +207,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Profile> changeUsername(Long userId, UserChangeUsernameRequest request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
@@ -218,7 +221,7 @@ public class MemberService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('USER') and @identity.isOwner(#userId)")
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
     public Optional<Profile> changeFullName(Long userId, UserChangeFullNameRequest request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
@@ -228,6 +231,26 @@ public class MemberService {
 
         profile.getUser().changeFullName(request.getFullName());
         return Optional.of(profile);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
+            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
+    public Optional<Profile> updateFavorites(Long userId, Favorites request) {
+        Profile profile = profileRepository
+                .findMember(userId, UserStatus.NORMAL)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to update favorites.")));
+        try {
+            profile.updateFavorites(new ObjectMapper().writeValueAsString(request));
+
+            return Optional.of(profile);
+        } catch (JsonProcessingException ignored) {
+            throw new ApiException(HttpStatus.CONFLICT,
+                                   "Favorites JSON parse error",
+                                   List.of("Favorites json format is invalid."));
+        }
     }
 
     @Transactional

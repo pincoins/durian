@@ -1,5 +1,7 @@
 package kr.pincoin.durian.auth.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.*;
@@ -202,5 +204,47 @@ public class MemberController {
     public ResponseEntity<String>
     memberVerifyPhone(@PathVariable Long userId) {
         return ResponseEntity.ok().body("hello");
+    }
+
+    @GetMapping("/{userId}/favorites")
+    public ResponseEntity<Favorites>
+    memberFetchFavorites(@PathVariable Long userId) {
+        return memberService.getMember(userId, UserStatus.NORMAL)
+                .map(result -> {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return ResponseEntity.ok().body(mapper.readValue(result.getFavorites(), Favorites.class));
+                    } catch (JsonProcessingException e) {
+                        throw new ApiException(HttpStatus.CONFLICT,
+                                               "Favorites JSON parse error",
+                                               List.of("Favorites json format is invalid."));
+                    }
+                })
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to retrieve.")));
+    }
+
+    @PostMapping("/{userId}/favorites")
+    public ResponseEntity<Favorites>
+    memberUpdateFavorites(@PathVariable Long userId,
+                          @Valid @RequestBody Favorites request) {
+        return memberService.updateFavorites(userId, request)
+                .map(member -> ResponseEntity.ok().body(request))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to update favorites.")));
+    }
+
+    @GetMapping("/{userId}/cart")
+    public ResponseEntity<String>
+    memberFetchCart(@PathVariable Long userId) {
+        return null;
+    }
+
+    @PostMapping("/{userId}/cart")
+    public ResponseEntity<String>
+    memberUpdateCart(@PathVariable Long userId) {
+        return null;
     }
 }

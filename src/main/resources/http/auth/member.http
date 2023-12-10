@@ -91,3 +91,29 @@ Content-Disposition: form-data; name="file"; filename="test.png"
 
 < /Users/jonghwa/Desktop/test.png
 --xxx--
+
+### Member Fetch Favorites
+GET http://localhost:8080/members/{{memberId}}/favorites
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Member Update Favorites
+POST http://localhost:8080/members/{{memberId}}/favorites
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "title1",
+      "slug": "slug1"
+    },
+    {
+      "id": 2,
+      "title": "title2",
+      "slug": "slug2"
+    }
+  ]
+}
