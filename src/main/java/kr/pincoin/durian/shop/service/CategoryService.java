@@ -29,7 +29,12 @@ public class CategoryService {
 
     public Optional<Category>
     getCategory(Long categoryId, CategoryStatus status) {
-        return categoryRepository.findCategory(categoryId, status, null);
+        return categoryRepository.findCategory(categoryId, status);
+    }
+
+    public Optional<Category>
+    getCategory(String slug, CategoryStatus status) {
+        return categoryRepository.findCategory(slug, status);
     }
 
     @Transactional
@@ -53,7 +58,7 @@ public class CategoryService {
     public Optional<Category>
     updateCategory(Long categoryId, CategoryUpdateRequest request) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.NORMAL, null)
+                .findCategory(categoryId, CategoryStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to update.")));
@@ -65,7 +70,7 @@ public class CategoryService {
     public Optional<Category>
     hideCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.NORMAL, null)
+                .findCategory(categoryId, CategoryStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to hide.")));
@@ -77,7 +82,7 @@ public class CategoryService {
     public Optional<Category>
     showCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.HIDDEN, null)
+                .findCategory(categoryId, CategoryStatus.HIDDEN)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to show.")));
@@ -89,7 +94,7 @@ public class CategoryService {
     public Optional<Category>
     removeCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.HIDDEN, null)
+                .findCategory(categoryId, CategoryStatus.HIDDEN)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to remove.")));
@@ -102,7 +107,7 @@ public class CategoryService {
     public Optional<Category>
     restoreCategory(Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.HIDDEN, null)
+                .findCategory(categoryId, CategoryStatus.HIDDEN)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",
                                                     List.of("Category does not exist to restore.")));
@@ -114,7 +119,7 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')")
     public boolean
     deleteCategory(Long categoryId) {
-        return categoryRepository.findCategory(categoryId, CategoryStatus.HIDDEN, null)
+        return categoryRepository.findCategory(categoryId, CategoryStatus.HIDDEN)
                 .map(category -> {
                     categoryRepository.delete(category);
                     return true;

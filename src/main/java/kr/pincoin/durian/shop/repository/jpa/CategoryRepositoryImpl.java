@@ -27,7 +27,7 @@ public class CategoryRepositoryImpl implements CategoryRepositoryQuery {
                 .select(category)
                 .from(category)
                 .where(statusEq(status),
-                       slugContains(slug))
+                       slugEq(slug))
                 .orderBy(category.position.asc(),
                          category.title.asc());
 
@@ -35,16 +35,27 @@ public class CategoryRepositoryImpl implements CategoryRepositoryQuery {
     }
 
     @Override
-    public Optional<Category> findCategory(Long id, CategoryStatus status, String slug) {
+    public Optional<Category> findCategory(Long id, CategoryStatus status) {
         JPAQuery<Category> contentQuery = queryFactory
                 .select(category)
                 .from(category)
                 .where(category.id.eq(id),
-                       statusEq(status),
-                       slugContains(slug));
+                       statusEq(status));
 
         return Optional.ofNullable(contentQuery.fetchOne());
     }
+
+    @Override
+    public Optional<Category> findCategory(String slug, CategoryStatus status) {
+        JPAQuery<Category> contentQuery = queryFactory
+                .select(category)
+                .from(category)
+                .where(slugEq(slug),
+                       statusEq(status));
+
+        return Optional.ofNullable(contentQuery.fetchOne());
+    }
+
 
     @Override
     public List<CategorySelfParentResult> findSubTree(Long rootId) {
@@ -149,8 +160,8 @@ public class CategoryRepositoryImpl implements CategoryRepositoryQuery {
         return status != null ? category.status.eq(status) : category.status.eq(CategoryStatus.NORMAL);
     }
 
-    BooleanExpression slugContains(String slug) {
-        return slug != null && !slug.isBlank() ? category.slug.contains(slug) : null;
+    BooleanExpression slugEq(String slug) {
+        return slug != null && !slug.isBlank() ? category.slug.eq(slug) : null;
     }
 
     BooleanExpression pathLengthEq(Integer pathLength) {

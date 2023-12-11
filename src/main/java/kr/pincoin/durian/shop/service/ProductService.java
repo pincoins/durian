@@ -48,8 +48,7 @@ public class ProductService {
     public Optional<Product>
     createProduct(ProductCreateRequest request) {
         Category category = categoryRepository.findCategory(request.getCategoryId(),
-                                                            CategoryStatus.NORMAL,
-                                                            null)
+                                                            CategoryStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                                                     "Invalid category",
                                                     List.of("Normal category does not exist.")));
@@ -212,7 +211,7 @@ public class ProductService {
     public Optional<Product>
     changeCategory(Long productId, Long categoryId) {
         Category category = categoryRepository
-                .findCategory(categoryId, CategoryStatus.NORMAL, null)
+                .findCategory(categoryId, CategoryStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Normal category not found",
                                                     List.of("Category does not exist for product to change.")));

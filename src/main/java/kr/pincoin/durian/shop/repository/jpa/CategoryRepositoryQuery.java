@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface CategoryRepositoryQuery {
     List<Category> findCategories(CategoryStatus status, String slug);
 
-    Optional<Category> findCategory(Long id, CategoryStatus status, String slug);
+    Optional<Category> findCategory(Long id, CategoryStatus status);
+
+    Optional<Category> findCategory(String slug, CategoryStatus status);
 
     List<CategorySelfParentResult> findSubTree(Long rootId);
 
