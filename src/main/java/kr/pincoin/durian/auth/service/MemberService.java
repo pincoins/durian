@@ -236,7 +236,7 @@ public class MemberService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public Optional<Profile> updateFavorites(Long userId, Favorites request) {
+    public Optional<Profile> replaceFavorites(Long userId, Favorites request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
@@ -256,7 +256,7 @@ public class MemberService {
     @Transactional
     @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
             " or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public Optional<Profile> updateCart(Long userId, Cart request) {
+    public Optional<Profile> replaceCart(Long userId, Cart request) {
         Profile profile = profileRepository
                 .findMember(userId, UserStatus.NORMAL)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,

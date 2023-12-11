@@ -237,9 +237,9 @@ public class MemberController {
 
     @PostMapping("/{userId}/favorites")
     public ResponseEntity<Favorites>
-    memberUpdateFavorites(@PathVariable Long userId,
-                          @Valid @RequestBody Favorites request) {
-        return memberService.updateFavorites(userId, request)
+    memberReplaceFavorites(@PathVariable Long userId,
+                           @Valid @RequestBody Favorites request) {
+        return memberService.replaceFavorites(userId, request)
                 .map(member -> ResponseEntity.ok().body(request))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
@@ -274,9 +274,9 @@ public class MemberController {
 
     @PostMapping("/{userId}/cart")
     public ResponseEntity<Cart>
-    memberUpdateCart(@PathVariable Long userId,
-                     @Valid @RequestBody Cart request) {
-        return memberService.updateCart(userId, request)
+    memberReplaceCart(@PathVariable Long userId,
+                      @Valid @RequestBody Cart request) {
+        return memberService.replaceCart(userId, request)
                 .map(member -> ResponseEntity.ok().body(request))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Member not found",
