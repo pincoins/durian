@@ -85,11 +85,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                  @NonNull HttpHeaders headers,
                                  @NonNull HttpStatusCode status,
                                  @NonNull WebRequest request) {
-        log.error(ex.getLocalizedMessage());
-
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
                                                          "Request body JSON parse error",
-                                                         new ArrayList<>());
+                                                         List.of(ex.getLocalizedMessage().split(":")[0]));
 
         return handleExceptionInternal(ex, response, headers, status, request);
     }
