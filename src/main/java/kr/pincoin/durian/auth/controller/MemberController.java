@@ -245,41 +245,4 @@ public class MemberController {
                                                     "Member not found",
                                                     List.of("Failed to update favorites.")));
     }
-
-    @GetMapping("/{userId}/cart")
-    public ResponseEntity<Cart>
-    memberFetchCart(@PathVariable Long userId,
-                    @AuthenticationPrincipal UserDetails userDetails) {
-        User user = (User) userDetails;
-
-        if (user == null) {
-            return ResponseEntity.ok().body(Cart.builder().build());
-        }
-
-        return memberService.getMember(userId, UserStatus.NORMAL)
-                .map(result -> {
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        return ResponseEntity.ok().body(mapper.readValue(result.getCart(), Cart.class));
-                    } catch (JsonProcessingException ignored) {
-                        throw new ApiException(HttpStatus.CONFLICT,
-                                               "Cart JSON parse error",
-                                               List.of("Cart json format is invalid."));
-                    }
-                })
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Member does not exist to retrieve.")));
-    }
-
-    @PostMapping("/{userId}/cart")
-    public ResponseEntity<Cart>
-    memberReplaceCart(@PathVariable Long userId,
-                      @Valid @RequestBody Cart request) {
-        return memberService.replaceCart(userId, request)
-                .map(member -> ResponseEntity.ok().body(request))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Failed to update favorites.")));
-    }
 }

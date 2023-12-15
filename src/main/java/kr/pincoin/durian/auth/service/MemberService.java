@@ -254,26 +254,6 @@ public class MemberService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('SYSADMIN', 'STAFF')" +
-            " or hasRole('MEMBER') and @identity.isOwner(#userId)")
-    public Optional<Profile> replaceCart(Long userId, Cart request) {
-        Profile profile = profileRepository
-                .findMember(userId, UserStatus.NORMAL)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                                                    "Member not found",
-                                                    List.of("Member does not exist to update cart.")));
-        try {
-            profile.updateCart(new ObjectMapper().writeValueAsString(request));
-
-            return Optional.of(profile);
-        } catch (JsonProcessingException ignored) {
-            throw new ApiException(HttpStatus.CONFLICT,
-                                   "Favorites JSON parse error",
-                                   List.of("Favorites json format is invalid."));
-        }
-    }
-
-    @Transactional
     public boolean
     sendVerificationEmail(EmailVerificationRequest request, HttpServletRequest servletRequest) {
         validateGoogleCaptchaAndUser(request);
