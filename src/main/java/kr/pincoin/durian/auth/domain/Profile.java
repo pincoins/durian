@@ -80,6 +80,9 @@ public class Profile extends BaseDateTime {
     @Column(name = "memo")
     private String memo;
 
+    @Column(name = "favorites")
+    private String favorites;
+
     @ManyToOne(optional = false,
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL) // `orphanRemoval` option is applicable to `User` entity.
@@ -162,6 +165,11 @@ public class Profile extends BaseDateTime {
         averagePrice = this.totalListPrice
                 .divide(BigDecimal.valueOf(this.totalOrderCount + 1), 0, RoundingMode.DOWN);
 
+        return this;
+    }
+
+    public Profile updateFavorites(String favorites) {
+        this.favorites = favorites;
         return this;
     }
 }

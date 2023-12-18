@@ -21,10 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestControllerAdvice // REST API only
 @Slf4j
@@ -88,11 +85,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                  @NonNull HttpHeaders headers,
                                  @NonNull HttpStatusCode status,
                                  @NonNull WebRequest request) {
-        log.error(ex.getLocalizedMessage());
-
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
                                                          "Request body JSON parse error",
-                                                         new ArrayList<>());
+                                                         List.of(ex.getLocalizedMessage().split(":")[0]));
 
         return handleExceptionInternal(ex, response, headers, status, request);
     }
@@ -109,12 +104,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                            .getHeader("Authorization"))
                 .map(i -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ApiErrorResponse(HttpStatus.FORBIDDEN,
-                                           "Resource access denied",
-                                                   new ArrayList<>())))
+                                                   "Invalid role",
+                                                   List.of("Access token exists but role is not valid"))))
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                 .body(new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                                                           "Access token is invalid or not sent",
-                                                           new ArrayList<>())));
+                                                           "Invalid access token",
+                                                           List.of("Access token does not exist."))));
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})

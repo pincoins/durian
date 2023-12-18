@@ -34,11 +34,11 @@ public class CategoryController {
                               .toList());
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{slug}")
     public ResponseEntity<CategoryResponse>
-    categoryDetail(@PathVariable Long categoryId,
+    categoryDetail(@PathVariable String slug,
                    @RequestParam(name = "status", required = false) CategoryStatus status) {
-        return categoryService.getCategory(categoryId, status)
+        return categoryService.getCategory(slug, status)
                 .map(category -> ResponseEntity.ok().body(new CategoryResponse(category)))
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                                                     "Category not found",

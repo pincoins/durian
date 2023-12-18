@@ -1,8 +1,11 @@
 package kr.pincoin.durian.auth.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.pincoin.durian.auth.controller.dto.*;
+import kr.pincoin.durian.auth.domain.User;
 import kr.pincoin.durian.auth.domain.converter.UserStatus;
 import kr.pincoin.durian.auth.service.DanalService;
 import kr.pincoin.durian.auth.service.MemberService;
@@ -12,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -202,5 +207,42 @@ public class MemberController {
     public ResponseEntity<String>
     memberVerifyPhone(@PathVariable Long userId) {
         return ResponseEntity.ok().body("hello");
+    }
+
+    @GetMapping("/{userId}/favorites")
+    public ResponseEntity<Favorites>
+    memberFetchFavorites(@PathVariable Long userId,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        if (user == null) {
+            return ResponseEntity.ok().body(Favorites.builder().build());
+        }
+
+        return memberService.getMember(userId, UserStatus.NORMAL)
+                .map(result -> {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        return ResponseEntity.ok().body(mapper.readValue(result.getFavorites(), Favorites.class));
+                    } catch (JsonProcessingException ignored) {
+                        throw new ApiException(HttpStatus.CONFLICT,
+                                               "Favorites JSON parse error",
+                                               List.of("Favorites json format is invalid."));
+                    }
+                })
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Member does not exist to retrieve.")));
+    }
+
+    @PostMapping("/{userId}/favorites")
+    public ResponseEntity<Favorites>
+    memberReplaceFavorites(@PathVariable Long userId,
+                           @Valid @RequestBody Favorites request) {
+        return memberService.replaceFavorites(userId, request)
+                .map(member -> ResponseEntity.ok().body(request))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                                                    "Member not found",
+                                                    List.of("Failed to update favorites.")));
     }
 }
