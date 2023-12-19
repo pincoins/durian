@@ -1,7 +1,11 @@
 ### Product List
 GET http://localhost:8080/products?categoryId={{categoryId}}
-Content-Type: application/jsonR
+Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### Product List
+GET http://localhost:8080/products?products=1,2,3,4
+Content-Type: application/json
 
 ### Category Detail
 GET http://localhost:8080/products/{{productId}}
