@@ -11,6 +11,7 @@ public interface ProductRepositoryQuery {
     List<Product> findProducts(Long categoryId,
                                String categorySlug,
                                String slug,
+                               Long[] products,
                                ProductStatus status,
                                ProductStockStatus stock,
                                Boolean removed);

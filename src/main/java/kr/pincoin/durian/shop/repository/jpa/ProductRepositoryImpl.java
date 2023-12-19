@@ -21,6 +21,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
     public List<Product> findProducts(Long categoryId,
                                       String categorySlug,
                                       String slug,
+                                      Long[] products,
                                       ProductStatus status,
                                       ProductStockStatus stock,
                                       Boolean removed) {
@@ -32,6 +33,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
                 .where(categoryIdEq(categoryId),
                        categorySlugContains(categorySlug),
                        slugContains(slug),
+                       productsIn(products),
                        statusEq(status),
                        stockEq(stock),
                        removedEq(removed));
@@ -89,6 +91,10 @@ public class ProductRepositoryImpl implements  ProductRepositoryQuery {
 
     BooleanExpression slugContains(String slug) {
         return slug != null && !slug.isBlank() ? product.slug.contains(slug) : null;
+    }
+
+    BooleanExpression productsIn(Long[] products) {
+        return products != null ? product.id.in(products) : null;
     }
 
     BooleanExpression statusEq(ProductStatus status) {

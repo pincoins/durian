@@ -37,10 +37,11 @@ public class ProductService {
     listProducts(Long categoryId,
                  String categorySlug,
                  String slug,
+                 Long[] products,
                  ProductStatus status,
                  ProductStockStatus stock,
                  Boolean removed) {
-        return productRepository.findProducts(categoryId, categorySlug, slug, status, stock, removed);
+        return productRepository.findProducts(categoryId, categorySlug, slug, products, status, stock, removed);
     }
 
     @Transactional
