@@ -12,11 +12,12 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "root",
-  "slug": "root",
+  "title": "테스트",
+  "slug": "테스트",
   "description": "This is a a root category",
   "subDescription": "yet another category",
-  "discountRate": 3.345
+  "discountRate": 3.345,
+  "position": 5
 }
 
 ### Category Child Create
