@@ -42,6 +42,9 @@ public class Category extends BaseAuditor {
     @Column(name = "discount_rate")
     private BigDecimal discountRate;
 
+    @Column(name = "image")
+    private String image;
+
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private CategoryStatus status;

@@ -30,6 +30,9 @@ public class CategoryResponse {
     @JsonProperty("discountRate")
     private BigDecimal discountRate;
 
+    @JsonProperty("image")
+    private String image;
+
     @JsonProperty("status")
     private CategoryStatus status;
 
@@ -40,6 +43,7 @@ public class CategoryResponse {
         this.description = category.getDescription();
         this.subDescription = category.getSubDescription();
         this.discountRate = category.getDiscountRate();
+        this.image = category.getImage();
         this.status = category.getStatus();
     }
 }
